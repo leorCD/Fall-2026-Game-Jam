@@ -1,3 +1,90 @@
-[gd_scene format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=7 format=3 uid="uid://cppu1ju6sf1wh"]
 
-[node name="Main" type="Node3D" unique_id=319505226]
+[ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://c72b7nolaahr1" path="res://Player/StaticPlayerController.gd" id="2_0xm2m"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_0xm2m"]
+sky_material = SubResource("ProceduralSkyMaterial_ig7tw")
+
+[sub_resource type="Environment" id="Environment_h2yge"]
+background_mode = 2
+sky = SubResource("Sky_0xm2m")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.41568628)
+
+[node name="Main" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_ig7tw")]
+script = ExtResource("2_0xm2m")
+max_yaw_deg = 45.0
+max_pitch_deg = 15.0
+smooth_speed = 8.0
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
+use_collision = true
+size = Vector3(10, 1, 10)
+
+[node name="environment" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
+environment = SubResource("Environment_h2yge")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="environment"]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="SlotMachineTemp" type="Node3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="environment/SlotMachineTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
+size = Vector3(1.24, 2.225, 1)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="environment/SlotMachineTemp/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56370586, 0.40065384)
+operation = 2
+size = Vector3(1.095, 1.001, 0.625)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="environment/SlotMachineTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5216536, 0.14326262)
+size = Vector3(1.24, 1.075, 1)
+
+[node name="ClosetTemp" type="Node3D" parent="environment"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 3.5670662)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="environment/ClosetTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29183578, 0)
+use_collision = true
+size = Vector3(1, 2.72, 2.375)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="environment/ClosetTemp/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07181072, 0, 3.1389504e-09)
+operation = 2
+size = Vector3(1, 2.62, 2.265)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="environment/ClosetTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, 0.5865281)
+size = Vector3(0.05, 2.685, 1.163)
+material = SubResource("StandardMaterial3D_ig7tw")
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="environment/ClosetTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.59099317)
+size = Vector3(0.05, 2.685, 1.163)
+material = SubResource("StandardMaterial3D_ig7tw")
+
+[node name="StaticPlayerPositions" type="Node" parent="."]
+
+[node name="SlotMachine" type="Marker3D" parent="StaticPlayerPositions"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2)
+
+[node name="Hidden" type="Marker3D" parent="StaticPlayerPositions"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 3.5720751)
