@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://c72b7nolaahr1" path="res://Player/StaticPlayerController.gd" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://oak3camg3gdy" path="res://Player/90DegTurnController.gd" id="2_0xm2m"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -24,9 +24,7 @@ albedo_color = Color(1, 1, 1, 0.41568628)
 
 [node name="Player" parent="." instance=ExtResource("1_ig7tw")]
 script = ExtResource("2_0xm2m")
-max_yaw_deg = 45.0
-max_pitch_deg = 15.0
-smooth_speed = 8.0
+turn_duration = 0.15
 
 [node name="Floor" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
@@ -81,10 +79,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.59
 size = Vector3(0.05, 2.685, 1.163)
 material = SubResource("StandardMaterial3D_ig7tw")
 
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1910276, -0.69216436, 0)
+height = 0.752
+
+[node name="CSGTorus3D" type="CSGTorus3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.8831544, 0)
+outer_radius = 0.693
+sides = 32
+ring_sides = 12
+
 [node name="StaticPlayerPositions" type="Node" parent="."]
 
 [node name="SlotMachine" type="Marker3D" parent="StaticPlayerPositions"]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2)
+
+[node name="Base" type="Marker3D" parent="StaticPlayerPositions"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Hidden" type="Marker3D" parent="StaticPlayerPositions"]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 3.5720751)

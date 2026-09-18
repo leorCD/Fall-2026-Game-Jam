@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+@export var StartingPosition : Marker3D
+
 @onready var camera : Camera3D = $Neck/Camera3D
 
 @onready var SlotMachinePosition : Marker3D = $"../StaticPlayerPositions/SlotMachine"
@@ -12,6 +14,10 @@ extends CharacterBody3D
 @export var smooth_speed: float = 8.0    # how quickly the view follows the mouse
 
 var _target_rotation : Vector3 = Vector3.ZERO
+
+func _ready() -> void:
+	if (StartingPosition != null):
+		position = StartingPosition.global_position
 
 func _process(delta: float) -> void:
 	if !camera:
@@ -47,11 +53,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 		var target_pos = SlotMachinePosition.global_position if _hiding else HiddenPosition.global_position
 		
-		# Kill any existing tween to prevent movement conflicts
 		if tween and tween.is_running():
 			tween.kill()
-			
-		# Create and run the new interpolation animation
 		tween = create_tween()
 		tween.tween_property(self, "global_position", target_pos, 0.5)\
 			.set_trans(Tween.TRANS_CIRC)\
