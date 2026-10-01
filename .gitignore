@@ -1,3 +1,37 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+.nomedia
+
+# Godot general
+.import/
+export.cfg
+export_credentials.cfg
+*.tmp
+
+# Imported translations (automatically generated from CSV)
+*.translation
+
+# Godot 4.2+ C# temporary shared libraries
+~*.dll
+
+# .NET / C# build outputs
+bin/
+obj/
+*.user
+*.userprefs
+*.pidb
+*.suo
+
+# Visual Studio / VS Code / JetBrains Rider
+.vs/
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.sln.docstates
+
+# OS-specific
+.DS_Store
+Thumbs.db
