@@ -93,9 +93,9 @@ public partial class StaticPlayerController : CharacterBody3D
 			return;
 		}
 
-		Vector3 targetPosition = _hiding
-			? _slotMachinePosition.GlobalPosition
-			: _hiddenPosition.GlobalPosition;
+		Transform3D targetTransform = _hiding
+			? _slotMachinePosition.GlobalTransform
+			: _hiddenPosition.GlobalTransform;
 
 		if (_tween != null && _tween.IsRunning())
 		{
@@ -105,7 +105,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		_tween = CreateTween();
 
 		_tween
-			.TweenProperty(this, "global_position", targetPosition, 0.5f)
+			.TweenProperty(this, "global_transform", targetTransform, 0.5f)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
 	}

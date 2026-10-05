@@ -60,7 +60,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5216536, 0.14326262)
 size = Vector3(1.24, 1.075, 1)
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 3.5670662)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -0.012437224)
+metadata/_edit_group_ = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="environment/ClosetTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29183578, 0)
@@ -82,10 +83,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.59
 size = Vector3(0.05, 2.685, 1.163)
 material = SubResource("StandardMaterial3D_ig7tw")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.1910276, -0.69216436, 0)
-height = 0.752
-
 [node name="CSGTorus3D" type="CSGTorus3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.8831544, 0)
 outer_radius = 0.693
@@ -95,7 +92,7 @@ ring_sides = 12
 [node name="StaticPlayerPositions" type="Node" parent="."]
 
 [node name="SlotMachine" type="Marker3D" parent="StaticPlayerPositions"]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 
 [node name="Hidden" type="Marker3D" parent="StaticPlayerPositions"]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 3.5720751)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4, 0, -0.012437224)
