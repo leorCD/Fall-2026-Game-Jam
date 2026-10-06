@@ -2,20 +2,19 @@ using Godot;
 
 public partial class StaticPlayerController : CharacterBody3D
 {
-	[Export]
-	public Marker3D StartingPosition { get; set; }
+	// ChipManager reference
+	[Export] public ChipManager Chips {get; private set;}
+
+	[Export] public Marker3D StartingPosition { get; set; }
 
 	// Maximum horizontal camera rotation
-	[Export]
-	public float max_yaw_deg = 45.0f;
+	[Export] public float max_yaw_deg = 45.0f;
 
 	// Maximum vertical camera rotation.
-	[Export]
-	public float max_pitch_deg = 15.0f;
+	[Export] public float max_pitch_deg = 15.0f;
 
 	// Controls how smoothly the camera moves.
-	[Export]
-	public float smooth_speed = 8.0f;
+	[Export] public float smooth_speed = 8.0f;
 
 	private Camera3D _camera;
 	private Marker3D _slotMachinePosition;
@@ -27,6 +26,8 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
 	{
+		Chips = GetNodeOrNull<ChipManager>("ChipManager");
+
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
 		_slotMachinePosition =
 			GetNodeOrNull<Marker3D>("../StaticPlayerPositions/SlotMachine");

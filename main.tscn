@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=9 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://0m0lq8y35hov" path="res://Player/StaticPlayerController.cs" id="2_0xm2m"]
+[ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://ChipManager.cs" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="4_lquwl"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -29,6 +31,24 @@ max_yaw_deg = 45.0
 max_pitch_deg = 15.0
 smooth_speed = 8.0
 
+[node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
+script = ExtResource("3_1bvp3")
+BalanceDisplay = NodePath("../BalanceDisplay")
+
+[node name="BalanceDisplay" type="Label" parent="Player"]
+anchors_preset = -1
+anchor_left = 0.3033854
+anchor_top = 0.9444444
+anchor_right = 0.69661456
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_vertical = 8
+text = "n/a Chips"
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
 [node name="Floor" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
 use_collision = true
@@ -45,6 +65,7 @@ shadow_enabled = true
 
 [node name="SlotMachineTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
+script = ExtResource("4_lquwl")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="environment/SlotMachineTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
