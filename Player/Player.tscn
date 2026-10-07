@@ -21,3 +21,4 @@ shape = SubResource("ConvexPolygonShape3D_3qydi")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6840654, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Neck"]
+fov = 80.0

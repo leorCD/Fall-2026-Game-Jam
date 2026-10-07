@@ -24,8 +24,9 @@ albedo_color = Color(1, 1, 1, 0.41568628)
 
 [node name="Main" type="Node3D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("StartingPosition") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "StartingPosition") instance=ExtResource("1_ig7tw")]
 script = ExtResource("2_0xm2m")
+Chips = NodePath("ChipManager")
 StartingPosition = NodePath("../StaticPlayerPositions/SlotMachine")
 max_yaw_deg = 45.0
 max_pitch_deg = 15.0

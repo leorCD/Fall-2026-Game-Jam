@@ -94,7 +94,7 @@ public partial class StaticPlayerController : CharacterBody3D
 			return;
 		}
 
-		Transform3D targetTransform = _hiding
+		Transform3D targetTransform = !_hiding
 			? _slotMachinePosition.GlobalTransform
 			: _hiddenPosition.GlobalTransform;
 
