@@ -1,14 +1,19 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
+using Godot.Collections;
 
 public partial class SlotMachine : Node3D
 {
 	[Export] public Node3D Lever {get; private set;}
+	[Export] public Array<Node3D> Reels {get; private set;} = new();
+	private Array<Tween> _spinningReels;
 
 	private Tween _bodyTween;
 	private Tween _leverTween;
 	private Transform3D _bodyDefaultTransform;
 	private Transform3D _leverDefaultTransform;
+
 
 
 
@@ -35,7 +40,8 @@ public partial class SlotMachine : Node3D
 			ReturnHandleUp();
 		}
 
-		AnimateMachineJump();
+		await AnimateMachineJump();
+		await RollReelsIncrementally();
 	}
 
 	private async Task PullHandleDown()
@@ -71,7 +77,7 @@ public partial class SlotMachine : Node3D
 			.SetEase(Tween.EaseType.In);
 	}
 
-	private void AnimateMachineJump()
+	private async Task AnimateMachineJump()
 	{
 		_bodyTween?.Kill();
 		_bodyTween = CreateTween();
@@ -128,5 +134,42 @@ public partial class SlotMachine : Node3D
 		_bodyTween.TweenProperty(this, "scale", baseScale, 0.22f)
 			.SetTrans(Tween.TransitionType.Elastic)
 			.SetEase(Tween.EaseType.Out);
+
+			
+		await ToSignal(_bodyTween, Tween.SignalName.Finished);
+	}
+
+	private async Task RollReelsIncrementally()
+	{
+    	// collect all valid SlotReels first
+		List<SlotReel> activeReels = new List<SlotReel>();
+		for (int i = 0; i < Reels.Count; i++)
+		{
+			if (Reels[i] is SlotReel reel)
+			{
+				activeReels.Add(reel);
+			}
+			else
+			{
+				GD.PrintErr($"Skipping invalid SlotReel object at index {i}");
+			}
+		}
+
+		// start all reels spinning at the same time
+		foreach (SlotReel reel in activeReels)
+		{
+			reel.Spin();
+		}
+
+		// let all reels spin together for a base duration before stopping starts
+		await ToSignal(GetTree().CreateTimer(1.5f), SceneTreeTimer.SignalName.Timeout);
+
+		//stop each reel sequentially with a delay between each
+		foreach (SlotReel reel in activeReels)
+		{
+			reel.StopSpin();
+			// 0.5 seconds before stopping the next reel
+			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
+		}
 	}
 }
