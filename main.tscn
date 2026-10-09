@@ -61,25 +61,64 @@ size = Vector3(10, 1, 10)
 environment = SubResource("Environment_h2yge")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="environment"]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+transform = Transform3D(0.8781166, 0.41434696, -0.23922344, -0.09312729, 0.63845897, 0.764001, 0.4692958, -0.64860356, 0.59922844, 0, 0, 0)
 shadow_enabled = true
 
-[node name="SlotMachineTemp" type="Node3D" parent="environment"]
+[node name="SlotMachineTemp" type="Node3D" parent="environment" node_paths=PackedStringArray("Lever")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
 script = ExtResource("4_lquwl")
+Lever = NodePath("Hand")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="environment/SlotMachineTemp"]
+[node name="Body" type="CSGBox3D" parent="environment/SlotMachineTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
 size = Vector3(1.24, 2.225, 1)
 
-[node name="CSGBox3D3" type="CSGBox3D" parent="environment/SlotMachineTemp/CSGBox3D"]
+[node name="CSGBox3D3" type="CSGBox3D" parent="environment/SlotMachineTemp/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56370586, 0.40065384)
 operation = 2
 size = Vector3(1.095, 1.001, 0.625)
 
-[node name="CSGBox3D2" type="CSGBox3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5216536, 0.14326262)
+[node name="CSGBox3D2" type="CSGBox3D" parent="environment/SlotMachineTemp/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.54645723, 0.24773431)
 size = Vector3(1.24, 1.075, 1)
+
+[node name="Hand" type="CSGCylinder3D" parent="environment/SlotMachineTemp"]
+transform = Transform3D(-4.371139e-08, 1, 0, -0.962805, -4.2085542e-08, -0.27019715, -0.27019715, -1.1810693e-08, 0.962805, 0.68673724, -0.24358958, -0.021566391)
+radius = 0.11
+height = 0.365
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="environment/SlotMachineTemp/Hand"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -1.133008, 0.094542205, 0)
+radius = 0.105
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Hand"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.5955162, 0.094542265, 0)
+radius = 0.035
+height = 1.011
+
+[node name="SlotMachineLight" type="OmniLight3D" parent="environment/SlotMachineTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665488, 0.7945063)
+light_energy = 0.95
+omni_range = 1.58
+omni_attenuation = 2.375
+
+[node name="Reels" type="Node3D" parent="environment/SlotMachineTemp"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6118133, 0)
+
+[node name="1" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
+transform = Transform3D(-4.371139e-08, -1, 0, 0.91810083, -4.013146e-08, -0.39634687, 0.39634687, -1.7324872e-08, 0.91810083, -0.4, 0, -0.08280563)
+radius = 0.511
+height = 0.321
+
+[node name="2" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
+transform = Transform3D(-4.371139e-08, -1, 0, 0.91810083, -4.013146e-08, -0.39634687, 0.39634687, -1.7324872e-08, 0.91810083, 0, 0, -0.08280563)
+radius = 0.511
+height = 0.321
+
+[node name="3" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
+transform = Transform3D(-4.371139e-08, -1, 0, 0.91810083, -4.013146e-08, -0.39634687, 0.39634687, -1.7324872e-08, 0.91810083, 0.4, 0, -0.08280563)
+radius = 0.511
+height = 0.321
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -0.012437224)
