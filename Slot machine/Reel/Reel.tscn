@@ -1,0 +1,52 @@
+[gd_scene load_steps=11 format=3 uid="uid://ctcwqv3cbt4ae"]
+
+[ext_resource type="Script" uid="uid://brfq3baan5n6k" path="res://Slot machine/Reel/SlotReel.cs" id="1_scnqk"]
+[ext_resource type="Texture2D" uid="uid://0ycgetm2i436" path="res://Slot machine/Reel/faces/1.png" id="2_fv7ci"]
+[ext_resource type="Texture2D" uid="uid://c70pm1qws7kyy" path="res://Slot machine/Reel/faces/2.png" id="3_ap1s5"]
+[ext_resource type="Texture2D" uid="uid://blb84k1ns703w" path="res://Slot machine/Reel/faces/3.png" id="4_i2ar5"]
+[ext_resource type="Texture2D" uid="uid://b6st30v1kr5qg" path="res://Slot machine/Reel/faces/4.png" id="5_jxj1f"]
+[ext_resource type="Texture2D" uid="uid://bsjy0h7pa7hxq" path="res://Slot machine/Reel/faces/5.png" id="6_h1xob"]
+[ext_resource type="Texture2D" uid="uid://cg2eh6rdcdijm" path="res://Slot machine/Reel/faces/6.png" id="7_subea"]
+[ext_resource type="Texture2D" uid="uid://ctsn67gqtbhle" path="res://Slot machine/Reel/faces/7.png" id="8_xvucj"]
+[ext_resource type="Texture2D" uid="uid://dnnm0vfdpf4mt" path="res://Slot machine/Reel/faces/8.png" id="9_c6maa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+
+[node name="Reel" type="CSGCylinder3D"]
+transform = Transform3D(-4.371139e-08, -1, 0, 0.9238795, -4.0384055e-08, -0.38268346, 0.38268346, -1.6727626e-08, 0.9238795, 0, 0, 0)
+radius = 0.511
+height = 0.321
+material = SubResource("StandardMaterial3D_lquwl")
+script = ExtResource("1_scnqk")
+
+[node name="face" type="Sprite3D" parent="."]
+transform = Transform3D(-2.4634275e-09, 0.05635665, 0.38268346, -0.061, -2.6663947e-09, 0, 1.0203852e-09, -0.023343692, 0.9238795, 0.17593688, -1.159312e-07, 0.43892127)
+texture = ExtResource("2_fv7ci")
+
+[node name="face5" type="Sprite3D" parent="."]
+transform = Transform3D(4.5041966e-09, -0.056356646, -0.38268346, -0.061, -2.6663936e-09, -8.742277e-08, 3.9064694e-09, 0.023343688, -0.9238795, -0.18580355, -1.159312e-07, -0.4343973)
+texture = ExtResource("6_h1xob")
+
+[node name="face8" type="Sprite3D" parent="."]
+transform = Transform3D(-1.3946844e-08, 0.05635665, -0.3826834, -0.061, -2.1166645e-08, -2.4026122e-07, -2.1640446e-08, 0.023343686, 0.9238795, -0.1845381, -2.2869298e-07, 0.4358663)
+texture = ExtResource("9_c6maa")
+
+[node name="face4" type="Sprite3D" parent="."]
+transform = Transform3D(-1.1060762e-08, -0.056356654, 0.38268343, -0.061, 1.5833857e-08, 1.5283842e-07, -1.4672818e-08, -0.023343684, -0.92387956, 0.17751642, -1.3832391e-09, -0.43821073)
+texture = ExtResource("5_jxj1f")
+
+[node name="face7" type="Sprite3D" parent="."]
+transform = Transform3D(-6.043223e-09, 0.02334369, -0.9238795, -0.061, -4.461161e-08, -1.9569833e-07, -4.5784077e-08, 0.05635665, 0.38268343, -0.436977, -2.0601422e-07, 0.18070385)
+texture = ExtResource("8_xvucj")
+
+[node name="face3" type="Sprite3D" parent="."]
+transform = Transform3D(-8.929309e-09, -0.023343684, 0.92387974, -0.061, 3.927882e-08, 1.082756e-07, -3.8816452e-08, -0.056356654, -0.38268343, 0.43634158, -2.1025848e-08, -0.18103656)
+texture = ExtResource("4_i2ar5")
+
+[node name="face6" type="Sprite3D" parent="."]
+transform = Transform3D(1.6617612e-08, -0.023343688, -0.9238796, -0.061000008, -5.9267553e-08, 1.0758441e-07, -5.72675e-08, 0.056356657, -0.3826835, -0.43692616, -6.2677586e-08, -0.18101548)
+texture = ExtResource("7_subea")
+
+[node name="face2" type="Sprite3D" parent="."]
+transform = Transform3D(9.649991e-09, 0.0233437, 0.9238795, -0.061000008, 5.3934762e-08, -1.9500749e-07, -5.438142e-08, -0.05635666, 0.3826837, 0.440155, -1.6481243e-07, 0.1822834)
+texture = ExtResource("3_ap1s5")

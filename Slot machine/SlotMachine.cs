@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
@@ -13,6 +15,8 @@ public partial class SlotMachine : Node3D
 	private Tween _leverTween;
 	private Transform3D _bodyDefaultTransform;
 	private Transform3D _leverDefaultTransform;
+
+	private Random random = new Random();
 
 
 
@@ -41,7 +45,7 @@ public partial class SlotMachine : Node3D
 		}
 
 		await AnimateMachineJump();
-		await RollReelsIncrementally();
+		await RollReels();
 	}
 
 	private async Task PullHandleDown()
@@ -139,7 +143,7 @@ public partial class SlotMachine : Node3D
 		await ToSignal(_bodyTween, Tween.SignalName.Finished);
 	}
 
-	private async Task RollReelsIncrementally()
+	private async Task RollReels()
 	{
     	// collect all valid SlotReels first
 		List<SlotReel> activeReels = new List<SlotReel>();
@@ -153,7 +157,11 @@ public partial class SlotMachine : Node3D
 			{
 				GD.PrintErr($"Skipping invalid SlotReel object at index {i}");
 			}
-		}
+        }
+
+		// precalculate reults
+		int[] finalResults = CalculateReelFaces(activeReels.Count);
+		GD.Print(string.Join(", ", finalResults));
 
 		// start all reels spinning at the same time
 		foreach (SlotReel reel in activeReels)
@@ -164,12 +172,26 @@ public partial class SlotMachine : Node3D
 		// let all reels spin together for a base duration before stopping starts
 		await ToSignal(GetTree().CreateTimer(1.5f), SceneTreeTimer.SignalName.Timeout);
 
-		//stop each reel sequentially with a delay between each
+		// stop each reel sequentially with a delay between each
+		int j = 0;
 		foreach (SlotReel reel in activeReels)
 		{
-			reel.StopSpin();
-			// 0.5 seconds before stopping the next reel
-			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
+			reel.StopSpinOnFace(finalResults[j]);
+			j++;
+
+			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout); // 0.5 seconds before stopping the next reel
 		}
+	}
+
+	private int[] CalculateReelFaces(int numberOfReels)
+	{
+		int[] reelIndices = new int[numberOfReels];
+
+		for (int i = 0; i < numberOfReels; i++)
+		{
+			reelIndices[i] = random.Next(1, 8);
+		}
+
+		return reelIndices;
 	}
 }

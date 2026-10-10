@@ -1,10 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=10 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://0m0lq8y35hov" path="res://Player/StaticPlayerController.cs" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://ChipManager.cs" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="4_lquwl"]
-[ext_resource type="Script" uid="uid://bkgkfaig7dkib" path="res://SlotReel.cs" id="5_lquwl"]
+[ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="5_7mycd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -18,15 +18,6 @@ background_mode = 2
 sky = SubResource("Sky_0xm2m")
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
-albedo_color = Color(1, 0.2635369, 0.16406497, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
-albedo_color = Color(0.48251992, 0.28448075, 1, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
-albedo_color = Color(0.013965956, 0.51647353, 0.4018081, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
 transparency = 1
@@ -74,10 +65,11 @@ environment = SubResource("Environment_h2yge")
 transform = Transform3D(0.8781166, 0.41434696, -0.23922344, -0.09312729, 0.63845897, 0.764001, 0.4692958, -0.64860356, 0.59922844, 0, 0, 0)
 shadow_enabled = true
 
-[node name="SlotMachineTemp" type="Node3D" parent="environment" node_paths=PackedStringArray("Lever")]
+[node name="SlotMachineTemp" type="Node3D" parent="environment" node_paths=PackedStringArray("Lever", "Reels")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
 script = ExtResource("4_lquwl")
 Lever = NodePath("Hand")
+Reels = [NodePath("Reels/1"), NodePath("Reels/2"), NodePath("Reels/3")]
 
 [node name="Body" type="CSGBox3D" parent="environment/SlotMachineTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
@@ -107,7 +99,7 @@ radius = 0.035
 height = 1.011
 
 [node name="SlotMachineLight" type="OmniLight3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665488, 0.7945063)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665488, 1.7228613)
 light_energy = 0.95
 omni_range = 1.58
 omni_attenuation = 2.375
@@ -115,29 +107,14 @@ omni_attenuation = 2.375
 [node name="Reels" type="Node3D" parent="environment/SlotMachineTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6118133, 0)
 
-[node name="1" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
-transform = Transform3D(3.1391647e-07, -1, -3.9625806e-07, 1, 3.1391647e-07, 0, 1.2439194e-13, -3.9625806e-07, 1, -0.4, 0, -0.08300018)
-radius = 0.511
-height = 0.321
-sides = 10
-material = SubResource("StandardMaterial3D_lquwl")
-script = ExtResource("5_lquwl")
+[node name="1" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, -0.4, 0, -0.08300018)
 
-[node name="2" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0, -0.08280563)
-radius = 0.511
-height = 0.321
-sides = 10
-material = SubResource("StandardMaterial3D_7mycd")
-script = ExtResource("5_lquwl")
+[node name="2" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0, 0, -0.08300018)
 
-[node name="3" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Reels"]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.4, 0, -0.08280563)
-radius = 0.511
-height = 0.321
-sides = 10
-material = SubResource("StandardMaterial3D_272bh")
-script = ExtResource("5_lquwl")
+[node name="3" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0.4, 0, -0.08300018)
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -0.012437224)
