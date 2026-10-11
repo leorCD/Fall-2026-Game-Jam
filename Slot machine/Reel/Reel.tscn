@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dnnm0vfdpf4mt" path="res://Slot machine/Reel/faces/8.png" id="9_c6maa"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_color = Color(0.9184095, 0.38326406, 0.2948457, 1)
 
 [node name="Reel" type="CSGCylinder3D"]
 transform = Transform3D(-4.371139e-08, -1, 0, 0.9238795, -4.0384055e-08, -0.38268346, 0.38268346, -1.6727626e-08, 0.9238795, 0, 0, 0)

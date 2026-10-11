@@ -1,10 +1,27 @@
-[gd_scene load_steps=10 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=23 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://0m0lq8y35hov" path="res://Player/StaticPlayerController.cs" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
+[ext_resource type="Script" uid="uid://b52uyf6vybtxw" path="res://toggleenvironment.cs" id="4_5vw27"]
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="4_lquwl"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="5_7mycd"]
+[ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://wall.jpg" id="6_272bh"]
+[ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://floor.png" id="7_5vw27"]
+
+[sub_resource type="SystemFont" id="SystemFont_5vw27"]
+font_names = PackedStringArray("Sans-Serif")
+
+[sub_resource type="LabelSettings" id="LabelSettings_kek77"]
+line_spacing = 20.835
+font = SubResource("SystemFont_5vw27")
+
+[sub_resource type="SystemFont" id="SystemFont_kek77"]
+font_names = PackedStringArray("Sans-Serif")
+
+[sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
+font = SubResource("SystemFont_kek77")
+font_size = 24
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -19,9 +36,31 @@ sky = SubResource("Sky_0xm2m")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
+albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
 transparency = 1
-albedo_color = Color(1, 1, 1, 0.41568628)
+albedo_color = Color(0.27058825, 0.14509805, 0.047058824, 0.44705883)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
+albedo_texture = ExtResource("6_272bh")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
+albedo_texture = ExtResource("6_272bh")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_efxa6"]
+albedo_color = Color(0.43892288, 0.25332958, 0.14955273, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
+albedo_texture = ExtResource("7_5vw27")
+uv1_triplanar = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycdy4"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D"]
 
@@ -35,35 +74,47 @@ smooth_speed = 8.0
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
-BalanceDisplay = NodePath("../BalanceDisplay")
+BalanceDisplay = NodePath("../PanelContainer/MarginContainer/BalanceDisplay")
 
-[node name="BalanceDisplay" type="Label" parent="Player"]
+[node name="PanelContainer" type="PanelContainer" parent="Player"]
 anchors_preset = -1
-anchor_left = 0.3033854
-anchor_top = 0.9444444
-anchor_right = 0.69661456
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 8
+anchor_left = 0.75
+anchor_top = 0.70987654
+anchor_right = 0.9887153
+anchor_bottom = 0.9845679
+metadata/_edit_use_anchors_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="Player/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = -25
+
+[node name="Label" type="Label" parent="Player/PanelContainer/MarginContainer"]
+layout_mode = 2
+text = "Q - Toggle render room
+T - Remove chips
+G - Give chips
+Spacebar - Hide"
+label_settings = SubResource("LabelSettings_kek77")
+
+[node name="BalanceDisplay" type="Label" parent="Player/PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 0
 text = "n/a Chips"
+label_settings = SubResource("LabelSettings_4c57u")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Floor" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
-use_collision = true
-size = Vector3(10, 1, 10)
-
-[node name="environment" type="Node" parent="."]
+[node name="environment" type="Node" parent="." node_paths=PackedStringArray("renderedroom", "unrenderedroom")]
+script = ExtResource("4_5vw27")
+renderedroom = NodePath("RenderedRoom")
+unrenderedroom = NodePath("UnrenderedRoom2")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_h2yge")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="environment"]
-transform = Transform3D(0.8781166, 0.41434696, -0.23922344, -0.09312729, 0.63845897, 0.764001, 0.4692958, -0.64860356, 0.59922844, 0, 0, 0)
-shadow_enabled = true
 
 [node name="SlotMachineTemp" type="Node3D" parent="environment" node_paths=PackedStringArray("Lever", "Reels")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
@@ -98,12 +149,6 @@ transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.5
 radius = 0.035
 height = 1.011
 
-[node name="SlotMachineLight" type="OmniLight3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.665488, 1.7228613)
-light_energy = 0.95
-omni_range = 1.58
-omni_attenuation = 2.375
-
 [node name="Reels" type="Node3D" parent="environment/SlotMachineTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6118133, 0)
 
@@ -117,28 +162,30 @@ transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07
 transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0.4, 0, -0.08300018)
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -0.012437224)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.379924, 0, -0.5762461)
 metadata/_edit_group_ = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="environment/ClosetTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29183578, 0)
 use_collision = true
 size = Vector3(1, 2.72, 2.375)
+material = SubResource("StandardMaterial3D_272bh")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="environment/ClosetTemp/CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07181072, 0, 3.1389504e-09)
 operation = 2
 size = Vector3(1, 2.62, 2.265)
+material = SubResource("StandardMaterial3D_272bh")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="environment/ClosetTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, 0.5865281)
 size = Vector3(0.05, 2.685, 1.163)
-material = SubResource("StandardMaterial3D_ig7tw")
+material = SubResource("StandardMaterial3D_5vw27")
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="environment/ClosetTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.59099317)
 size = Vector3(0.05, 2.685, 1.163)
-material = SubResource("StandardMaterial3D_ig7tw")
+material = SubResource("StandardMaterial3D_5vw27")
 
 [node name="CSGTorus3D" type="CSGTorus3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, -0.8831544, 3.4655037)
@@ -146,26 +193,111 @@ outer_radius = 0.693
 sides = 32
 ring_sides = 12
 
-[node name="wall" type="CSGBox3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
-size = Vector3(0.1, 5, 10)
+[node name="RenderedRoom" type="Node3D" parent="environment"]
+visible = false
 
-[node name="wall5" type="CSGBox3D" parent="environment/wall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.6285906)
+[node name="wall" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9954085, -0.38369703, -0.003227234)
+size = Vector3(0.1, 8, 10)
+material = SubResource("StandardMaterial3D_kek77")
+
+[node name="div" type="CSGBox3D" parent="environment/RenderedRoom/wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.7, 0, 0.9130347, -2.6285906)
+operation = 2
+size = Vector3(0.1, 3.17, 2.505)
+material = SubResource("StandardMaterial3D_4c57u")
+
+[node name="door" type="CSGBox3D" parent="environment/RenderedRoom/wall"]
+transform = Transform3D(0.8386909, 0, -0.21919774, 0, 0.9849772, 0, 0.28672296, 0, 0.6411735, -0.34849188, 0.9130347, -2.7332318)
+size = Vector3(0.1, 3.17, 2.505)
+material = SubResource("StandardMaterial3D_efxa6")
+
+[node name="wall2" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.38369703, 0)
+size = Vector3(0.1, 8, 10)
+material = SubResource("StandardMaterial3D_kek77")
+
+[node name="wall3" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.1855695e-07, -0.38369703, -5)
+size = Vector3(0.1, 8, 10)
+material = SubResource("StandardMaterial3D_kek77")
+
+[node name="wall4" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, -0.38369703, 5)
+size = Vector3(0.1, 8, 10)
+material = SubResource("StandardMaterial3D_kek77")
+
+[node name="Floor" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
+use_collision = true
+size = Vector3(10, 1, 10)
+material = SubResource("StandardMaterial3D_dg77c")
+
+[node name="Ceiling" type="CSGBox3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6336758, 0)
+use_collision = true
+size = Vector3(10.555, 1, 10.4)
+material = SubResource("StandardMaterial3D_ycdy4")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6100218, -0.041732788)
+light_color = Color(0.89398205, 0.9222793, 0.98157567, 1)
+light_energy = 0.141
+light_negative = true
+light_specular = 0.0
+omni_range = 42.774
+omni_attenuation = -1.299
+
+[node name="OmniLight3D2" type="OmniLight3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2560587, -0.041732788)
+light_energy = 5.544
+light_specular = 0.0
+omni_range = 58.069
+omni_attenuation = 1.152
+
+[node name="UnrenderedRoom2" type="Node3D" parent="environment"]
+
+[node name="wall" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9954085, -0.38369703, -0.003227234)
+size = Vector3(0.1, 8, 10)
+
+[node name="div" type="CSGBox3D" parent="environment/UnrenderedRoom2/wall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.7, 0, 0.9130347, -2.6285906)
 operation = 2
 size = Vector3(0.1, 3.17, 2.505)
 
-[node name="wall2" type="CSGBox3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, 0)
-size = Vector3(0.1, 5, 10)
+[node name="door" type="CSGBox3D" parent="environment/UnrenderedRoom2/wall"]
+transform = Transform3D(0.8386909, 0, -0.21919774, 0, 0.9849772, 0, 0.28672296, 0, 0.6411735, -0.34849188, 0.9130347, -2.7332318)
+size = Vector3(0.1, 3.17, 2.505)
 
-[node name="wall3" type="CSGBox3D" parent="environment"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.1855695e-07, 0, -5)
-size = Vector3(0.1, 5, 10)
+[node name="wall2" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.38369703, 0)
+size = Vector3(0.1, 8, 10)
 
-[node name="wall4" type="CSGBox3D" parent="environment"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, 0, 5)
-size = Vector3(0.1, 5, 10)
+[node name="wall3" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.1855695e-07, -0.38369703, -5)
+size = Vector3(0.1, 8, 10)
+
+[node name="wall4" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, -0.38369703, 5)
+size = Vector3(0.1, 8, 10)
+
+[node name="Floor" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5681641, 0)
+use_collision = true
+size = Vector3(10, 1, 10)
+
+[node name="Ceiling" type="CSGBox3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6336758, 0)
+use_collision = true
+size = Vector3(10.555, 1, 10.4)
+
+[node name="OmniLight3D3" type="OmniLight3D" parent="environment/UnrenderedRoom2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99830234, -2.1905663)
+light_energy = 5.544
+light_specular = 0.0
+omni_range = 4.377
+omni_attenuation = 4.737
 
 [node name="StaticPlayerPositions" type="Node" parent="."]
 
@@ -173,4 +305,4 @@ size = Vector3(0.1, 5, 10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
 
 [node name="Hidden" type="Marker3D" parent="StaticPlayerPositions"]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4, 0, -0.012437224)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.379924, 0, -0.5762461)

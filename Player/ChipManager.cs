@@ -17,7 +17,7 @@ public partial class ChipManager : Node
 			_visualBalance = value;
 			
 			if (BalanceDisplay == null) return;
-			BalanceDisplay.Text = Mathf.RoundToInt(_visualBalance).ToString();
+			BalanceDisplay.Text = Mathf.RoundToInt(_visualBalance).ToString() + " chips";
 		}
 	}
 	private Tween _activeTween;
@@ -42,7 +42,7 @@ public partial class ChipManager : Node
 
 		if (BalanceDisplay != null)
 		{
-			BalanceDisplay.Text = Balance.ToString();
+			BalanceDisplay.Text = Balance.ToString() + " chips";
 		}
 
 		BalanceChanged += LerpBalanceDisplay;
