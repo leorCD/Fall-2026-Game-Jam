@@ -1,13 +1,11 @@
-[gd_scene load_steps=23 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=21 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://0m0lq8y35hov" path="res://Player/StaticPlayerController.cs" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
-[ext_resource type="Script" uid="uid://b52uyf6vybtxw" path="res://toggleenvironment.cs" id="4_5vw27"]
-[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="4_lquwl"]
-[ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="5_7mycd"]
-[ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://wall.jpg" id="6_272bh"]
-[ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://floor.png" id="7_5vw27"]
+[ext_resource type="Script" uid="uid://b52uyf6vybtxw" path="res://common/toggleenvironment.cs" id="4_5vw27"]
+[ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
+[ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
+[ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 
 [sub_resource type="SystemFont" id="SystemFont_5vw27"]
 font_names = PackedStringArray("Sans-Serif")
@@ -65,12 +63,8 @@ albedo_color = Color(0, 0, 0, 1)
 [node name="Main" type="Node3D"]
 
 [node name="Player" parent="." node_paths=PackedStringArray("Chips", "StartingPosition") instance=ExtResource("1_ig7tw")]
-script = ExtResource("2_0xm2m")
 Chips = NodePath("ChipManager")
 StartingPosition = NodePath("../StaticPlayerPositions/SlotMachine")
-max_yaw_deg = 45.0
-max_pitch_deg = 15.0
-smooth_speed = 8.0
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
@@ -116,50 +110,8 @@ unrenderedroom = NodePath("UnrenderedRoom2")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_h2yge")
 
-[node name="SlotMachineTemp" type="Node3D" parent="environment" node_paths=PackedStringArray("Lever", "Reels")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.057887)
-script = ExtResource("4_lquwl")
-Lever = NodePath("Hand")
-Reels = [NodePath("Reels/1"), NodePath("Reels/2"), NodePath("Reels/3")]
-
-[node name="Body" type="CSGBox3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
-size = Vector3(1.24, 2.225, 1)
-
-[node name="CSGBox3D3" type="CSGBox3D" parent="environment/SlotMachineTemp/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56370586, 0.40065384)
-operation = 2
-size = Vector3(1.095, 1.001, 0.625)
-
-[node name="CSGBox3D2" type="CSGBox3D" parent="environment/SlotMachineTemp/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.54645723, 0.24773431)
-size = Vector3(1.24, 1.075, 1)
-
-[node name="Hand" type="CSGCylinder3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(-4.371139e-08, 1, 0, -0.962805, -4.2085542e-08, -0.27019715, -0.27019715, -1.1810693e-08, 0.962805, 0.68673724, -0.24358958, -0.021566391)
-radius = 0.11
-height = 0.365
-
-[node name="CSGSphere3D" type="CSGSphere3D" parent="environment/SlotMachineTemp/Hand"]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -1.133008, 0.094542205, 0)
-radius = 0.105
-
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="environment/SlotMachineTemp/Hand"]
-transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.5955162, 0.094542265, 0)
-radius = 0.035
-height = 1.011
-
-[node name="Reels" type="Node3D" parent="environment/SlotMachineTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6118133, 0)
-
-[node name="1" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
-transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, -0.4, 0, -0.08300018)
-
-[node name="2" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
-transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0, 0, -0.08300018)
-
-[node name="3" parent="environment/SlotMachineTemp/Reels" instance=ExtResource("5_7mycd")]
-transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0.4, 0, -0.08300018)
+[node name="Slot_Machine" parent="environment" instance=ExtResource("9_kek77")]
+transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, -1.041632, -4.395935)
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.379924, 0, -0.5762461)
@@ -293,16 +245,16 @@ use_collision = true
 size = Vector3(10.555, 1, 10.4)
 
 [node name="OmniLight3D3" type="OmniLight3D" parent="environment/UnrenderedRoom2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.99830234, -2.1905663)
-light_energy = 5.544
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7746744, -2.401393)
+light_energy = 2.313
 light_specular = 0.0
-omni_range = 4.377
-omni_attenuation = 4.737
+omni_range = 3.667
+omni_attenuation = 3.832
 
 [node name="StaticPlayerPositions" type="Node" parent="."]
 
 [node name="SlotMachine" type="Marker3D" parent="StaticPlayerPositions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.531057)
 
 [node name="Hidden" type="Marker3D" parent="StaticPlayerPositions"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -4.379924, 0, -0.5762461)

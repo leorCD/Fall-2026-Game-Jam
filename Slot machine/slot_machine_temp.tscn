@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhvoc22x3tfqt"]
+
+[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="1_5aw50"]
+[ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_k0xea"]
+
+[node name="SlotMachineTemp" type="Node3D" node_paths=PackedStringArray("Lever", "Reels")]
+script = ExtResource("1_5aw50")
+Lever = NodePath("Hand")
+Reels = [NodePath("Reels/1"), NodePath("Reels/2"), NodePath("Reels/3")]
+
+[node name="Body" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.024803638, -0.10447168)
+size = Vector3(1.24, 2.225, 1)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.56370586, 0.40065384)
+operation = 2
+size = Vector3(1.095, 1.001, 0.625)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.54645723, 0.24773431)
+size = Vector3(1.24, 1.075, 1)
+
+[node name="Hand" type="CSGCylinder3D" parent="."]
+transform = Transform3D(-4.371139e-08, 1, 0, -0.962805, -4.2085542e-08, -0.27019715, -0.27019715, -1.1810693e-08, 0.962805, 0.68673724, -0.24358958, -0.021566391)
+radius = 0.11
+height = 0.365
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Hand"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -1.133008, 0.094542205, 0)
+radius = 0.105
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Hand"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.5955162, 0.094542265, 0)
+radius = 0.035
+height = 1.011
+
+[node name="Reels" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6118133, 0)
+
+[node name="1" parent="Reels" instance=ExtResource("2_k0xea")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, -0.4, 0, -0.08300018)
+
+[node name="2" parent="Reels" instance=ExtResource("2_k0xea")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0, 0, -0.08300018)
+
+[node name="3" parent="Reels" instance=ExtResource("2_k0xea")]
+transform = Transform3D(1.6227507e-07, -1, -3.660947e-07, 0.9238795, 2.90021e-07, -0.38268346, 0.38268346, -2.7612742e-07, 0.9238795, 0.4, 0, -0.08300018)

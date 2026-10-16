@@ -27,7 +27,7 @@ public partial class SlotReel : Node3D
     private void SetAngle(float a)
     {
         _angle = a;
-        Basis = new Basis(Vector3.Right, _angle) * _baseBasis;
+        Basis = new Basis(Vector3.Forward, _angle) * _baseBasis;
     }
 
     public void Spin(){this.IsSpinning = true;}
