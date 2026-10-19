@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://sym7svaqykab"
-path="res://.godot/imported/Slot_Machine.blend-5ea60b08a38ad48f76515cce2b75b5bd.scn"
+path="res://.godot/imported/Slot_Machine.blend-c6ea58e5a65cc2ac1546d9f169e32409.scn"
 
 [deps]
 
-source_file="res://Slot machine/Slot_Machine.blend"
-dest_files=["res://.godot/imported/Slot_Machine.blend-5ea60b08a38ad48f76515cce2b75b5bd.scn"]
+source_file="res://Slot machine/Model/Slot_Machine.blend"
+dest_files=["res://.godot/imported/Slot_Machine.blend-c6ea58e5a65cc2ac1546d9f169e32409.scn"]
 
 [params]
 

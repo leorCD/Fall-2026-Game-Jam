@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bhvoc22x3tfqt"]
 
-[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="1_5aw50"]
+[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="1_5aw50"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_k0xea"]
 
 [node name="SlotMachineTemp" type="Node3D" node_paths=PackedStringArray("Lever", "Reels")]

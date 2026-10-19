@@ -1,7 +1,8 @@
-[gd_scene load_steps=32 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=33 format=4 uid="uid://baow7d1r5q6f2"]
 
-[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachine.cs" id="2_8lydx"]
+[ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
+[ext_resource type="Script" uid="uid://r64nymcr2g4i" path="res://Slot machine/SlotMachineAnimator.cs" id="2_umstu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfqw8"]
 resource_name = "Material"
@@ -412,11 +413,15 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_tmaip")
 
-[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("Lever", "Reels")]
+[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
 script = ExtResource("2_8lydx")
-Lever = NodePath("Lever")
-Reels = [NodePath("Reel"), NodePath("Reel2"), NodePath("Reel3")]
+AnimationComponent = NodePath("AnimationComponent")
+
+[node name="AnimationComponent" type="Node" parent="." node_paths=PackedStringArray("Lever", "Reels")]
+script = ExtResource("2_umstu")
+Lever = NodePath("../Lever")
+Reels = [NodePath("../Reel"), NodePath("../Reel2"), NodePath("../Reel3")]
 
 [node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(2.3455691, 0, 0, 0, 2.3455691, 0, 0, 0, 2.3455691, 0, 2.2394404, 0)

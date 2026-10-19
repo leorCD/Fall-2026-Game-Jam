@@ -1,43 +1,30 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 
-public partial class SlotMachine : Node3D
+public partial class SlotMachineAnimator : Node
 {
+	private Node3D SlotMachine;
 	[Export] public Node3D Lever {get; private set;}
 	[Export] public Array<Node3D> Reels {get; private set;} = new();
-	private Array<Tween> _spinningReels;
 
 	private Tween _bodyTween;
 	private Tween _leverTween;
 	private Transform3D _bodyDefaultTransform;
 	private Transform3D _leverDefaultTransform;
 
-	private Random random = new Random();
 
 
-
-
-
-	public override void _Ready()
+	public void init(SlotMachineLogic slotmachine)
 	{
-		_bodyDefaultTransform = this.Transform;
+		this.SlotMachine = slotmachine;
+
+		_bodyDefaultTransform = (SlotMachine != null) ? SlotMachine.Transform : Transform3D.Identity;
 		_leverDefaultTransform = (Lever != null) ? Lever.Transform : Transform3D.Identity;
 	}
 
-
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (@event.IsActionPressed("StartGambling")){
-			StartMachine();
-		}
-	}
-
-	private async void StartMachine()
+	public async Task<bool> Start(int[] results)
 	{
 		if (Lever != null)
 		{
@@ -46,7 +33,9 @@ public partial class SlotMachine : Node3D
 		}
 
 		await AnimateMachineJump();
-		await RollReels();
+		await RollReels(results);
+
+		return true;
 	}
 
 	private async Task PullHandleDown()
@@ -104,39 +93,39 @@ public partial class SlotMachine : Node3D
 		);
 
 		// sinks down and compresses slightly under strain
-		_bodyTween.TweenProperty(this, "position", basePos - new Vector3(0, 0.04f, 0), 0.12f)
+		_bodyTween.TweenProperty(SlotMachine, "position", basePos - new Vector3(0, 0.04f, 0), 0.12f)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.Out);
-		// _bodyTween.Parallel().TweenProperty(this, "scale", preSquashScale, 0.12f)
+		// _bodyTween.Parallel().TweenProperty(SlotMachine, "scale", preSquashScale, 0.12f)
 		// 	.SetTrans(Tween.TransitionType.Quad)
 		// 	.SetEase(Tween.EaseType.Out);
 
 		// bursts upward, stretches vertically, tilts back
-		_bodyTween.TweenProperty(this, "position", basePos + jumpOffset, 0.18f)
+		_bodyTween.TweenProperty(SlotMachine, "position", basePos + jumpOffset, 0.18f)
 			.SetTrans(Tween.TransitionType.Cubic)
 			.SetEase(Tween.EaseType.Out);
-		// _bodyTween.Parallel().TweenProperty(this, "scale", airStretchScale, 0.18f)
+		// _bodyTween.Parallel().TweenProperty(SlotMachine, "scale", airStretchScale, 0.18f)
 		// 	.SetTrans(Tween.TransitionType.Quad)
 		// 	.SetEase(Tween.EaseType.Out);
-		_bodyTween.Parallel().TweenProperty(this, "rotation", baseRot + tiltOffset, 0.18f)
+		_bodyTween.Parallel().TweenProperty(SlotMachine, "rotation", baseRot + tiltOffset, 0.18f)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.Out);
 
 		// gravity pulls it down fast; EaseType.In gives accelerating velocity feel
-		_bodyTween.TweenProperty(this, "position", basePos, 0.10f)
+		_bodyTween.TweenProperty(SlotMachine, "position", basePos, 0.10f)
 			.SetTrans(Tween.TransitionType.Quad)
 			.SetEase(Tween.EaseType.In);
-		_bodyTween.Parallel().TweenProperty(this, "rotation", baseRot, 0.5f)
+		_bodyTween.Parallel().TweenProperty(SlotMachine, "rotation", baseRot, 0.5f)
 			.SetTrans(Tween.TransitionType.Back)
 			.SetEase(Tween.EaseType.In);
 
 		// flattens out wide upon contact
-		// _bodyTween.TweenProperty(this, "scale", landSquashScale, 0.06f)
+		// _bodyTween.TweenProperty(SlotMachine, "scale", landSquashScale, 0.06f)
 		// 	.SetTrans(Tween.TransitionType.Quad)
 		// 	.SetEase(Tween.EaseType.Out);
 
 		// // recoils back to rest; boing
-		// _bodyTween.TweenProperty(this, "scale", baseScale, 0.22f)
+		// _bodyTween.TweenProperty(SlotMachine, "scale", baseScale, 0.22f)
 		// 	.SetTrans(Tween.TransitionType.Elastic)
 		// 	.SetEase(Tween.EaseType.Out);
 
@@ -144,7 +133,7 @@ public partial class SlotMachine : Node3D
 		await ToSignal(_bodyTween, Tween.SignalName.Finished);
 	}
 
-	private async Task RollReels()
+	private async Task RollReels(int[] results)
 	{
     	// collect all valid SlotReels first
 		List<SlotReel> activeReels = new List<SlotReel>();
@@ -160,10 +149,6 @@ public partial class SlotMachine : Node3D
 			}
         }
 
-		// precalculate reults
-		int[] finalResults = CalculateReelFaces(activeReels.Count);
-		GD.Print(string.Join(", ", finalResults));
-
 		// start all reels spinning at the same time
 		foreach (SlotReel reel in activeReels)
 		{
@@ -177,22 +162,10 @@ public partial class SlotMachine : Node3D
 		int j = 0;
 		foreach (SlotReel reel in activeReels)
 		{
-			reel.StopSpinOnFace(finalResults[j]);
+			reel.StopSpinOnFace(results[j]);
 			j++;
 
 			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout); // 0.5 seconds before stopping the next reel
 		}
-	}
-
-	private int[] CalculateReelFaces(int numberOfReels)
-	{
-		int[] reelIndices = new int[numberOfReels];
-
-		for (int i = 0; i < numberOfReels; i++)
-		{
-			reelIndices[i] = random.Next(1, 8);
-		}
-
-		return reelIndices;
 	}
 }
