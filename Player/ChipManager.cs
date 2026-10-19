@@ -17,7 +17,7 @@ public partial class ChipManager : Node
 			_visualBalance = value;
 			
 			if (BalanceDisplay == null) return;
-			BalanceDisplay.Text = Mathf.RoundToInt(_visualBalance).ToString() + " chips";
+			BalanceDisplay.Text = "Chips : " + Mathf.RoundToInt(_visualBalance).ToString();
 		}
 	}
 	private Tween _activeTween;
@@ -42,7 +42,7 @@ public partial class ChipManager : Node
 
 		if (BalanceDisplay != null)
 		{
-			BalanceDisplay.Text = Balance.ToString() + " chips";
+			BalanceDisplay.Text = "Chips : " + Balance.ToString();
 		}
 
 		BalanceChanged += LerpBalanceDisplay;
@@ -71,7 +71,10 @@ public partial class ChipManager : Node
 
 	public bool SpendChips(int amount)
 	{
-		if (!HasEnoughChips(amount)) return false;
+		if (!HasEnoughChips(amount)){
+			GD.Print("Not enough chips");
+			return false;
+		}
 
 		Balance -= amount;
 		BalanceChanged?.Invoke(Balance);

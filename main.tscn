@@ -68,38 +68,62 @@ StartingPosition = NodePath("../StaticPlayerPositions/SlotMachine")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
-BalanceDisplay = NodePath("../PanelContainer/MarginContainer/BalanceDisplay")
+BalanceDisplay = NodePath("../HUD/PanelContainer/VBoxContainer/BalanceDisplay")
 
-[node name="PanelContainer" type="PanelContainer" parent="Player"]
+[node name="HUD" type="CanvasLayer" parent="Player"]
+
+[node name="Controls" type="PanelContainer" parent="Player/HUD"]
 anchors_preset = -1
-anchor_left = 0.75
-anchor_top = 0.70987654
+anchor_left = 0.8055556
+anchor_top = 0.7021605
 anchor_right = 0.9887153
 anchor_bottom = 0.9845679
 metadata/_edit_use_anchors_ = true
 
-[node name="MarginContainer" type="MarginContainer" parent="Player/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="Player/HUD/Controls"]
 layout_mode = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = -25
+theme_override_constants/margin_bottom = 4
 
-[node name="Label" type="Label" parent="Player/PanelContainer/MarginContainer"]
+[node name="Label" type="Label" parent="Player/HUD/Controls/MarginContainer"]
 layout_mode = 2
 text = "Q - Toggle render room
 T - Remove chips
 G - Give chips
-Spacebar - Hide"
+Spacebar - Hide
+A/D - Decrease/Increase bet"
 label_settings = SubResource("LabelSettings_kek77")
 
-[node name="BalanceDisplay" type="Label" parent="Player/PanelContainer/MarginContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Player/HUD"]
+anchors_preset = -1
+anchor_left = 0.390625
+anchor_top = 0.89969134
+anchor_right = 0.609375
+anchor_bottom = 0.9953704
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Player/HUD/PanelContainer"]
+layout_mode = 2
+
+[node name="BalanceDisplay" type="Label" parent="Player/HUD/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "n/a Chips"
+text = "Chips : 0"
 label_settings = SubResource("LabelSettings_4c57u")
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="CurrentBet" type="Label" parent="Player/HUD/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Current bet : 0"
+label_settings = SubResource("LabelSettings_4c57u")
+horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="environment" type="Node" parent="." node_paths=PackedStringArray("renderedroom", "unrenderedroom")]
@@ -110,8 +134,10 @@ unrenderedroom = NodePath("UnrenderedRoom2")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_h2yge")
 
-[node name="Slot_Machine" parent="environment" instance=ExtResource("9_kek77")]
+[node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "BetDisplay") instance=ExtResource("9_kek77")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, -1.041632, -4.395935)
+Player = NodePath("../../Player")
+BetDisplay = NodePath("../../Player/HUD/PanelContainer/VBoxContainer/CurrentBet")
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.379924, 0, -0.5762461)
