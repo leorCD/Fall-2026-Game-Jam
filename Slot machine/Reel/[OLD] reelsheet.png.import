@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0ycgetm2i436"
-path.s3tc="res://.godot/imported/1.png-3ac6df771e79308a4c42214bf4c15ca0.s3tc.ctex"
+uid="uid://c7fdsdj1upukl"
+path.s3tc="res://.godot/imported/[OLD] reelsheet.png-94588e9b5df0c3aec07696324bd518e9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Slot machine/Reel/faces/1.png"
-dest_files=["res://.godot/imported/1.png-3ac6df771e79308a4c42214bf4c15ca0.s3tc.ctex"]
+source_file="res://Slot machine/Reel/[OLD] reelsheet.png"
+dest_files=["res://.godot/imported/[OLD] reelsheet.png-94588e9b5df0c3aec07696324bd518e9.s3tc.ctex"]
 
 [params]
 

@@ -150,9 +150,11 @@ public partial class SlotMachineAnimator : Node
         }
 
 		// start all reels spinning at the same time
+		int currentFace = 0;
 		foreach (SlotReel reel in activeReels)
 		{
-			reel.Spin();
+			reel.Spin(results[currentFace]);
+			currentFace++;
 		}
 
 		// let all reels spin together for a base duration before stopping starts

@@ -1,8 +1,10 @@
-[gd_scene load_steps=21 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=24 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
+[ext_resource type="Shader" uid="uid://72xejjiimmrh" path="res://common/vignette/vignette.gdshader" id="3_272bh"]
 [ext_resource type="Script" uid="uid://b52uyf6vybtxw" path="res://common/toggleenvironment.cs" id="4_5vw27"]
+[ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
 [ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
 [ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
@@ -20,6 +22,12 @@ font_names = PackedStringArray("Sans-Serif")
 [sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
 font = SubResource("SystemFont_kek77")
 font_size = 24
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
+shader = ExtResource("3_272bh")
+shader_parameter/intensity = 0.0
+shader_parameter/softness = 0.65
+shader_parameter/vignette_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -126,6 +134,20 @@ label_settings = SubResource("LabelSettings_4c57u")
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="Vignette" type="CanvasLayer" parent="Player"]
+layer = 2
+
+[node name="ColorRect" type="ColorRect" parent="Player/Vignette"]
+material = SubResource("ShaderMaterial_5vw27")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_kek77")
+metadata/_edit_use_anchors_ = true
+
 [node name="environment" type="Node" parent="." node_paths=PackedStringArray("renderedroom", "unrenderedroom")]
 script = ExtResource("4_5vw27")
 renderedroom = NodePath("RenderedRoom")
@@ -134,10 +156,12 @@ unrenderedroom = NodePath("UnrenderedRoom2")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_h2yge")
 
-[node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "BetDisplay") instance=ExtResource("9_kek77")]
+[node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "BetDisplay", "Vignette") instance=ExtResource("9_kek77")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, -1.041632, -4.395935)
 Player = NodePath("../../Player")
 BetDisplay = NodePath("../../Player/HUD/PanelContainer/VBoxContainer/CurrentBet")
+Vignette = NodePath("../../Player/Vignette/ColorRect")
+ShowChances = true
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.379924, 0, -0.5762461)
