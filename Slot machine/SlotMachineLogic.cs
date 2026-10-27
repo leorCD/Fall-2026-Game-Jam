@@ -23,7 +23,6 @@ public partial class SlotMachineLogic : Node3D
 			BetDisplay.Text = "Current bet : " + _currentBet.ToString();
 		}
 	}
-
 	private Dictionary<int, int> _faceWeights = new()
 	{
 		{ 1, 21 }, // slot number then weight
@@ -35,7 +34,10 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 15 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 100; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky
+	private int _matchWeightBonus = 100; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	[Export] public Label3D SlotMachineHeadDisplay;
+
+
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
 	[Export] public float TimeUntilVignetteStarts = 10f; // 10s grace period until you start getting pressured to gamble
@@ -43,6 +45,7 @@ public partial class SlotMachineLogic : Node3D
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
+
 
 	[ExportCategory("DEBUG")]
 	[Export] public bool ShowChances = false;
@@ -132,7 +135,15 @@ public partial class SlotMachineLogic : Node3D
 
 		await AnimationComponent?.Start(results);
 		
-    	RewardComponent?.Reward(results, bet); // payout
+    	var reward = RewardComponent?.Reward(results, bet); // payout
+		if (reward is SpinOutcome outcome)
+				if (outcome.IsJackpot) SlotMachineHeadDisplay.Text = "JACKPOT";
+				else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
+				else SlotMachineHeadDisplay.Text = "LOSE";
+			
+			GetTree().CreateTimer(2.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
+			
+
 		_isActive = false;
 	}
 

@@ -3,10 +3,10 @@ using System;
 
 public readonly struct SpinOutcome
 {
-    public double Payout { get; }
+    public double Payout {get;}
     public bool IsWin => Payout > 0;
-    public string Description { get; }   // for UI / debug, e.g. "Triple 7" or "Pair"
-    public bool IsJackpot { get; }
+    public string Description {get;}   // for UI / debug, e.g. "Triple 7" or "Pair"
+    public bool IsJackpot {get;}
 
     public SpinOutcome(double payout, string description, bool isJackpot = false)
     {
@@ -23,11 +23,11 @@ public partial class SlotMachineRewarder : Node
     // multiplier of the bet per face for a triple. Keys match your face numbers.
     [Export] public Godot.Collections.Dictionary<int, double> TripleMultipliers = new()
     {
-        { 1, 3 }, // ie. a full row of Face1 gives you 3x the input
-		{ 2, 5 },
-		{ 3, 9 },
-		{ 4, 12 },
-        { 5, 15 },
+        { 1, 1.5 }, // ie. a full row of Face1 gives you 3x the input
+		{ 2, 3 },
+		{ 3, 6 },
+		{ 4, 10 },
+        { 5, 14 },
 		{ 6, 18 },
 		{ 7, 21 },
 		{ 8, 25 },

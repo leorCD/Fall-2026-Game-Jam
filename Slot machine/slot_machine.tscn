@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=37 format=4 uid="uid://baow7d1r5q6f2"]
 
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
@@ -414,11 +414,23 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_tmaip")
 
-[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_umstu"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_yaq0p"]
+material = SubResource("StandardMaterial3D_umstu")
+size = Vector2(1.57, 4.555)
+
+[sub_resource type="SystemFont" id="SystemFont_yxx8c"]
+font_names = PackedStringArray("BIZ UDGothic")
+
+[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent", "SlotMachineHeadDisplay")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
 script = ExtResource("2_8lydx")
 AnimationComponent = NodePath("AnimationComponent")
 RewardComponent = NodePath("RewardComponent")
+SlotMachineHeadDisplay = NodePath("DisplayBackboard/Display")
 
 [node name="RewardComponent" type="Node" parent="."]
 script = ExtResource("2_yaq0p")
@@ -489,3 +501,13 @@ skeleton = NodePath("")
 transform = Transform3D(0.24531014, 0, 0, 0, 0.24531014, 0, 0, 0, 0.24531014, 0.45140982, 2.7368197, -0.03406048)
 mesh = SubResource("ArrayMesh_owgwk")
 skeleton = NodePath("")
+
+[node name="DisplayBackboard" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.3711385e-08, 1, 4.371139e-08, -1, -4.371139e-08, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 2.1981318, 9.739165, -9.608339e-08)
+mesh = SubResource("PlaneMesh_yaq0p")
+
+[node name="Display" type="Label3D" parent="DisplayBackboard"]
+transform = Transform3D(-4.371139e-08, -1.2709674, -4.371139e-08, -1.9106855e-15, -5.555575e-08, 1, -1, 5.5555745e-08, 1.9106853e-15, -0.027627945, 0.002481699, 1.2076384e-09)
+text = "* * * * *"
+font = SubResource("SystemFont_yxx8c")
+font_size = 115
