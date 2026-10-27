@@ -103,13 +103,34 @@ public partial class SlotMachineLogic : Node3D
 
 
 
+	private bool _shiftHeld = false;
+    public override void _Input(InputEvent @event)
+    {
+		if (Input.IsActionJustPressed("Shift"))
+			_shiftHeld = true;
+		if (Input.IsActionJustReleased("Shift"))
+			_shiftHeld = false;
+    }
+
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (@event.IsActionPressed("MoveLeft", true)){
-			if (CurrentBet > 0) CurrentBet -= 1;
+			if (CurrentBet > 0)
+				if (_shiftHeld)
+					CurrentBet -= 5;
+				else
+					CurrentBet -= 1;
+			
+			if (CurrentBet <= 0) CurrentBet = Player.Chips.Balance; // wrap around
 		}
 		if (@event.IsActionPressed("MoveRight", true)){
-			if (CurrentBet < Player.Chips.Balance) CurrentBet += 1;
+			if (CurrentBet < Player.Chips.Balance)
+				if (_shiftHeld)
+					CurrentBet += 5;
+				else
+					CurrentBet += 1;
+			
+			if (CurrentBet >= Player.Chips.Balance) CurrentBet = 0;
 		}
 
 		if (@event.IsActionPressed("StartGambling"))
@@ -137,9 +158,9 @@ public partial class SlotMachineLogic : Node3D
 		
     	var reward = RewardComponent?.Reward(results, bet); // payout
 		if (reward is SpinOutcome outcome)
-				if (outcome.IsJackpot) SlotMachineHeadDisplay.Text = "JACKPOT";
-				else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
-				else SlotMachineHeadDisplay.Text = "LOSE";
+			if (outcome.IsJackpot) SlotMachineHeadDisplay.Text = "JACKPOT";
+			else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
+			else SlotMachineHeadDisplay.Text = "LOSE";
 			
 			GetTree().CreateTimer(2.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
 			
