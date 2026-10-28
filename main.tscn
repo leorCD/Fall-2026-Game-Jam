@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=25 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
@@ -7,14 +7,22 @@
 [ext_resource type="Texture2D" uid="uid://df52h5re2dqnt" path="res://these do not stay/Jesus_Static_2.png" id="5_kek77"]
 [ext_resource type="Script" uid="uid://bgvnv0hj6ne2q" path="res://these do not stay/Sprite3d.cs" id="6_4c57u"]
 [ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
+[ext_resource type="Texture2D" uid="uid://d3pu6n82v5eye" path="res://Textures/11wall.jpg" id="6_efxa6"]
 [ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
 shader_parameter/intensity = 0.0
-shader_parameter/softness = 0.22
-shader_parameter/vignette_color = Color(0, 0, 0, 1)
+shader_parameter/pulse_speed = 3.5
+shader_parameter/pulse_amount = 0.3200000152
+shader_parameter/vein_color = Color(0.55, 0.03, 0.03, 1)
+shader_parameter/vignette_tint = Color(0.45573843, 0.021035153, 0.021009771, 1)
+shader_parameter/vein_scale = 5.0
+shader_parameter/vein_sharpness = 0.00999999977648
+shader_parameter/vignette_radius = 0.76500003307762
+shader_parameter/vignette_softness = 0.52100002311756
+shader_parameter/chromatic_aberration = 0.02400000114
 
 [sub_resource type="SystemFont" id="SystemFont_272bh"]
 font_names = PackedStringArray("MS PGothic")
@@ -35,17 +43,7 @@ font_names = PackedStringArray("MS PGothic")
 [sub_resource type="LabelSettings" id="LabelSettings_dg77c"]
 font = SubResource("SystemFont_efxa6")
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_0xm2m"]
-sky_material = SubResource("ProceduralSkyMaterial_ig7tw")
-
-[sub_resource type="Environment" id="Environment_h2yge"]
-background_mode = 2
-sky = SubResource("Sky_0xm2m")
-tonemap_mode = 2
+[sub_resource type="Environment" id="Environment_4c57u"]
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
@@ -56,7 +54,8 @@ transparency = 1
 albedo_color = Color(0.024093216, 0.0074719395, 0.0014719813, 0.80784315)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
-albedo_texture = ExtResource("6_272bh")
+albedo_texture = ExtResource("6_efxa6")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4c57u"]
@@ -73,9 +72,10 @@ albedo_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "StartingPosition", "GamblingPosition", "HidingPosition") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "StartingPosition", "GamblingPosition", "HidingPosition") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00041270256, 0.009326696, -0.0010156631)
 Chips = NodePath("ChipManager")
+SlotMachine = NodePath("../environment/Slot_Machine")
 StartingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
@@ -160,17 +160,11 @@ metadata/_edit_use_anchors_ = true
 
 [node name="environment" type="Node" parent="."]
 
-[node name="Sprite3D" type="Sprite3D" parent="environment"]
-transform = Transform3D(0.99, 0, 0, 0, 0.99, 0, 0, 0, 0.99, 5.216053, 0.71383584, -16.671253)
-billboard = 2
-texture = ExtResource("5_kek77")
-script = ExtResource("6_4c57u")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
-environment = SubResource("Environment_h2yge")
+environment = SubResource("Environment_4c57u")
 
 [node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "BetDisplay", "Vignette") instance=ExtResource("9_kek77")]
-transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, -1.041632, -2.718357)
+transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 4.777603e-09, -1.041632, -2.8276558)
 Player = NodePath("../../Player")
 BetDisplay = NodePath("../../Player/HUD/PanelContainer/VBoxContainer/CurrentBet")
 Vignette = NodePath("../../Player/Vignette/ColorRect")
@@ -274,16 +268,29 @@ omni_range = 42.774
 omni_attenuation = -1.299
 
 [node name="Light" type="OmniLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.029331863, 1.0179895, -0.95331633)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0047357, 0.746974, -1.699454)
 light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
 light_energy = 1.143
-omni_range = 4.558
+omni_range = 3.128
+omni_attenuation = 0.065
+
+[node name="Light3" type="OmniLight3D" parent="environment/RenderedRoom"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.99000126, 0.746974, -1.699454)
+light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
+light_energy = 1.143
+omni_range = 3.128
 omni_attenuation = 0.065
 
 [node name="Light2" type="SpotLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(0.25881892, 0.3400423, -0.9040929, 6.155222e-08, 0.9359858, 0.3520377, 0.9659259, -0.091114074, 0.24225082, 1.015738, 1.747215, -1.8770905)
+transform = Transform3D(0.25881892, 0.3400423, -0.9040929, 6.155222e-08, 0.9359858, 0.3520377, 0.9659259, -0.091114074, 0.24225082, 1.015738, 1.747215, -1.3488026)
 light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
 light_energy = 1.143
 spot_range = 16.459
-spot_attenuation = 0.4
+spot_attenuation = -0.03
 spot_angle = 53.75
+
+[node name="jesus" type="Sprite3D" parent="environment"]
+transform = Transform3D(0.99, 0, 0, 0, 0.99, 0, 0, 0, 0.99, 5.216053, 0.71383584, -16.671253)
+billboard = 2
+texture = ExtResource("5_kek77")
+script = ExtResource("6_4c57u")

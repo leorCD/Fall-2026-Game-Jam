@@ -9,6 +9,7 @@ public partial class SlotMachineLogic : Node3D
 	[Export] public SlotMachineRewarder RewardComponent {get; private set;}
 	private Random _random = new Random();
 	private bool _isActive = false;
+	public event Action SpinFinished;
 
 	[Export] public Label BetDisplay;
 	private int _currentBet = 0;
@@ -40,11 +41,12 @@ public partial class SlotMachineLogic : Node3D
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 10f; // 10s grace period until you start getting pressured to gamble
-	[Export] public float TimeMaxLimit = 20f; // 20s until the vignette peaks
+	[Export] public float TimeUntilVignetteStarts = 30f; // 10s grace period until you start getting pressured to gamble
+	[Export] public float TimeMaxLimit = 40f; // 50-30 = 20s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
+	private bool _pressureDebounce = false;
 
 
 	[ExportCategory("DEBUG")]
@@ -88,15 +90,18 @@ public partial class SlotMachineLogic : Node3D
 			_idleTime += (float)delta;
 		}
 
+		// vignette logic
 		float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit - TimeUntilVignetteStarts), 0f, 1f);
 		Vignette?.SetTarget(t);
 
-		if (t >= 1f && !_maxedFired)
+		if (t >= 1f && !_maxedFired) // max vignette intensity reached
 		{
 			_maxedFired = true;
 			IdlePressureMaxed?.Invoke();
+			ForceSpin(); // forced gamble always gambles all your money
 		}
     }
+
 
 
 
@@ -153,7 +158,6 @@ public partial class SlotMachineLogic : Node3D
 		CurrentBet = 0;
 
 		int[] results = CalculateReelFaces(3);
-
 		await AnimationComponent?.Start(results);
 		
     	var reward = RewardComponent?.Reward(results, bet); // payout
@@ -166,10 +170,20 @@ public partial class SlotMachineLogic : Node3D
 			
 
 		_isActive = false;
+		SpinFinished?.Invoke();
 	}
 
 
+	public void ForceSpin()
+	{
+		if (_isActive || Player == null) return;
 
+		int bet = Player.Chips.Balance;
+		if (bet <= 0) return;
+
+		CurrentBet = bet;
+		Start();
+	}
 
 
 

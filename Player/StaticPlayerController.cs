@@ -4,6 +4,7 @@ public partial class StaticPlayerController : CharacterBody3D
 {
 	// ChipManager reference
 	[Export] public ChipManager Chips {get; private set;}
+	[Export] public SlotMachineLogic SlotMachine {get; private set;}
 
 	[Export] public Marker3D StartingPosition { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
@@ -22,6 +23,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	private Vector3 _targetRotation = Vector3.Zero;
 	private bool _hiding = false;
 	private Tween _tween;
+	private bool _forcedGamble = false;
 
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
@@ -34,15 +36,22 @@ public partial class StaticPlayerController : CharacterBody3D
 		{
 			Position = StartingPosition.GlobalPosition;
 		}
+
+		SlotMachine.IdlePressureMaxed += () =>
+		{
+			_forcedGamble = true;
+			MoveTo(GamblingPosition.GlobalTransform);
+		};
+		SlotMachine.SpinFinished += () =>
+		{
+			_forcedGamble = false;
+		};
 	}
 
 	// Runs every frame. delta is the amount of time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if (_camera == null)
-		{
-			return;
-		}
+		if (_camera == null) return;
 
 		Vector2 mousePosition = GetViewport().GetMousePosition();
 		Vector2 screenSize = GetViewport().GetVisibleRect().Size;
@@ -78,22 +87,22 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (!@event.IsActionPressed("Spacebar"))
-		{
-			return;
-		}
+		if (!@event.IsActionPressed("Spacebar")) return;
+		if (_forcedGamble) return;
 
 		_hiding = !_hiding;
 
-		if (GamblingPosition == null || HidingPosition == null)
-		{
-			return;
-		}
+		if (GamblingPosition == null || HidingPosition == null) return;
 
 		Transform3D targetTransform = !_hiding
 			? GamblingPosition.GlobalTransform
 			: HidingPosition.GlobalTransform;
+		
+		MoveTo(targetTransform);
+	}
 
+	public void MoveTo(Transform3D target)
+	{
 		if (_tween != null && _tween.IsRunning())
 		{
 			_tween.Kill();
@@ -102,7 +111,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		_tween = CreateTween();
 
 		_tween
-			.TweenProperty(this, "global_transform", targetTransform, 0.5f)
+			.TweenProperty(this, "global_transform", target, 0.5f)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
 	}

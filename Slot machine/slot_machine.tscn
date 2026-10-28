@@ -424,6 +424,7 @@ size = Vector2(1.57, 4.555)
 
 [sub_resource type="SystemFont" id="SystemFont_yxx8c"]
 font_names = PackedStringArray("BIZ UDGothic")
+subpixel_positioning = 0
 
 [node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent", "SlotMachineHeadDisplay")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
