@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=27 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
@@ -43,6 +43,12 @@ font_names = PackedStringArray("MS PGothic")
 [sub_resource type="LabelSettings" id="LabelSettings_dg77c"]
 font = SubResource("SystemFont_efxa6")
 
+[sub_resource type="SystemFont" id="SystemFont_4c57u"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_efxa6"]
+font = SubResource("SystemFont_4c57u")
+font_size = 26
+
 [sub_resource type="Environment" id="Environment_4c57u"]
 glow_enabled = true
 
@@ -82,7 +88,7 @@ HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
-BalanceDisplay = NodePath("../HUD/PanelContainer/VBoxContainer/BalanceDisplay")
+BalanceDisplay = NodePath("../HUD/Chips/VBoxContainer/BalanceDisplay")
 
 [node name="Vignette" type="CanvasLayer" parent="Player"]
 
@@ -96,6 +102,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("4_kek77")
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="HUD" type="CanvasLayer" parent="Player"]
 layer = 5
@@ -128,7 +135,7 @@ A/D - Decrease/Increase bet
 (hold) Shift - Increase betting speed"
 label_settings = SubResource("LabelSettings_5vw27")
 
-[node name="PanelContainer" type="PanelContainer" parent="Player/HUD"]
+[node name="Chips" type="PanelContainer" parent="Player/HUD"]
 anchors_preset = -1
 anchor_left = 0.390625
 anchor_top = 0.8888889
@@ -138,10 +145,10 @@ grow_horizontal = 2
 grow_vertical = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Player/HUD/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Player/HUD/Chips"]
 layout_mode = 2
 
-[node name="BalanceDisplay" type="Label" parent="Player/HUD/PanelContainer/VBoxContainer"]
+[node name="BalanceDisplay" type="Label" parent="Player/HUD/Chips/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Chips : 0"
@@ -150,11 +157,51 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="CurrentBet" type="Label" parent="Player/HUD/PanelContainer/VBoxContainer"]
+[node name="CurrentBet" type="Label" parent="Player/HUD/Chips/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 text = "Current bet : 0"
 label_settings = SubResource("LabelSettings_dg77c")
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="DeadScreen" type="CanvasLayer" parent="Player"]
+visible = false
+
+[node name="back" type="ColorRect" parent="Player/DeadScreen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.03137255, 0, 0.019607844, 0.8)
+metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
+
+[node name="Button" type="Button" parent="Player/DeadScreen"]
+anchors_preset = -1
+anchor_left = 0.42881945
+anchor_top = 0.56790125
+anchor_right = 0.5711806
+anchor_bottom = 0.6296296
+grow_horizontal = 2
+grow_vertical = 0
+text = "try again"
+metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Player/DeadScreen"]
+anchors_preset = -1
+anchor_left = 0.23784722
+anchor_top = 0.4722222
+anchor_right = 0.7621528
+anchor_bottom = 0.5277778
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "you have no more money"
+label_settings = SubResource("LabelSettings_efxa6")
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
@@ -166,9 +213,8 @@ environment = SubResource("Environment_4c57u")
 [node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "BetDisplay", "Vignette") instance=ExtResource("9_kek77")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 4.777603e-09, -1.041632, -2.8276558)
 Player = NodePath("../../Player")
-BetDisplay = NodePath("../../Player/HUD/PanelContainer/VBoxContainer/CurrentBet")
+BetDisplay = NodePath("../../Player/HUD/Chips/VBoxContainer/CurrentBet")
 Vignette = NodePath("../../Player/Vignette/ColorRect")
-ShowChances = true
 
 [node name="SlotMachine" type="Marker3D" parent="environment/Slot_Machine"]
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
@@ -269,28 +315,43 @@ omni_attenuation = -1.299
 
 [node name="Light" type="OmniLight3D" parent="environment/RenderedRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0047357, 0.746974, -1.699454)
-light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
+light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
 light_energy = 1.143
+light_specular = 0.145
 omni_range = 3.128
 omni_attenuation = 0.065
 
 [node name="Light3" type="OmniLight3D" parent="environment/RenderedRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.99000126, 0.746974, -1.699454)
-light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
+light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
 light_energy = 1.143
+light_specular = 0.145
 omni_range = 3.128
 omni_attenuation = 0.065
 
 [node name="Light2" type="SpotLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(0.25881892, 0.3400423, -0.9040929, 6.155222e-08, 0.9359858, 0.3520377, 0.9659259, -0.091114074, 0.24225082, 1.015738, 1.747215, -1.3488026)
-light_color = Color(0.7433664, 0.77947176, 0.94159675, 1)
+transform = Transform3D(0.25881892, 0.3400423, -0.9040929, 6.155222e-08, 0.9359858, 0.3520377, 0.9659259, -0.091114074, 0.24225082, 0.57055044, 1.747215, -1.1939842)
+light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
 light_energy = 1.143
+light_specular = 0.145
+shadow_enabled = true
 spot_range = 16.459
 spot_attenuation = -0.03
-spot_angle = 53.75
+spot_angle = 42.1
 
 [node name="jesus" type="Sprite3D" parent="environment"]
 transform = Transform3D(0.99, 0, 0, 0, 0.99, 0, 0, 0, 0.99, 5.216053, 0.71383584, -16.671253)
 billboard = 2
 texture = ExtResource("5_kek77")
 script = ExtResource("6_4c57u")
+
+[node name="enemies" type="Node" parent="."]
+
+[node name="SpawnMarker" type="Marker3D" parent="enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, -8)
+
+[node name="OffscreenMarker" type="Marker3D" parent="enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, 5.2832813)
+
+[node name="DoorwayMarker" type="Marker3D" parent="enemies"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, -1.0681641, -1.6901159)

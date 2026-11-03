@@ -26,13 +26,13 @@ public partial class SlotMachineLogic : Node3D
 	}
 	private Dictionary<int, int> _faceWeights = new()
 	{
-		{ 1, 21 }, // slot number then weight
+		{ 1, 22 }, // slot number then weight
 		{ 2, 20 },
 		{ 3, 18 },
 		{ 4, 17 },
-		{ 5, 17 },
-		{ 6, 16 },
-		{ 7, 15 },
+		{ 5, 16 },
+		{ 6, 15 },
+		{ 7, 14 },
 		{ 8, 13 },
 	};
 	private int _matchWeightBonus = 100; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
@@ -166,7 +166,7 @@ public partial class SlotMachineLogic : Node3D
 			else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
 			else SlotMachineHeadDisplay.Text = "LOSE";
 			
-			GetTree().CreateTimer(2.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
+			GetTree().CreateTimer(3.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
 			
 
 		_isActive = false;

@@ -48,7 +48,7 @@ public partial class ChipManager : Node
 		BalanceChanged += LerpBalanceDisplay;
 	}
 
-	private void LerpBalanceDisplay(int newBalance)
+	private void LerpBalanceDisplay(int balance)
 	{
 		if (BalanceDisplay == null) return;
 
@@ -56,7 +56,7 @@ public partial class ChipManager : Node
 		_activeTween = CreateTween();
 
 		// tweening a dummy value to display on screen without affecting balance
-		_activeTween.TweenProperty(this, nameof(VisualBalance), (float)newBalance, 0.8f)
+		_activeTween.TweenProperty(this, nameof(VisualBalance), (float)balance, 0.8f)
 			.SetTrans(Tween.TransitionType.Cubic)
 			.SetEase(Tween.EaseType.Out);
 	}

@@ -1,14 +1,18 @@
+using System.Dynamic;
 using Godot;
 
 public partial class StaticPlayerController : CharacterBody3D
 {
-	// ChipManager reference
+	[Export] public bool InputEnabled = true;
+	[ExportCategory("References")]
 	[Export] public ChipManager Chips {get; private set;}
 	[Export] public SlotMachineLogic SlotMachine {get; private set;}
 
 	[Export] public Marker3D StartingPosition { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
+
+	[ExportCategory("Camera")]
 
 	// Maximum horizontal camera rotation
 	[Export] public float max_yaw_deg = 45.0f;
@@ -23,12 +27,21 @@ public partial class StaticPlayerController : CharacterBody3D
 	private Vector3 _targetRotation = Vector3.Zero;
 	private bool _hiding = false;
 	private Tween _tween;
-	private bool _forcedGamble = false;
+
+
+
+
+
+
 
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
 	{
 		Chips = GetNodeOrNull<ChipManager>("ChipManager");
+		if (Chips != null)
+		{
+			Chips.BalanceChanged += CheckIfZeroed;
+		}
 
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
 
@@ -37,14 +50,15 @@ public partial class StaticPlayerController : CharacterBody3D
 			Position = StartingPosition.GlobalPosition;
 		}
 
-		SlotMachine.IdlePressureMaxed += () =>
+		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
-			_forcedGamble = true;
+			InputEnabled = false;
+			_hiding = false;
 			MoveTo(GamblingPosition.GlobalTransform);
 		};
-		SlotMachine.SpinFinished += () =>
+		SlotMachine.SpinFinished += () => // on spin finished, return player input
 		{
-			_forcedGamble = false;
+			InputEnabled = true;
 		};
 	}
 
@@ -53,8 +67,8 @@ public partial class StaticPlayerController : CharacterBody3D
 	{
 		if (_camera == null) return;
 
-		Vector2 mousePosition = GetViewport().GetMousePosition();
 		Vector2 screenSize = GetViewport().GetVisibleRect().Size;
+		Vector2 mousePosition = InputEnabled ? GetViewport().GetMousePosition() : new Vector2(screenSize.X / 2, screenSize.Y / 2);
 
 		float normX = (mousePosition.X / screenSize.X - 0.5f) * 2.0f;
 		float normY = (mousePosition.Y / screenSize.Y - 0.5f) * 2.0f;
@@ -87,12 +101,11 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
+		if (!InputEnabled) return;
 		if (!@event.IsActionPressed("Spacebar")) return;
-		if (_forcedGamble) return;
+		if (GamblingPosition == null || HidingPosition == null) return;
 
 		_hiding = !_hiding;
-
-		if (GamblingPosition == null || HidingPosition == null) return;
 
 		Transform3D targetTransform = !_hiding
 			? GamblingPosition.GlobalTransform
@@ -104,15 +117,42 @@ public partial class StaticPlayerController : CharacterBody3D
 	public void MoveTo(Transform3D target)
 	{
 		if (_tween != null && _tween.IsRunning())
-		{
 			_tween.Kill();
-		}
 
 		_tween = CreateTween();
 
-		_tween
-			.TweenProperty(this, "global_transform", target, 0.5f)
+		_tween.TweenProperty(this, "global_transform", target, 0.5f)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
+	}
+
+
+
+
+
+
+	private void CheckIfZeroed(int balance)
+	{
+		GD.Print("Checking");
+		if (balance <= 0)
+		{
+			InputEnabled = false;
+			YouLoseScreen();
+		}
+	}
+
+	// temporary
+	[Export] public CanvasLayer DeadScreen;
+	private void YouLoseScreen()
+	{
+		if (DeadScreen == null) return;
+		Button RestartGame = DeadScreen.GetNode<Button>("Button");
+		if (RestartGame == null) return;
+
+		DeadScreen.Visible = true;
+		RestartGame.Pressed += () =>
+		{
+			GetTree().ReloadCurrentScene();
+		};
 	}
 }
