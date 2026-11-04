@@ -3,7 +3,7 @@ using Godot;
 
 public partial class StaticPlayerController : CharacterBody3D
 {
-	[Export] public bool InputEnabled = true;
+	public bool IsDead = false;
 	public bool IsHiding = false;
 
 
@@ -32,12 +32,19 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	// Controls how smoothly the camera moves.
 	[Export] public float smooth_speed = 8.0f;
+	[Export] public float base_fov = 75f;
 
 	private Camera3D _camera;
 	private Vector3 _targetRotation = Vector3.Zero;
-	private Tween _tween;
+	private Tween _zoomTween;
+	private Tween _moveTween;
 
 
+
+
+
+    public bool IsForcedToGamble = false;
+    public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
 
 
 
@@ -50,6 +57,12 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
 
+
+		if (_camera != null)
+			_camera.Fov = base_fov;
+		else
+			GD.PrintErr("No camera");
+
 		if (StartingPosition != null)
 		{
 			Position = StartingPosition.GlobalPosition;
@@ -58,19 +71,32 @@ public partial class StaticPlayerController : CharacterBody3D
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
 			IsHiding = false;
+			IsForcedToGamble = true;
 
-			InputEnabled = false;
+			_zoomTween?.Kill();
+			_zoomTween = CreateTween();
+			_zoomTween.TweenProperty(_camera, "fov", base_fov-10, 2f)
+				.SetTrans(Tween.TransitionType.Sine)
+				.SetEase(Tween.EaseType.Out);
+
 			MoveTo(GamblingPosition.GlobalTransform);
 		};
 		SlotMachine.SpinFinished += () => // on spin finished, return player input
 		{
-			InputEnabled = true;
+			IsForcedToGamble = false;
 
 			if (Chips != null && Chips.Balance <= 0)
 			{
-				InputEnabled = false;
+				IsDead = true;
 				YouLoseScreen();
+				return;
 			}
+			
+			_zoomTween?.Kill();
+			_zoomTween = CreateTween();
+			_zoomTween.TweenProperty(_camera, "fov", base_fov, 0.65f)
+				.SetTrans(Tween.TransitionType.Sine)
+				.SetEase(Tween.EaseType.Out);
 		};
 	}
 
@@ -78,64 +104,72 @@ public partial class StaticPlayerController : CharacterBody3D
 	public override void _Process(double delta)
 	{
 		if (_camera == null) return;
+		
+		Vector2I screenSize = DisplayServer.WindowGetSize();
+		Vector2 screenCenter = new Vector2(screenSize.X * 0.5f, screenSize.Y * 0.5f);
+		Vector2 mousePosition = !IsDead 
+			? DisplayServer.MouseGetPosition() - (Vector2)DisplayServer.WindowGetPosition()
+			: screenCenter;
+		
+		// 		old : for some reason would not fix itself when the screen size was readjusted
+		// Vector2 screenSize = GetViewport().GetVisibleRect().Size;
+		// Vector2 screenCenter = screenSize * 0.5f;
+		// Vector2 mousePosition = !IsDead ? GetViewport().GetMousePosition() : screenCenter;
 
-		Vector2 screenSize = GetViewport().GetVisibleRect().Size;
-		Vector2 mousePosition = InputEnabled ? GetViewport().GetMousePosition() : new Vector2(screenSize.X / 2, screenSize.Y / 2);
+		if (IsForcedToGamble)
+        {
+			float pullWeight = Mathf.Clamp((float)(MousePullSpeed * delta), 0f, 1f);
+			mousePosition = mousePosition.Lerp(screenCenter, pullWeight);
+
+			Input.WarpMouse(mousePosition);
+        }
 
 		float normX = (mousePosition.X / screenSize.X - 0.5f) * 2.0f;
 		float normY = (mousePosition.Y / screenSize.Y - 0.5f) * 2.0f;
-
 		normX = Mathf.Clamp(normX, -1.0f, 1.0f);
 		normY = Mathf.Clamp(normY, -1.0f, 1.0f);
-
 		float targetYaw = -normX * Mathf.DegToRad(max_yaw_deg);
 		float targetPitch = -normY * Mathf.DegToRad(max_pitch_deg);
 
+
 		_targetRotation = new Vector3(targetPitch, targetYaw, 0.0f);
-
-		float interpolation = (float)(smooth_speed * delta);
-
+		float interpolation = IsForcedToGamble ? 0.85f : (float)(smooth_speed * delta);
+		
 		Vector3 cameraRotation = _camera.Rotation;
-		cameraRotation.X = Mathf.LerpAngle(
-			cameraRotation.X,
-			_targetRotation.X,
-			interpolation
-		);
-		cameraRotation.Y = Mathf.LerpAngle(
-			cameraRotation.Y,
-			_targetRotation.Y,
-			interpolation
-		);
-
+		cameraRotation.X = Mathf.LerpAngle(cameraRotation.X, _targetRotation.X, interpolation);
+		cameraRotation.Y = Mathf.LerpAngle(cameraRotation.Y, _targetRotation.Y, interpolation);
 		_camera.Rotation = cameraRotation;
 	}
 
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (!InputEnabled) return;
+		if (IsForcedToGamble || IsDead) return;
 		if (!@event.IsActionPressed("Spacebar")) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
 
-		IsHiding = !IsHiding;
 
-		Transform3D targetTransform = !IsHiding
+		Transform3D targetTransform = IsHiding
 			? GamblingPosition.GlobalTransform
 			: HidingPosition.GlobalTransform;
 		
 		MoveTo(targetTransform);
+
+		IsHiding = !IsHiding;
 	}
 
-	public void MoveTo(Transform3D target)
+	public async void MoveTo(Transform3D target)
 	{
-		if (_tween != null && _tween.IsRunning())
-			_tween.Kill();
+		if (_moveTween != null && _moveTween.IsRunning())
+			_moveTween.Kill();
 
-		_tween = CreateTween();
+		_moveTween = CreateTween();
 
-		_tween.TweenProperty(this, "global_transform", target, 0.5f)
+		_moveTween.TweenProperty(this, "global_transform", target, 0.5f)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
+		
+		await ToSignal(_moveTween, Tween.SignalName.Finished);
 	}
 
 

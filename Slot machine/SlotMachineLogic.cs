@@ -43,8 +43,8 @@ public partial class SlotMachineLogic : Node3D
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 30f; // 10s grace period until you start getting pressured to gamble
-	[Export] public float TimeMaxLimit = 40f; // 50-30 = 20s until the vignette peaks
+	[Export] public float TimeUntilVignetteStarts = 5f; // 10s grace period until you start getting pressured to gamble
+	[Export] public float TimeMaxLimit = 10f; // 50-30 = 20s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
@@ -70,14 +70,13 @@ public partial class SlotMachineLogic : Node3D
     {
         if (AnimationComponent == null)
 			GD.PrintErr($"[{nameof(SlotMachineLogic)}] Missing animation component, please attach in editor");
+		AnimationComponent.init(this);
 
         if (RewardComponent == null)
 			GD.PrintErr($"[{nameof(SlotMachineLogic)}] Missing reward component, please attach in editor");
+		RewardComponent.init(this);
 		
 		CurrentBet = 0;
-
-		AnimationComponent.init(this);
-		RewardComponent.init(this);
     }
 
     public override void _Process(double delta)
@@ -145,7 +144,7 @@ public partial class SlotMachineLogic : Node3D
 					CurrentBet = Player.Chips.Balance;
    		}
 
-		if (@event.IsActionPressed("StartGambling"))
+		if (Player.IsHiding == false && @event.IsActionPressed("StartGambling"))
 		{
 			if (Player.Chips.HasEnoughChips(1) && CurrentBet > 0) // has atleast 1 chip to bet
 				Start();
@@ -176,7 +175,7 @@ public partial class SlotMachineLogic : Node3D
 			else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
 			else SlotMachineHeadDisplay.Text = "LOSE";
 			
-			GetTree().CreateTimer(3.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
+			GetTree().CreateTimer(5.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
 		}
 			
 

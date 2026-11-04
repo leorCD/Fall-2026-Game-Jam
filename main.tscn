@@ -221,7 +221,7 @@ Vignette = NodePath("../../Player/Vignette/ColorRect")
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 4.8000007)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 2.8738549)
 metadata/_edit_group_ = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="environment/ClosetTemp"]
@@ -283,7 +283,7 @@ size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall4" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, -0.38369703, 5.7)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, -0.38369703, 3.4499836)
 size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
@@ -331,7 +331,7 @@ omni_range = 3.128
 omni_attenuation = 0.065
 
 [node name="Light2" type="SpotLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(0.25881892, 0.3400423, -0.9040929, 6.155222e-08, 0.9359858, 0.3520377, 0.9659259, -0.091114074, 0.24225082, 0.57055044, 1.747215, -1.1939842)
+transform = Transform3D(0.2534212, 0.52310866, -0.8137168, -0.052582428, 0.84738165, 0.5283744, 0.9659259, -0.091114074, 0.24225079, 1.7074134, 2.1751263, -1.1939842)
 light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
 light_energy = 1.143
 light_specular = 0.145
