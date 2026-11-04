@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=29 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
@@ -10,6 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://d3pu6n82v5eye" path="res://Textures/11wall.jpg" id="6_efxa6"]
 [ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
+[ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
+[ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="11_efxa6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -78,11 +80,10 @@ albedo_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "StartingPosition", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
-StartingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
 DeadScreen = NodePath("DeadScreen")
@@ -331,28 +332,41 @@ omni_range = 3.128
 omni_attenuation = 0.065
 
 [node name="Light2" type="SpotLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(0.2534212, 0.52310866, -0.8137168, -0.052582428, 0.84738165, 0.5283744, 0.9659259, -0.091114074, 0.24225079, 1.7074134, 2.1751263, -1.1939842)
+transform = Transform3D(-0.10646717, 0.29521856, -0.94947934, 0.061987888, 0.95502, 0.28999048, 0.9923823, -0.02798175, -0.119978234, 1.0695904, 0.93545544, -2.1322193)
 light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
 light_energy = 1.143
 light_specular = 0.145
 shadow_enabled = true
 spot_range = 16.459
-spot_attenuation = -0.03
-spot_angle = 42.1
+spot_attenuation = -0.28
+spot_angle = 45.3
 
 [node name="jesus" type="Sprite3D" parent="environment"]
 transform = Transform3D(0.99, 0, 0, 0, 0.99, 0, 0, 0, 0.99, 5.216053, 0.71383584, -16.671253)
+visible = false
 billboard = 2
 texture = ExtResource("5_kek77")
 script = ExtResource("6_4c57u")
 
 [node name="enemies" type="Node" parent="."]
 
-[node name="SpawnMarker" type="Marker3D" parent="enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, -8)
+[node name="Positions" type="Node" parent="enemies"]
 
-[node name="OffscreenMarker" type="Marker3D" parent="enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, 5.2832813)
+[node name="SpawnMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, 0, -8)
 
-[node name="DoorwayMarker" type="Marker3D" parent="enemies"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, -1.0681641, -1.6901159)
+[node name="AwayMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, 0, 5.2832813)
+
+[node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, 0, -1.6901159)
+
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Marker_Spawn", "Marker_Away", "Marker_Doorway", "testmonk")]
+script = ExtResource("11_dg77c")
+Marker_Spawn = NodePath("../Positions/SpawnMarker")
+Marker_Away = NodePath("../Positions/AwayMarker")
+Marker_Doorway = NodePath("../Positions/DoorwayMarker")
+testmonk = NodePath("FastMonk")
+
+[node name="FastMonk" parent="enemies/ActiveMonks" instance=ExtResource("11_efxa6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8264866, 0.21763134, -1.7240994)

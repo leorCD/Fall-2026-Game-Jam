@@ -14,7 +14,7 @@ public partial class ChipManager : Node
     private double _tweenProgress;
     private Tween _activeTween;
 
-    // Exposed property for Godot Tween to animate (0.0 to 1.0)
+    // exposed property to tween (0.0 to 1.0)
     public double TweenProgress
     {
         get => _tweenProgress;
