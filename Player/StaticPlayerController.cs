@@ -13,7 +13,6 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public ChipManager Chips {get; private set;}
 	[Export] public SlotMachineLogic SlotMachine {get; private set;}
 
-	[Export] public Marker3D StartingPosition { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
@@ -63,9 +62,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		else
 			GD.PrintErr("No camera");
 
-		if (StartingPosition != null)
+		if (GamblingPosition != null)
 		{
-			Position = StartingPosition.GlobalPosition;
+			Position = GamblingPosition.GlobalPosition;
 		}
 
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position

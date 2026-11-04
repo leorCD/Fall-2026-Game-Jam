@@ -24,14 +24,14 @@ public partial class SlotMachineRewarder : Node
     // multiplier of the bet per face for a triple. Keys match your face numbers.
     [Export] public Godot.Collections.Dictionary<int, double> TripleMultipliers = new()
     {
-        { 1, 100.5 }, // ie. a full row of Face1 gives you 3x the input
-		{ 2, 300 },
-		{ 3, 600 },
-		{ 4, 1000 },
-        { 5, 1400 },
-		{ 6, 1800 },
-		{ 7, 2100 },
-		{ 8, 2500 },
+        { 1, 1.5 }, // ie. a full row of Face1 gives you 3x the input
+		{ 2, 2 },
+		{ 3, 3 },
+		{ 4, 3.5 },
+        { 5, 5.5 },
+		{ 6, 6 },
+		{ 7, 8 },
+		{ 8, 10 },
     };
 	
     [Export] public double PairMultiplierFraction = 0.25; // fraction of the triple multiplier

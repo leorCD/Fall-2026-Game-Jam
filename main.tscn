@@ -24,29 +24,29 @@ shader_parameter/vignette_radius = 0.76500003307762
 shader_parameter/vignette_softness = 0.52100002311756
 shader_parameter/chromatic_aberration = 0.02400000114
 
-[sub_resource type="SystemFont" id="SystemFont_272bh"]
+[sub_resource type="SystemFont" id="SystemFont_4c57u"]
 font_names = PackedStringArray("MS PGothic")
 
 [sub_resource type="LabelSettings" id="LabelSettings_5vw27"]
-font = SubResource("SystemFont_272bh")
-
-[sub_resource type="SystemFont" id="SystemFont_kek77"]
-font_names = PackedStringArray("MS PGothic")
-
-[sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
-font = SubResource("SystemFont_kek77")
-font_size = 24
+font = SubResource("SystemFont_4c57u")
 
 [sub_resource type="SystemFont" id="SystemFont_efxa6"]
 font_names = PackedStringArray("MS PGothic")
 
-[sub_resource type="LabelSettings" id="LabelSettings_dg77c"]
+[sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
 font = SubResource("SystemFont_efxa6")
+font_size = 24
 
-[sub_resource type="SystemFont" id="SystemFont_4c57u"]
+[sub_resource type="SystemFont" id="SystemFont_dg77c"]
+font_names = PackedStringArray("MS PGothic")
+
+[sub_resource type="LabelSettings" id="LabelSettings_dg77c"]
+font = SubResource("SystemFont_dg77c")
+
+[sub_resource type="SystemFont" id="SystemFont_ycdy4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_efxa6"]
-font = SubResource("SystemFont_4c57u")
+font = SubResource("SystemFont_ycdy4")
 font_size = 26
 
 [sub_resource type="Environment" id="Environment_4c57u"]
@@ -57,7 +57,7 @@ albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
 transparency = 1
-albedo_color = Color(0.024093216, 0.0074719395, 0.0014719813, 0.80784315)
+albedo_color = Color(0.7036076, 0.38954917, 0.30943543, 0.6)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kek77"]
 albedo_texture = ExtResource("6_efxa6")
@@ -79,7 +79,7 @@ albedo_color = Color(0, 0, 0, 1)
 [node name="Main" type="Node3D"]
 
 [node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "StartingPosition", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00041270256, 0.009326696, -0.0010156631)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 StartingPosition = NodePath("../environment/Slot_Machine/SlotMachine")

@@ -37,14 +37,14 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 14 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 10000; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	private int _matchWeightBonus = 50; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
 	[Export] public Label3D SlotMachineHeadDisplay;
 
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 5f; // 10s grace period until you start getting pressured to gamble
-	[Export] public float TimeMaxLimit = 10f; // 50-30 = 20s until the vignette peaks
+	[Export] public float TimeUntilVignetteStarts = 35f; // 10s grace period until you start getting pressured to gamble
+	[Export] public float TimeMaxLimit = 42f; // 50-30 = 20s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
