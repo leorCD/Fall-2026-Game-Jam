@@ -78,13 +78,14 @@ albedo_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "StartingPosition", "GamblingPosition", "HidingPosition") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "StartingPosition", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00041270256, 0.009326696, -0.0010156631)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 StartingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
+DeadScreen = NodePath("DeadScreen")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")

@@ -436,6 +436,7 @@ SlotMachineHeadDisplay = NodePath("DisplayBackboard/Display")
 
 [node name="RewardComponent" type="Node" parent="."]
 script = ExtResource("2_yaq0p")
+printOutcome = false
 
 [node name="AnimationComponent" type="Node" parent="." node_paths=PackedStringArray("Lever", "Reels")]
 script = ExtResource("2_umstu")

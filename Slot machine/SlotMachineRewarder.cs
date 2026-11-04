@@ -1,14 +1,15 @@
 using Godot;
 using System;
+using System.Numerics;
 
 public readonly struct SpinOutcome
 {
-    public double Payout {get;}
+    public BigInteger Payout {get;}
     public bool IsWin => Payout > 0;
     public string Description {get;}   // for UI / debug, e.g. "Triple 7" or "Pair"
     public bool IsJackpot {get;}
 
-    public SpinOutcome(double payout, string description, bool isJackpot = false)
+    public SpinOutcome(BigInteger payout, string description, bool isJackpot = false)
     {
         Payout = payout;
         Description = description;
@@ -23,14 +24,14 @@ public partial class SlotMachineRewarder : Node
     // multiplier of the bet per face for a triple. Keys match your face numbers.
     [Export] public Godot.Collections.Dictionary<int, double> TripleMultipliers = new()
     {
-        { 1, 1.5 }, // ie. a full row of Face1 gives you 3x the input
-		{ 2, 3 },
-		{ 3, 6 },
-		{ 4, 10 },
-        { 5, 14 },
-		{ 6, 18 },
-		{ 7, 21 },
-		{ 8, 25 },
+        { 1, 100.5 }, // ie. a full row of Face1 gives you 3x the input
+		{ 2, 300 },
+		{ 3, 600 },
+		{ 4, 1000 },
+        { 5, 1400 },
+		{ 6, 1800 },
+		{ 7, 2100 },
+		{ 8, 2500 },
     };
 	
     [Export] public double PairMultiplierFraction = 0.25; // fraction of the triple multiplier
@@ -57,13 +58,16 @@ public partial class SlotMachineRewarder : Node
 		this.Player = Logic.Player;
 	}
 
-    public SpinOutcome Evaluate(int[] results, int bet)
+    public SpinOutcome Evaluate(int[] results, BigInteger bet)
     {
-        if (results.Length >= 3 && results[0] == results[1] && results[1] == results[2]) // all 3 faces are the same
+		// all 3 faces are the same
+        if (results.Length >= 3 && results[0] == results[1] && results[1] == results[2])
         {
             double mult = TripleMultipliers.TryGetValue(results[0], out double m) ? m : 1.0;
+			BigInteger payout = MultiplyBigInt(bet, mult);
+
             return new SpinOutcome(
-				(double)bet * mult,
+				payout,
 				$"Triple {results[0]}",
 				true
 			);
@@ -74,39 +78,34 @@ public partial class SlotMachineRewarder : Node
 			matchedFace = results[0];
 		else if (results[1] == results[2])
 			matchedFace = results[1];
-		if (matchedFace != -1) // only 2 faces are the same
+		
+		// only 2 faces are the same
+		if (matchedFace != -1)
 		{
 			double tripleMult = TripleMultipliers.TryGetValue(matchedFace, out double m) ? m : 1.0;
-			
-			// Scaled down from the jackpot table, but kept at or above the minimum floor
-			double pairMult = Math.Max(tripleMult * PairMultiplierFraction, MinimumPairMultiplier);
+			double pairMult = Math.Max(tripleMult * PairMultiplierFraction, MinimumPairMultiplier); // scaled down from the jackpot table, but kept at or above the minimum floor
+			BigInteger payout = MultiplyBigInt(bet, pairMult);
 
 			return new SpinOutcome(
-				Mathf.RoundToInt(bet * pairMult),
+				payout,
 				$"Pair {matchedFace}",
 				isJackpot: false
 			);
 		}
-        // if (results.Length >= 3 && (results[0] == results[1] || results[1] == results[2])) // old version, doesn't consider pair multipliers
-        // {
-        //     return new SpinOutcome(
-		// 		Mathf.RoundToInt(bet * AdjacentPairMultiplier),
-		// 		"Pair"
-		// 	);
-        // }
 
-        return new SpinOutcome( // no faces are the same
-			0,
+		// no matches
+        return new SpinOutcome(
+			BigInteger.Zero,
 			"Miss"
 		); 
     }
 
-    public SpinOutcome Reward(int[] results, int bet)
+    public SpinOutcome Reward(int[] results, BigInteger bet)
     {
         SpinOutcome outcome = Evaluate(results, bet);
 
         if (outcome.IsWin)
-            Player?.Chips.AddChips(Mathf.RoundToInt(outcome.Payout)); // use whatever the chip API we got
+            Player?.Chips.AddChips(outcome.Payout); // use whatever the chip API we got
 
 		if (printOutcome)
 			LogSpinOutcome(results, bet, outcome);
@@ -114,15 +113,20 @@ public partial class SlotMachineRewarder : Node
         return outcome;
     }
 
+	private static BigInteger MultiplyBigInt(BigInteger value, double multiplier)
+    {
+        // Multiplies accurately without floating point overflow on huge balances
+        long factor = (long)(multiplier * 1000.0);
+        return (value * factor) / 1000;
+    }
 
 
 
 
-
-	private void LogSpinOutcome(int[] results, int bet, SpinOutcome outcome)
+	private void LogSpinOutcome(int[] results, BigInteger bet, SpinOutcome outcome)
 	{
 		string reels = results != null ? $"[{string.Join(" | ", results)}]" : "[Empty]";
-		double netChange = outcome.Payout - bet;
+		BigInteger netChange = outcome.Payout - bet;
 		string netSign = netChange >= 0 ? "+" : "";
 		
 		if (outcome.IsJackpot)

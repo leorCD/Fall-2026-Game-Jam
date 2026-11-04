@@ -4,6 +4,11 @@ using Godot;
 public partial class StaticPlayerController : CharacterBody3D
 {
 	[Export] public bool InputEnabled = true;
+	public bool IsHiding = false;
+
+
+
+
 	[ExportCategory("References")]
 	[Export] public ChipManager Chips {get; private set;}
 	[Export] public SlotMachineLogic SlotMachine {get; private set;}
@@ -11,6 +16,11 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public Marker3D StartingPosition { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
+	[Export] public CanvasLayer DeadScreen;
+
+
+
+
 
 	[ExportCategory("Camera")]
 
@@ -25,7 +35,6 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	private Camera3D _camera;
 	private Vector3 _targetRotation = Vector3.Zero;
-	private bool _hiding = false;
 	private Tween _tween;
 
 
@@ -38,10 +47,6 @@ public partial class StaticPlayerController : CharacterBody3D
 	public override void _Ready()
 	{
 		Chips = GetNodeOrNull<ChipManager>("ChipManager");
-		if (Chips != null)
-		{
-			Chips.BalanceChanged += CheckIfZeroed;
-		}
 
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
 
@@ -52,13 +57,20 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
+			IsHiding = false;
+
 			InputEnabled = false;
-			_hiding = false;
 			MoveTo(GamblingPosition.GlobalTransform);
 		};
 		SlotMachine.SpinFinished += () => // on spin finished, return player input
 		{
 			InputEnabled = true;
+
+			if (Chips != null && Chips.Balance <= 0)
+			{
+				InputEnabled = false;
+				YouLoseScreen();
+			}
 		};
 	}
 
@@ -105,9 +117,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (!@event.IsActionPressed("Spacebar")) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
 
-		_hiding = !_hiding;
+		IsHiding = !IsHiding;
 
-		Transform3D targetTransform = !_hiding
+		Transform3D targetTransform = !IsHiding
 			? GamblingPosition.GlobalTransform
 			: HidingPosition.GlobalTransform;
 		
@@ -131,26 +143,17 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
-	private void CheckIfZeroed(int balance)
-	{
-		GD.Print("Checking");
-		if (balance <= 0)
-		{
-			InputEnabled = false;
-			YouLoseScreen();
-		}
-	}
 
-	// temporary
-	[Export] public CanvasLayer DeadScreen;
+
+
 	private void YouLoseScreen()
 	{
 		if (DeadScreen == null) return;
-		Button RestartGame = DeadScreen.GetNode<Button>("Button");
-		if (RestartGame == null) return;
+		Button RestartGameButton = DeadScreen.GetNode<Button>("Button");
+		if (RestartGameButton == null) return;
 
 		DeadScreen.Visible = true;
-		RestartGame.Pressed += () =>
+		RestartGameButton.Pressed += () =>
 		{
 			GetTree().ReloadCurrentScene();
 		};

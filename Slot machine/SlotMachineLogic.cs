@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Godot;
 using Godot.Collections;
 
@@ -10,20 +11,21 @@ public partial class SlotMachineLogic : Node3D
 	private Random _random = new Random();
 	private bool _isActive = false;
 	public event Action SpinFinished;
+	public event Action SpinStarted;
 
 	[Export] public Label BetDisplay;
-	private int _currentBet = 0;
-	private int CurrentBet
+	private BigInteger _currentBet = BigInteger.Zero;
+	private BigInteger CurrentBet
 	{
 		get => _currentBet;
 		set
 		{
 			_currentBet = value;
-
-			if (BetDisplay == null) return;
-			BetDisplay.Text = "Current bet : " + _currentBet.ToString();
+			if (BetDisplay != null)
+				BetDisplay.Text = $"Current bet : {ChipManager.FormatBigNumber(_currentBet)}";
 		}
 	}
+
 	private Dictionary<int, int> _faceWeights = new()
 	{
 		{ 1, 22 }, // slot number then weight
@@ -35,7 +37,7 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 14 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 100; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	private int _matchWeightBonus = 10000; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
 	[Export] public Label3D SlotMachineHeadDisplay;
 
 
@@ -119,24 +121,29 @@ public partial class SlotMachineLogic : Node3D
 
 	public override void _UnhandledInput(InputEvent @event)
 	{
-		if (@event.IsActionPressed("MoveLeft", true)){
-			if (CurrentBet > 0)
-				if (_shiftHeld)
-					CurrentBet -= 5;
-				else
-					CurrentBet -= 1;
-			
-			if (CurrentBet <= 0) CurrentBet = Player.Chips.Balance; // wrap around
+		if (Player == null) return;
+    
+		// scale bet adjustment steps proportionally if balance is massive
+		BigInteger step = _shiftHeld ? BigInteger.Max(5, Player.Chips.Balance / 20) : 1;
+		if (@event.IsActionPressed("MoveLeft", true))
+		{
+			if (CurrentBet <= BigInteger.Zero)
+				CurrentBet = Player.Chips.Balance;
+			else
+				CurrentBet -= step;
+				if (CurrentBet < BigInteger.Zero)
+					CurrentBet = BigInteger.Zero;
 		}
-		if (@event.IsActionPressed("MoveRight", true)){
-			if (CurrentBet < Player.Chips.Balance)
-				if (_shiftHeld)
-					CurrentBet += 5;
-				else
-					CurrentBet += 1;
-			
-			if (CurrentBet >= Player.Chips.Balance) CurrentBet = 0;
-		}
+
+		if (@event.IsActionPressed("MoveRight", true))
+		{
+			if (CurrentBet >= Player.Chips.Balance)
+				CurrentBet = BigInteger.Zero;
+			else
+				CurrentBet += step;
+				if (CurrentBet > Player.Chips.Balance)
+					CurrentBet = Player.Chips.Balance;
+   		}
 
 		if (@event.IsActionPressed("StartGambling"))
 		{
@@ -150,40 +157,50 @@ public partial class SlotMachineLogic : Node3D
 	private async void Start()
 	{
 		if (_isActive == true || Player == null) return;
-		int bet = CurrentBet;
-		if (!Player.Chips.SpendChips(bet)) return;
+		BigInteger bet = CurrentBet;
+		if (!Player.Chips.SpendChips(bet)) return; // check if they have enough chips first
 
 		_isActive = true;
 		_idleTime = 0f;
 		CurrentBet = 0;
+
+		SpinStarted?.Invoke();
 
 		int[] results = CalculateReelFaces(3);
 		await AnimationComponent?.Start(results);
 		
     	var reward = RewardComponent?.Reward(results, bet); // payout
 		if (reward is SpinOutcome outcome)
+		{
 			if (outcome.IsJackpot) SlotMachineHeadDisplay.Text = "JACKPOT";
 			else if(outcome.IsWin) SlotMachineHeadDisplay.Text = "MINI-JACKPOT";
 			else SlotMachineHeadDisplay.Text = "LOSE";
 			
 			GetTree().CreateTimer(3.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
+		}
 			
 
 		_isActive = false;
 		SpinFinished?.Invoke();
 	}
 
-
 	public void ForceSpin()
 	{
 		if (_isActive || Player == null) return;
 
-		int bet = Player.Chips.Balance;
+		BigInteger bet = Player.Chips.Balance;
 		if (bet <= 0) return;
 
 		CurrentBet = bet;
 		Start();
 	}
+
+
+
+
+
+
+
 
 
 
