@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://bww74ysb4rmso"
+path="res://.godot/imported/O Monk_FTSP.wav-a8227e9935af1ff31d65d4a98eb9e0cb.sample"
+
+[deps]
+
+source_file="res://Audio/O Monk_FTSP.wav"
+dest_files=["res://.godot/imported/O Monk_FTSP.wav-a8227e9935af1ff31d65d4a98eb9e0cb.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

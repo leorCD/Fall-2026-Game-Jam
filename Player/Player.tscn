@@ -12,6 +12,7 @@ points = PackedVector3Array(-0.35, -0.6501566, -6.851554e-05, -0.3483555, -0.650
 script = ExtResource("1_3qydi")
 
 [node name="body" type="MeshInstance3D" parent="."]
+layers = 0
 mesh = SubResource("CapsuleMesh_l2ndj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

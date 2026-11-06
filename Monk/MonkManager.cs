@@ -8,9 +8,9 @@ public partial class MonkManager : Node
     [Export] public Marker3D Marker_Away {get;private set;}
     [Export] public Marker3D Marker_Doorway {get;private set;}
 
-	[Export] public FastMonk testmonk; // temporary
+	[Export] public FastMonk[] activeMonks; // temporary
 
-    public override void _Ready()
+    public async override void _Ready()
     {
 		if (Marker_Spawn == null || Marker_Doorway == null || Marker_Away == null)
 		{
@@ -18,9 +18,13 @@ public partial class MonkManager : Node
 			return;
 		}
 
-		if (testmonk != null)
+
+
+
+
+		for (int i = 0; i < activeMonks.Length; i++)
 		{
-			testmonk.Init(Marker_Spawn, Marker_Doorway, Marker_Away);
+			activeMonks[i].Init(Marker_Spawn, Marker_Doorway, Marker_Away);
 		}
     }
 

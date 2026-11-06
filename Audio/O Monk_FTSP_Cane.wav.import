@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c3eixtfnqjgmg"
+path="res://.godot/imported/O Monk_FTSP_Cane.wav-16d4fbda603e79552ac8d55777e6cd8e.sample"
+
+[deps]
+
+source_file="res://Audio/O Monk_FTSP_Cane.wav"
+dest_files=["res://.godot/imported/O Monk_FTSP_Cane.wav-16d4fbda603e79552ac8d55777e6cd8e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

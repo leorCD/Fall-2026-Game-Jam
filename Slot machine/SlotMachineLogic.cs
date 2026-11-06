@@ -37,7 +37,7 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 14 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 50; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	private int _matchWeightBonus = 5000; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
 	[Export] public Label3D SlotMachineHeadDisplay;
 
 
@@ -81,6 +81,8 @@ public partial class SlotMachineLogic : Node3D
 
     public override void _Process(double delta)
     {
+		if (Player.IsDead) return;
+
 		if (_isActive) // player is gambling
 		{
 			_idleTime = 0f; // spinning counts as playing
@@ -91,7 +93,13 @@ public partial class SlotMachineLogic : Node3D
 			_idleTime += (float)delta;
 		}
 
-		// vignette logic
+
+
+		VignetteLogic();
+    }
+
+	private void VignetteLogic()
+	{
 		float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit - TimeUntilVignetteStarts), 0f, 1f);
 		Vignette?.SetTarget(t);
 
@@ -101,9 +109,7 @@ public partial class SlotMachineLogic : Node3D
 			IdlePressureMaxed?.Invoke();
 			ForceSpin(); // forced gamble always gambles all your money
 		}
-    }
-
-
+	}
 
 
 

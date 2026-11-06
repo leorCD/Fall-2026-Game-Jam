@@ -1,25 +1,27 @@
-[gd_scene load_steps=29 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=33 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://PlayerAudio.cs" id="1_ycdy4"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
+[ext_resource type="AudioStream" uid="uid://rvlvvei4k0l6" path="res://Audio/Droning_Spooky2.wav" id="3_2cqfq"]
 [ext_resource type="Shader" uid="uid://72xejjiimmrh" path="res://common/vignette/vignette.gdshader" id="3_272bh"]
 [ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
-[ext_resource type="Texture2D" uid="uid://df52h5re2dqnt" path="res://these do not stay/Jesus_Static_2.png" id="5_kek77"]
-[ext_resource type="Script" uid="uid://bgvnv0hj6ne2q" path="res://these do not stay/Sprite3d.cs" id="6_4c57u"]
 [ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
 [ext_resource type="Texture2D" uid="uid://d3pu6n82v5eye" path="res://Textures/11wall.jpg" id="6_efxa6"]
 [ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
+[ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
 [ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="11_efxa6"]
+[ext_resource type="AudioStream" uid="uid://djdy6kien3cc5" path="res://Audio/Droning_torch.wav" id="13_vivmo"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
 shader_parameter/intensity = 0.0
-shader_parameter/pulse_speed = 3.5
+shader_parameter/pulse_speed = 3.00400014269
 shader_parameter/pulse_amount = 0.3200000152
-shader_parameter/vein_color = Color(0.55, 0.03, 0.03, 1)
-shader_parameter/vignette_tint = Color(0.45573843, 0.021035153, 0.021009771, 1)
+shader_parameter/vein_color = Color(0.049843222, 0.0075521683, 0.0012350456, 1)
+shader_parameter/vignette_tint = Color(0.074568994, 0.00074754085, 0.00074094435, 1)
 shader_parameter/vein_scale = 5.0
 shader_parameter/vein_sharpness = 0.00999999977648
 shader_parameter/vignette_radius = 0.76500003307762
@@ -51,7 +53,19 @@ font = SubResource("SystemFont_dg77c")
 font = SubResource("SystemFont_ycdy4")
 font_size = 26
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vivmo"]
+shader = ExtResource("7_w48qg")
+shader_parameter/aberration_strength = 3.0
+shader_parameter/blur_strength = 2.0
+shader_parameter/noise_strength = 0.048
+shader_parameter/vignette_strength = 0.78
+shader_parameter/scanline_strength = 0.016
+shader_parameter/distortion_strength = 0.1
+shader_parameter/ghost_strength = 0.12
+shader_parameter/flicker_strength = 0.005
+
 [sub_resource type="Environment" id="Environment_4c57u"]
+ambient_light_source = 2
 glow_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
@@ -78,7 +92,15 @@ uv1_triplanar = true
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w48qg"]
+albedo_color = Color(0.56543815, 0.434474, 0.29401457, 1)
+
 [node name="Main" type="Node3D"]
+
+[node name="NonpositionalAudio" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("1_ycdy4")
+player = NodePath("../Player")
+Droning = ExtResource("3_2cqfq")
 
 [node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
@@ -207,7 +229,28 @@ label_settings = SubResource("LabelSettings_efxa6")
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
+[node name="Shader" type="CanvasLayer" parent="Player"]
+
+[node name="ColorRect" type="ColorRect" parent="Player/Shader"]
+material = SubResource("ShaderMaterial_vivmo")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+metadata/_edit_use_anchors_ = true
+
 [node name="environment" type="Node" parent="."]
+
+[node name="DroningTorch" type="AudioStreamPlayer3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.482482, 1.3635912, -6.2911415)
+stream = ExtResource("13_vivmo")
+volume_db = -5.5
+unit_size = 9.58
+max_db = 0.378
+pitch_scale = 4.0
+autoplay = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_4c57u")
@@ -220,6 +263,38 @@ Vignette = NodePath("../../Player/Vignette/ColorRect")
 
 [node name="SlotMachine" type="Marker3D" parent="environment/Slot_Machine"]
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
+
+[node name="ScreenLight" type="SpotLight3D" parent="environment/Slot_Machine"]
+transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 5.356382, 7.1719317, 0.022144113)
+light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
+light_energy = 1.29
+light_indirect_energy = 0.835
+light_specular = 0.0
+shadow_enabled = true
+spot_range = 4.435
+spot_attenuation = 0.48
+spot_angle = 83.05
+
+[node name="DoorwayLight" type="SpotLight3D" parent="environment/Slot_Machine"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3112154, 7.1719317, -13.01005)
+light_color = Color(0.99039763, 0.71015865, 0.5145497, 1)
+light_energy = 1.605
+light_specular = 0.0
+shadow_enabled = true
+spot_range = 2.105
+spot_attenuation = 1.95
+spot_angle = 83.05
+
+[node name="LightFromScreen" type="SpotLight3D" parent="environment/Slot_Machine"]
+transform = Transform3D(-0.111139216, 0, -0.9938049, 0, 1, 0, 0.9938049, 0, -0.111139216, 4.2135, 7.7678633, -1.8417788e-07)
+light_color = Color(0.9752876, 0.80596846, 0.73749727, 1)
+light_energy = 1.605
+light_specular = 0.0
+shadow_enabled = true
+spot_range = 7.13
+spot_attenuation = 0.26
+spot_angle = 31.15
+spot_angle_attenuation = 12.996028
 
 [node name="ClosetTemp" type="Node3D" parent="environment"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 0, 2.8738549)
@@ -254,7 +329,7 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0
 
 [node name="wall" type="CSGBox3D" parent="environment/RenderedRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4954085, 0.77398777, -0.003227234)
-size = Vector3(0.1, 8, 17.405)
+size = Vector3(0.1, 8, 32.63)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="div" type="CSGBox3D" parent="environment/RenderedRoom/wall"]
@@ -264,8 +339,8 @@ size = Vector3(0.1, 3.17, 2.37)
 material = SubResource("StandardMaterial3D_4c57u")
 
 [node name="wall6" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.135769, 0.82185745, -0.003227234)
-size = Vector3(0.1, 8, 17.405)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8.135769, 0.82185745, -0.003227234)
+size = Vector3(0.1, 8, 28.66)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall2" type="CSGBox3D" parent="environment/RenderedRoom"]
@@ -274,12 +349,12 @@ size = Vector3(0.1, 8, 11.695)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall3" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5018513, -0.38369703, -3.5)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5018513, -0.38369703, -4.456897)
 size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall5" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.1639557, 1.0014358, -8.029928)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.1639557, 1.0014358, -13.496695)
 size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
@@ -303,50 +378,37 @@ material = SubResource("StandardMaterial3D_ycdy4")
 [node name="Ceiling2" type="CSGBox3D" parent="environment/RenderedRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.607973, 4.491414, 0)
 use_collision = true
-size = Vector3(7.105, 1, 18.135)
+size = Vector3(7.105, 1, 29.835)
 material = SubResource("StandardMaterial3D_ycdy4")
 
-[node name="NegativeLight" type="OmniLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6100218, -0.041732788)
-light_color = Color(0.89398205, 0.9222793, 0.98157567, 1)
-light_energy = 0.141
-light_negative = true
-light_specular = 0.0
-omni_range = 42.774
-omni_attenuation = -1.299
+[node name="Torch" type="CSGBox3D" parent="environment"]
+transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 7.9940386, 0, -3.921474)
+size = Vector3(0.1, 0.575, 0.1)
 
-[node name="Light" type="OmniLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0047357, 0.746974, -1.699454)
-light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
-light_energy = 1.143
-light_specular = 0.145
-omni_range = 3.128
-omni_attenuation = 0.065
-
-[node name="Light3" type="OmniLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.99000126, 0.746974, -1.699454)
-light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
-light_energy = 1.143
-light_specular = 0.145
-omni_range = 3.128
-omni_attenuation = 0.065
-
-[node name="Light2" type="SpotLight3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-0.10646717, 0.29521856, -0.94947934, 0.061987888, 0.95502, 0.28999048, 0.9923823, -0.02798175, -0.119978234, 1.0695904, 0.93545544, -2.1322193)
-light_color = Color(0.7995438, 0.77964497, 0.820825, 1)
-light_energy = 1.143
-light_specular = 0.145
+[node name="torch_Light" type="OmniLight3D" parent="environment/Torch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.024030209, 0.7437041, 0)
+light_color = Color(0.97508925, 0.4187714, 0.17127562, 1)
+light_energy = 1.388
+light_size = 0.053
+light_specular = 0.025
 shadow_enabled = true
-spot_range = 16.459
-spot_attenuation = -0.28
-spot_angle = 45.3
+omni_range = 3.28
+omni_attenuation = 3.755
 
-[node name="jesus" type="Sprite3D" parent="environment"]
-transform = Transform3D(0.99, 0, 0, 0, 0.99, 0, 0, 0, 0.99, 5.216053, 0.71383584, -16.671253)
-visible = false
-billboard = 2
-texture = ExtResource("5_kek77")
-script = ExtResource("6_4c57u")
+[node name="CSGBox3D" type="CSGBox3D" parent="environment/Torch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4959369e-08, 0.39448345, 0)
+size = Vector3(0.1, 0.1, 0.1)
+material = SubResource("StandardMaterial3D_w48qg")
+
+[node name="torch_Light2" type="OmniLight3D" parent="environment/Torch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3512807, 1.9970173, -3.993566)
+light_color = Color(0.97508925, 0.4187714, 0.17127562, 1)
+light_energy = 1.388
+light_size = 0.053
+light_specular = 0.025
+shadow_enabled = true
+omni_range = 3.28
+omni_attenuation = 3.755
 
 [node name="enemies" type="Node" parent="."]
 
@@ -361,12 +423,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, 0, 5.2832813)
 [node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, 0, -1.6901159)
 
-[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Marker_Spawn", "Marker_Away", "Marker_Doorway", "testmonk")]
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Marker_Spawn", "Marker_Away", "Marker_Doorway", "activeMonks")]
 script = ExtResource("11_dg77c")
 Marker_Spawn = NodePath("../Positions/SpawnMarker")
 Marker_Away = NodePath("../Positions/AwayMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
-testmonk = NodePath("FastMonk")
+activeMonks = [NodePath("FastMonk")]
 
 [node name="FastMonk" parent="enemies/ActiveMonks" instance=ExtResource("11_efxa6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8264866, 0.21763134, -1.7240994)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2552433, 0.21763134, -1.7240994)

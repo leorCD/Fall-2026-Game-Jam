@@ -1,3 +1,4 @@
+using System;
 using System.Dynamic;
 using Godot;
 
@@ -6,41 +7,27 @@ public partial class StaticPlayerController : CharacterBody3D
 	public bool IsDead = false;
 	public bool IsHiding = false;
 
+	public event Action Died;
 
 
 
 	[ExportCategory("References")]
 	[Export] public ChipManager Chips {get; private set;}
 	[Export] public SlotMachineLogic SlotMachine {get; private set;}
-
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
 
-
-
-
-
 	[ExportCategory("Camera")]
-
-	// Maximum horizontal camera rotation
-	[Export] public float max_yaw_deg = 45.0f;
-
-	// Maximum vertical camera rotation.
-	[Export] public float max_pitch_deg = 15.0f;
-
-	// Controls how smoothly the camera moves.
-	[Export] public float smooth_speed = 8.0f;
+	[Export] public float max_yaw_deg = 45.0f; // maximum horizontal camera rotation
+	[Export] public float max_pitch_deg = 15.0f; // maximum vertical camera rotation.
+	[Export] public float smooth_speed = 8.0f; // controls how smoothly the camera moves.
 	[Export] public float base_fov = 75f;
 
 	private Camera3D _camera;
 	private Vector3 _targetRotation = Vector3.Zero;
 	private Tween _zoomTween;
 	private Tween _moveTween;
-
-
-
-
 
     public bool IsForcedToGamble = false;
     public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
@@ -186,6 +173,8 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (RestartGameButton == null) return;
 
 		DeadScreen.Visible = true;
+		Died?.Invoke();
+		
 		RestartGameButton.Pressed += () =>
 		{
 			GetTree().ReloadCurrentScene();

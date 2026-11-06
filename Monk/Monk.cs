@@ -1,15 +1,21 @@
 using Godot;
 using System;
+using System.Linq;
 
 
 // yes i ripped a page out of fnaf
 public abstract partial class Monk : Node3D
 {
+    private Random _random = new Random();
     private bool _ready = false;
 
-    [Export] public float MovementSpeed {get;set;} = 4f;
+    [Export] public float MovementSpeed {get;set;} = 0.5f;
     [Export] public int Aggresiveness {get;set;} = 20; // scale from 0-20 like fnaf
     [Export] public float TickInterval {get;set;} = 5f; // update every 5 ticks
+
+    [ExportCategory("Textures")]
+    [Export] public Texture idle;
+    [Export] public Texture walk;
 
     public event Action<Monk> ArrivedAtDoor;
     public event Action<Monk> Attacking;
@@ -39,6 +45,12 @@ public abstract partial class Monk : Node3D
 
         _ready = true;
     }
+
+
+
+
+
+    
 
     public override void _Process(double delta)
     {
@@ -88,10 +100,17 @@ public abstract partial class Monk : Node3D
     
     protected virtual void OnArrived(Marker3D from, Marker3D to) // hook for when they arrive at a marker, which for now can only really be the doorway
     {
-        if (to == Marker_Away) this.QueueFree(); // call base.OnArrived last bc this is all it does
+        // if (to == Marker_Away) this.QueueFree(); // call base.OnArrived last bc this is all it does
+        GD.Print(this.Name + " arrived at " + CurrentMarker.Name);
     }
     protected virtual void TransitionProcess(double delta) {} // hook for footsteps, flicker, etc.
-    protected virtual Marker3D NextWaypoint() => this.CurrentMarker == Marker_Spawn ? Marker_Doorway : Marker_Away; // can be overriden but we only have 3 positions so this is fine
+    protected virtual Marker3D NextWaypoint()
+    {
+        // this.CurrentMarker == Marker_Spawn ? Marker_Doorway : Marker_Away; // can be overriden but we only have 3 positions so this is fine
+        Marker3D[] positions = {Marker_Spawn, Marker_Doorway, Marker_Away};
+
+        return positions[_random.Next(0, positions.Count())];
+    } 
     protected virtual void OnAtDoorTick(double delta) {GD.Print($"{nameof(FastMonk)} is at the door");} // hook for when they reached the doorway
 
     public virtual void SendBack() => _targetMarker = Marker_Away; // walks away, doesn't teleport WWWWW
