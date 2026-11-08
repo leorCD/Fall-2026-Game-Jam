@@ -20,16 +20,17 @@ Faces = [NodePath("face"), NodePath("face2"), NodePath("face3"), NodePath("face4
 
 [node name="ReelAudioComponent" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 4.440892e-16, 0, 4.440892e-16, 1, 0, 0, 0, 1, 0, 0, 0)
-volume_db = -15.415
+volume_db = -11.03
 max_db = 0.486
 max_distance = 6.25
 panning_strength = 3.0
-bus = &"SFX"
+bus = &"SFX_SlotMachine"
 script = ExtResource("2_7sm5h")
 TickSounds = Array[AudioStream]([ExtResource("3_tw2m1"), ExtResource("4_kkh5a")])
 
 [node name="face" type="Sprite3D" parent="."]
 transform = Transform3D(-2.4634275e-09, 0.05635665, 0.38268346, -0.061, -2.6663947e-09, 0, 1.0203852e-09, -0.023343692, 0.9238795, 0.17593688, -1.159312e-07, 0.43892127)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -37,6 +38,7 @@ vframes = 3
 
 [node name="face2" type="Sprite3D" parent="."]
 transform = Transform3D(9.649989e-09, 0.023343699, 0.9238795, -0.061000008, 5.3934762e-08, -1.9500749e-07, -5.4381417e-08, -0.05635666, 0.38268372, 0.440155, -1.6481242e-07, 0.1822834)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -45,6 +47,7 @@ frame = 1
 
 [node name="face3" type="Sprite3D" parent="."]
 transform = Transform3D(-8.929309e-09, -0.023343682, 0.9238797, -0.061, 3.927882e-08, 1.0827561e-07, -3.881645e-08, -0.056356654, -0.3826834, 0.43634155, -2.1025846e-08, -0.18103656)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -53,6 +56,7 @@ frame = 2
 
 [node name="face4" type="Sprite3D" parent="."]
 transform = Transform3D(-1.1060762e-08, -0.056356654, 0.38268343, -0.061, 1.5833857e-08, 1.5283842e-07, -1.4672816e-08, -0.023343684, -0.9238796, 0.17751643, -1.3832393e-09, -0.4382107)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -61,6 +65,7 @@ frame = 3
 
 [node name="face5" type="Sprite3D" parent="."]
 transform = Transform3D(4.5041966e-09, -0.056356646, -0.38268346, -0.061, -2.6663936e-09, -8.742277e-08, 3.9064694e-09, 0.023343688, -0.9238795, -0.18580355, -1.159312e-07, -0.4343973)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -69,6 +74,7 @@ frame = 4
 
 [node name="face6" type="Sprite3D" parent="."]
 transform = Transform3D(1.661761e-08, -0.023343684, -0.9238796, -0.061000008, -5.9267553e-08, 1.07584405e-07, -5.7267503e-08, 0.056356657, -0.38268343, -0.43692616, -6.2677586e-08, -0.18101546)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -77,6 +83,7 @@ frame = 5
 
 [node name="face7" type="Sprite3D" parent="."]
 transform = Transform3D(-6.0432246e-09, 0.023343688, -0.9238795, -0.061, -4.461161e-08, -1.9569833e-07, -4.5784077e-08, 0.056356646, 0.38268343, -0.436977, -2.0601422e-07, 0.18070385)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3
@@ -85,6 +92,7 @@ frame = 6
 
 [node name="face8" type="Sprite3D" parent="."]
 transform = Transform3D(-1.3946844e-08, 0.05635665, -0.3826834, -0.061, -2.1166645e-08, -2.4026122e-07, -2.1640446e-08, 0.023343686, 0.9238795, -0.1845381, -2.2869298e-07, 0.4358663)
+shaded = true
 double_sided = false
 texture = ExtResource("2_ibk5x")
 hframes = 3

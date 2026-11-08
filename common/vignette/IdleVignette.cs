@@ -11,6 +11,7 @@ public partial class IdleVignette : ColorRect
     public override void _Ready()
     {
         _mat = Material as ShaderMaterial;
+        _mat?.SetShaderParameter("intensity", 0f);
     }
 
     public void SetTarget(float t) => _target = Mathf.Clamp(t, 0f, 1f);

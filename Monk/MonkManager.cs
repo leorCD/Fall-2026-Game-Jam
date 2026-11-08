@@ -25,11 +25,10 @@ public partial class MonkManager : Node
 			GD.PrintErr("Missing critical marker");
 			return;
 		}
+    }
 
-
-
-
-
+	public void EnableMonks()
+	{
 		for (int i = 0; i < activeMonks.Length; i++)
 		{
 			if (activeMonks[i] is not Monk monk) continue;
@@ -37,6 +36,5 @@ public partial class MonkManager : Node
 			monk.Init(Player, Marker_Spawn, Marker_Doorway, Marker_Away);
 			monk.Visible = true;
 		}
-    }
-
+	}
 }

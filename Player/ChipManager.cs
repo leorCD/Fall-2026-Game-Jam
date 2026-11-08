@@ -8,7 +8,7 @@ public partial class ChipManager : Node
 	[Export] public Label BalanceDisplay;
 
 	public event Action<BigInteger> BalanceChanged;
-	public BigInteger Balance {get; private set;} = 100;
+	public BigInteger Balance {get; private set;} = 0;
 	private BigInteger _tweenStartBalance;
     private BigInteger _tweenTargetBalance;
     private double _tweenProgress;
@@ -31,22 +31,6 @@ public partial class ChipManager : Node
 
 
 
-
-
-
-
-
-	public override void _Input(InputEvent @event)
-	{
-		if (@event.IsActionPressed("GiveMoney") && @event.IsPressed())
-		{
-			AddChips(50);
-		}
-		if (@event.IsActionPressed("TakeMoney") && @event.IsPressed())
-		{
-			SpendChips(50);
-		}
-	}
 
 
 	public override void _Ready()
@@ -77,6 +61,13 @@ public partial class ChipManager : Node
 			.SetTrans(Tween.TransitionType.Cubic)
 			.SetEase(Tween.EaseType.Out);
 	}
+
+
+
+
+
+
+
 	public BigInteger AddChips(BigInteger amount)
 	{
 		Balance += amount;
@@ -97,6 +88,15 @@ public partial class ChipManager : Node
 		BalanceChanged?.Invoke(Balance);
 		return true;
 	}
+
+
+
+
+
+
+
+
+
 
 	// displays compact suffix labels once numbers get impossibly wide (K, M, B, T, Qa, etc.)
 	public static string FormatBigNumber(System.Numerics.BigInteger value)

@@ -11,9 +11,11 @@ wet = 0.2
 [sub_resource type="AudioEffectEQ" id="AudioEffectEQ_j3pel"]
 resource_name = "EQ"
 band_db/32_hz = 22.7
-band_db/100_hz = 3.7
-band_db/3200_hz = -6.0
-band_db/10000_hz = -14.1
+band_db/100_hz = 12.1
+band_db/320_hz = 4.5
+band_db/1000_hz = -17.8
+band_db/3200_hz = -5.5
+band_db/10000_hz = -1.8
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_ai37j"]
 resource_name = "Reverb"
@@ -34,7 +36,7 @@ bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
 bus/1/effect/0/enabled = true
 bus/1/effect/1/effect = SubResource("AudioEffectEQ_j3pel")
 bus/1/effect/1/enabled = true
-bus/2/name = &"SFX"
+bus/2/name = &"SFX_Hallway"
 bus/2/solo = false
 bus/2/mute = false
 bus/2/bypass_fx = false
@@ -42,3 +44,11 @@ bus/2/volume_db = 0.0
 bus/2/send = &"Master"
 bus/2/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
 bus/2/effect/0/enabled = true
+bus/3/name = &"SFX_SlotMachine"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = 0.0
+bus/3/send = &"Master"
+bus/3/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
+bus/3/effect/0/enabled = true

@@ -14,7 +14,7 @@ public partial class SlotMachineLogic : Node3D
 	public event Action SpinFinished;
 	public event Action SpinStarted;
 
-	[Export] public Label BetDisplay;
+	[Export] public AutoFitLabel3D BetDisplay;
 	private BigInteger _currentBet = BigInteger.Zero;
 	private BigInteger CurrentBet
 	{
@@ -23,7 +23,7 @@ public partial class SlotMachineLogic : Node3D
 		{
 			_currentBet = value;
 			if (BetDisplay != null)
-				BetDisplay.Text = $"Current bet : {ChipManager.FormatBigNumber(_currentBet)}";
+				BetDisplay.SetText($"{ChipManager.FormatBigNumber(_currentBet)}");
 		}
 	}
 
@@ -44,7 +44,7 @@ public partial class SlotMachineLogic : Node3D
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 35f; // 35s grace period until you start getting pressured to gamble
+	[Export] public float TimeUntilVignetteStarts = 5f; // 10s grace period until you start getting pressured to gamble
 	[Export] public float TimeMaxLimit = 7f; // 7s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
@@ -64,8 +64,20 @@ public partial class SlotMachineLogic : Node3D
 
 
 
+	private readonly Dictionary<SpotLight3D, float> _lightRanges = new();
+	private Tween _lightTween;
+	public void TurnOn()
+	{
+		_lightTween?.Kill();
+		_lightTween = CreateTween().SetParallel(true);
 
-
+		foreach (var pair in _lightRanges)
+		{
+			_lightTween.TweenProperty(pair.Key, "spot_range", pair.Value, 1f)
+				.SetTrans(Tween.TransitionType.Sine)
+				.SetEase(Tween.EaseType.Out);
+		}
+	}
 
     public override void _Ready()
     {
@@ -78,10 +90,20 @@ public partial class SlotMachineLogic : Node3D
 		RewardComponent.init(this);
 		
 		CurrentBet = 0;
+
+		foreach (Node child in GetChildren())
+		{
+			if (child is SpotLight3D light)
+			{
+            	_lightRanges[light] = light.SpotRange; // save original
+				light.SpotRange = 0f;
+			}
+		}
     }
 
     public override void _Process(double delta)
     {
+		if (this.Visible == false) return;
 		if (Player.IsDead) return;
 
 		if (_isActive) // player is gambling
@@ -104,9 +126,10 @@ public partial class SlotMachineLogic : Node3D
 
 	private void VignetteLogic()
 	{
-		float t = _isForcedSpin 
-            ? 1f 
-            : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
+		float t =Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
+		// float t = _isForcedSpin 
+        //     ? 1f 
+        //     : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
 		Vignette?.SetTarget(t);
 
 		if (t >= 1f && !_maxedFired) // max vignette intensity reached

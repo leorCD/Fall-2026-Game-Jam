@@ -17,9 +17,11 @@ mesh = SubResource("CapsuleMesh_l2ndj")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_3qydi")
+debug_color = Color(0, 0.6, 0.69803923, 0)
 
 [node name="Neck" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6840654, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Neck"]
 doppler_tracking = 2
+fov = 80.0

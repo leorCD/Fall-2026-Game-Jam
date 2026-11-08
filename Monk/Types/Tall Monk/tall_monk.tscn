@@ -10,6 +10,7 @@
 [node name="TallMonk" type="CharacterBody3D"]
 script = ExtResource("1_i3vr4")
 footstepSFX = ExtResource("2_feedq")
+HeightMeters = 4.0
 Idle = ExtResource("2_1g4kx")
 Moving = ExtResource("3_feedq")
 
@@ -17,12 +18,14 @@ Moving = ExtResource("3_feedq")
 shape = SubResource("BoxShape3D_hiwi7")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+pixel_size = 0.002
 billboard = 2
 shaded = true
 texture = ExtResource("2_1g4kx")
 
 [node name="Sprite3D2" type="Sprite3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
+pixel_size = 0.002
 billboard = 2
 shaded = true
 texture = ExtResource("2_1g4kx")

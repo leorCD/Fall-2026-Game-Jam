@@ -137,7 +137,7 @@ public abstract partial class Monk : CharacterBody3D
         MoveDirection = (dest - GlobalPosition).Normalized();   // before moving
 
         this.GlobalPosition = GlobalPosition.MoveToward(dest, (float)delta * GetSpeed());
-        if (this.GlobalPosition.DistanceTo(_targetMarker.GlobalPosition) > 0.5f) return; // safety check incase the distance between two poitns are negligable
+        if (this.GlobalPosition.DistanceTo(_targetMarker.GlobalPosition) > 0.05f) return; // safety check incase the distance between two poitns are negligable
 
         Marker3D from = CurrentMarker;
         CurrentMarker = _targetMarker;

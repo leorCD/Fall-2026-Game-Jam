@@ -18,7 +18,7 @@ public partial class AudioManager : Node
 
         for (int i = 0; i < SfxPoolSize; i++)
         {
-            var p = new AudioStreamPlayer3D { Bus = "SFX" };
+            var p = new AudioStreamPlayer3D { Bus = "SFX_Hallway" };
             AddChild(p);
             _sfxPool.Add(p);
         }
@@ -38,12 +38,12 @@ public partial class AudioManager : Node
 
 
 
-    public void PlaySfx3D(AudioStream stream, Node3D parent, float pitchVariance = 0.08f, float volumeDb = 0f)
+    public void PlaySfx3D(AudioStream stream, Node3D parent, StringName bus, float pitchVariance = 0.08f, float volumeDb = 0f)
     {
         var player = new AudioStreamPlayer3D
         {
             Stream = stream,
-            Bus = "SFX",
+            Bus = bus,
             PitchScale = 1f + _rng.RandfRange(-pitchVariance, pitchVariance),
             VolumeDb = volumeDb,
             PanningStrength = 3.0f,
@@ -84,7 +84,7 @@ public partial class AudioManager : Node
 
     
 
-    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float fadeTime = 0.5f, string bus = "SFX", Node3D parent = null)
+    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float fadeTime = 0.5f, string bus = "SFX_Hallway", Node3D parent = null)
     {
         if (_loops.ContainsKey(key)) return; // already running
 

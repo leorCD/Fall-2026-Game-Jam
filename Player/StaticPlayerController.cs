@@ -5,11 +5,15 @@ using Godot;
 public partial class StaticPlayerController : CharacterBody3D
 {
 	public bool IsDead = false;
+	public event Action Died;
 	public bool IsHiding = false;
 
-	public event Action Died;
+	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
+	private readonly System.Collections.Generic.Dictionary<int, float> _originalBusVolumes = new();
+	private Tween _audioTween;
 
-
+	[Export] public float InteractRange = 5f;
+	[Export(PropertyHint.Layers3DPhysics)] public uint InteractMask = 1;
 
 	[ExportCategory("References")]
 	[Export] public ChipManager Chips {get; private set;}
@@ -20,7 +24,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	[ExportCategory("Camera")]
 	[Export] public float max_yaw_deg = 45.0f; // maximum horizontal camera rotation
-	[Export] public float max_pitch_deg = 15.0f; // maximum vertical camera rotation.
+	[Export] public float max_pitch_deg = 30.0f; // maximum vertical camera rotation.
 	[Export] public float smooth_speed = 8.0f; // controls how smoothly the camera moves.
 	[Export] public float base_fov = 75f;
 
@@ -39,11 +43,14 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
 	{
+		SetForcedAudio(false);
 		Chips = GetNodeOrNull<ChipManager>("ChipManager");
+		if (Chips == null)
+		{
+			GD.PrintErr("No chips component");
+		}
 
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
-
-
 		if (_camera != null)
 			_camera.Fov = base_fov;
 		else
@@ -54,10 +61,16 @@ public partial class StaticPlayerController : CharacterBody3D
 			Position = GamblingPosition.GlobalPosition;
 		}
 
+		if (DeadScreen != null && IsDead == false) DeadScreen.Visible = false;
+
+
+
+
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
 			IsHiding = false;
 			IsForcedToGamble = true;
+			SetForcedAudio(true);
 
 			_zoomTween?.Kill();
 			_zoomTween = CreateTween();
@@ -70,6 +83,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		SlotMachine.SpinFinished += () => // on spin finished, return player input
 		{
 			IsForcedToGamble = false;
+			SetForcedAudio(false); // before the death check so it always restores
 
 			if (Chips != null && Chips.Balance <= 0)
 			{
@@ -85,6 +99,11 @@ public partial class StaticPlayerController : CharacterBody3D
 				.SetEase(Tween.EaseType.Out);
 		};
 	}
+
+
+
+
+
 
 	// Runs every frame. delta is the amount of time since the previous frame.
 	public override void _Process(double delta)
@@ -130,6 +149,18 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
+		if (@event is InputEventMouseButton mb && mb.Pressed && mb.ButtonIndex == MouseButton.Left)
+		{
+			if (!IsDead && !IsForcedToGamble)
+			{
+				var hit = GetObjectUnderCursor(out Vector3 pos);
+				if (hit is IInteractable interactable)
+				{
+					interactable.Interact(this);
+				}
+			}
+		}
+
 		if (IsForcedToGamble || IsDead) return;
 		if (!@event.IsActionPressed("Spacebar")) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
@@ -165,6 +196,73 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+
+
+	// Returns the collider under the cursor (and the hit point), or null
+	private GodotObject GetObjectUnderCursor(out Vector3 hitPosition)
+	{
+		hitPosition = Vector3.Zero;
+		if (_camera == null) return null;
+
+		Vector2 mousePos = GetViewport().GetMousePosition();
+		Vector3 from = _camera.ProjectRayOrigin(mousePos);
+		Vector3 to = from + _camera.ProjectRayNormal(mousePos) * InteractRange;
+
+		var query = PhysicsRayQueryParameters3D.Create(from, to, InteractMask);
+		query.CollideWithAreas = true; // set false if you only want bodies
+		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() }; // ignore the player itself
+
+		var result = GetWorld3D().DirectSpaceState.IntersectRay(query);
+		if (result.Count == 0) return null;
+
+		hitPosition = (Vector3)result["position"];
+		return result["collider"].AsGodotObject();
+	}
+
+
+	private void SetForcedAudio(bool forced)
+	{
+		int forcedIdx = AudioServer.GetBusIndex("SFX_SlotMachine");
+
+		// low-pass filters on/off
+		for (int bus = 1; bus < AudioServer.BusCount; bus++) // 0 is Master
+		{
+			if (bus == forcedIdx) continue;
+
+			for (int fx = 0; fx < AudioServer.GetBusEffectCount(bus); fx++)
+			{
+				if (AudioServer.GetBusEffect(bus, fx) is AudioEffectLowPassFilter)
+					AudioServer.SetBusEffectEnabled(bus, fx, forced);
+			}
+
+			// remember the original volume once, so repeated calls don't overwrite it
+			if (forced && !_originalBusVolumes.ContainsKey(bus))
+				_originalBusVolumes[bus] = AudioServer.GetBusVolumeDb(bus);
+		}
+
+		if (_originalBusVolumes.Count == 0) return; // nothing to fade (e.g. the call from _Ready)
+
+		_audioTween?.Kill();
+		_audioTween = CreateTween().SetParallel(true);
+
+		float duration = forced ? 1.0f : 0.65f;
+
+		foreach (var pair in _originalBusVolumes)
+		{
+			int busIdx = pair.Key;
+			float target = forced ? pair.Value + ForcedVolumeDropDb : pair.Value;
+
+			_audioTween.TweenMethod(
+				Callable.From((float db) => AudioServer.SetBusVolumeDb(busIdx, db)),
+				AudioServer.GetBusVolumeDb(busIdx),
+				target,
+				duration
+			).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.Out);
+		}
+
+		if (!forced)
+			_audioTween.Finished += () => _originalBusVolumes.Clear();
+	}
 
 	private void YouLoseScreen()
 	{

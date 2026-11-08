@@ -1,10 +1,11 @@
-[gd_scene load_steps=38 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=39 format=4 uid="uid://baow7d1r5q6f2"]
 
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
 [ext_resource type="Script" uid="uid://r64nymcr2g4i" path="res://Slot machine/SlotMachineAnimator.cs" id="2_umstu"]
 [ext_resource type="Script" uid="uid://dgavurra5q2m1" path="res://Slot machine/SlotMachineRewarder.cs" id="2_yaq0p"]
 [ext_resource type="AudioStream" uid="uid://i4epru38xo32" path="res://Audio/Slots lever-Poly.wav" id="5_yxx8c"]
+[ext_resource type="Script" uid="uid://uru8j2x2equm" path="res://Slot machine/AutoFitLabel3D.cs" id="6_yxx8c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfqw8"]
 resource_name = "Material"
@@ -422,17 +423,18 @@ albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_yaq0p"]
 material = SubResource("StandardMaterial3D_umstu")
-size = Vector2(1.57, 4.555)
+size = Vector2(0.995, 4.015)
 
 [sub_resource type="SystemFont" id="SystemFont_yxx8c"]
 font_names = PackedStringArray("BIZ UDGothic")
 subpixel_positioning = 0
 
-[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent", "SlotMachineHeadDisplay")]
+[node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent", "BetDisplay", "SlotMachineHeadDisplay")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
 script = ExtResource("2_8lydx")
 AnimationComponent = NodePath("AnimationComponent")
 RewardComponent = NodePath("RewardComponent")
+BetDisplay = NodePath("DisplayBackboard2/Bet")
 SlotMachineHeadDisplay = NodePath("DisplayBackboard/Display")
 
 [node name="RewardComponent" type="Node" parent="."]
@@ -513,14 +515,55 @@ mesh = SubResource("PlaneMesh_yaq0p")
 
 [node name="Display" type="Label3D" parent="DisplayBackboard"]
 transform = Transform3D(-4.371139e-08, -1.2709674, -4.371139e-08, -1.9106855e-15, -5.555575e-08, 1, -1, 5.5555745e-08, 1.9106853e-15, -0.027627945, 0.002481699, 1.2076384e-09)
+shaded = true
 text = "* * * * *"
 font = SubResource("SystemFont_yxx8c")
 font_size = 115
 
-[node name="SlotsLeverPoly" type="AudioStreamPlayer3D" parent="."]
-transform = Transform3D(5.2453663e-07, 0, -4, 0, 4, 0, 4, 0, 5.2453663e-07, 0.016304862, 6.0237355, -2.4540114)
-stream = ExtResource("5_yxx8c")
-volume_db = -1.67
-max_db = 0.665
-panning_strength = 3.0
-bus = &"SFX"
+[node name="DisplayBackboard2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4053809, 0.91414785, 2.668959e-08, -0.91414785, 0.4053809, 4.0260947e-08, 2.5985006e-08, -4.071925e-08, 1, 3.022711, 5.1837997, -1.3212608e-07)
+mesh = SubResource("PlaneMesh_yaq0p")
+
+[node name="Info" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-4.371139e-08, -0.8659978, -2.9802322e-08, -1.9984014e-15, -2.9802322e-08, 0.8587023, -1, 3.7853955e-08, 8.881784e-16, 0.2731411, 0.011822777, -1.1939374e-08)
+shaded = true
+text = "Current bet"
+font = SubResource("SystemFont_yxx8c")
+font_size = 20
+uppercase = true
+
+[node name="Bet" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, -0.05302051, 0.0019146821, 2.3175997e-09)
+shaded = true
+text = "00000000"
+font = SubResource("SystemFont_yxx8c")
+font_size = 115
+script = ExtResource("6_yxx8c")
+
+[node name="GreatDecrease" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, -0.17569391, 0.001914676, 1.633)
+shaded = true
+text = "<<"
+font = SubResource("SystemFont_yxx8c")
+font_size = 70
+
+[node name="Decrease" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, 0.19582984, 0.001914688, 1.633)
+shaded = true
+text = "<"
+font = SubResource("SystemFont_yxx8c")
+font_size = 70
+
+[node name="GreatIncrease" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, -0.17569403, 0.001914676, -1.633)
+shaded = true
+text = ">>"
+font = SubResource("SystemFont_yxx8c")
+font_size = 70
+
+[node name="Increase" type="Label3D" parent="DisplayBackboard2"]
+transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, 0.1958297, 0.001914688, -1.633)
+shaded = true
+text = ">"
+font = SubResource("SystemFont_yxx8c")
+font_size = 70
