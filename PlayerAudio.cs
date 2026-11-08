@@ -13,7 +13,7 @@ public partial class PlayerAudio : Node
 			player.Died += StopLoop;
 		}
 
-        AudioManager.Instance.PlayLoop("Droning", Droning, -20f, 1f, "Ambience");
+        AudioManager.Instance.PlayLoop("Droning", Droning, -25f, 1f, "Ambience");
     }
 
 	private void StopLoop()

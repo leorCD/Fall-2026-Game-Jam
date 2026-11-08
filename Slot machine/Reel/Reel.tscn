@@ -1,18 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://ctcwqv3cbt4ae"]
+[gd_scene load_steps=7 format=3 uid="uid://ctcwqv3cbt4ae"]
 
 [ext_resource type="Script" uid="uid://brfq3baan5n6k" path="res://Slot machine/Reel/SlotReel.cs" id="1_scnqk"]
+[ext_resource type="Script" uid="uid://cmdlagneydsjc" path="res://Slot machine/Reel/ReelAudioComponent.cs" id="2_7sm5h"]
 [ext_resource type="Texture2D" uid="uid://mwrphfj2untc" path="res://Slot machine/Reel/newreelsheet.png" id="2_ibk5x"]
+[ext_resource type="AudioStream" uid="uid://c1dhlxgxkybxy" path="res://Audio/HighPitchTick.wav" id="3_tw2m1"]
+[ext_resource type="AudioStream" uid="uid://govc0k3sjb26" path="res://Audio/LowPitchTick.wav" id="4_kkh5a"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
 stencil_flags = 2
 
-[node name="Reel" type="CSGCylinder3D" node_paths=PackedStringArray("Faces")]
+[node name="Reel" type="CSGCylinder3D" node_paths=PackedStringArray("Ticker", "Faces")]
 transform = Transform3D(-4.371139e-08, -1, 0, 0.9238795, -4.0384055e-08, -0.38268346, 0.38268346, -1.6727626e-08, 0.9238795, 0, 0, 0)
 radius = 0.511
 height = 0.146
 material = SubResource("StandardMaterial3D_lquwl")
 script = ExtResource("1_scnqk")
+Ticker = NodePath("ReelAudioComponent")
 Faces = [NodePath("face"), NodePath("face2"), NodePath("face3"), NodePath("face4"), NodePath("face5"), NodePath("face6"), NodePath("face7"), NodePath("face8")]
+
+[node name="ReelAudioComponent" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 4.440892e-16, 0, 4.440892e-16, 1, 0, 0, 0, 1, 0, 0, 0)
+volume_db = -15.415
+max_db = 0.486
+max_distance = 6.25
+panning_strength = 3.0
+bus = &"SFX"
+script = ExtResource("2_7sm5h")
+TickSounds = Array[AudioStream]([ExtResource("3_tw2m1"), ExtResource("4_kkh5a")])
 
 [node name="face" type="Sprite3D" parent="."]
 transform = Transform3D(-2.4634275e-09, 0.05635665, 0.38268346, -0.061, -2.6663947e-09, 0, 1.0203852e-09, -0.023343692, 0.9238795, 0.17593688, -1.159312e-07, 0.43892127)

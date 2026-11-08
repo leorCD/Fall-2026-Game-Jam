@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Muttering_1.wav-ce6c1fc5505b9f8ad8022e45503ac
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

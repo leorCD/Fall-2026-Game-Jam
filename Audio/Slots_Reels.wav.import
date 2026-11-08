@@ -13,12 +13,12 @@ dest_files=["res://.godot/imported/Slots_Reels.wav-b80905044cd728f58165f530f0734
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop_mode=0
-edit/loop_begin=0
-edit/loop_end=-1
+edit/loop_mode=2
+edit/loop_begin=29169
+edit/loop_end=32639
 compress/mode=2

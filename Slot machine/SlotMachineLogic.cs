@@ -8,6 +8,7 @@ public partial class SlotMachineLogic : Node3D
 	[Export] public StaticPlayerController Player {get; private set;}
 	[Export] public SlotMachineAnimator AnimationComponent {get; private set;}
 	[Export] public SlotMachineRewarder RewardComponent {get; private set;}
+
 	private Random _random = new Random();
 	private bool _isActive = false;
 	public event Action SpinFinished;
@@ -37,14 +38,14 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 14 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 5000; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	private int _matchWeightBonus = 25; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
 	[Export] public Label3D SlotMachineHeadDisplay;
 
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 35f; // 10s grace period until you start getting pressured to gamble
-	[Export] public float TimeMaxLimit = 42f; // 50-30 = 20s until the vignette peaks
+	[Export] public float TimeUntilVignetteStarts = 35f; // 35s grace period until you start getting pressured to gamble
+	[Export] public float TimeMaxLimit = 42f; // 42-35 = 7s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
@@ -118,7 +119,7 @@ public partial class SlotMachineLogic : Node3D
 	private bool _shiftHeld = false;
     public override void _Input(InputEvent @event)
     {
-		if (Input.IsActionJustPressed("Shift"))
+		if (Input.IsActionPressed("Shift"))
 			_shiftHeld = true;
 		if (Input.IsActionJustReleased("Shift"))
 			_shiftHeld = false;
@@ -135,9 +136,11 @@ public partial class SlotMachineLogic : Node3D
 			if (CurrentBet <= BigInteger.Zero)
 				CurrentBet = Player.Chips.Balance;
 			else
+			{
 				CurrentBet -= step;
 				if (CurrentBet < BigInteger.Zero)
 					CurrentBet = BigInteger.Zero;
+			}
 		}
 
 		if (@event.IsActionPressed("MoveRight", true))
@@ -172,6 +175,7 @@ public partial class SlotMachineLogic : Node3D
 		SpinStarted?.Invoke();
 
 		int[] results = CalculateReelFaces(3);
+
 		await AnimationComponent?.Start(results);
 		
     	var reward = RewardComponent?.Reward(results, bet); // payout

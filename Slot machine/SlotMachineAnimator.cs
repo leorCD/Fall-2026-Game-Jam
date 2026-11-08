@@ -9,10 +9,15 @@ public partial class SlotMachineAnimator : Node
 	[Export] public Node3D Lever {get; private set;}
 	[Export] public Array<Node3D> Reels {get; private set;} = new();
 
+	[ExportGroup("Sounds")]
+	[Export] private AudioStream LeverSFX;
+
 	private Tween _bodyTween;
 	private Tween _leverTween;
 	private Transform3D _bodyDefaultTransform;
 	private Transform3D _leverDefaultTransform;
+
+
 
 
 
@@ -23,6 +28,12 @@ public partial class SlotMachineAnimator : Node
 		_bodyDefaultTransform = (SlotMachine != null) ? SlotMachine.Transform : Transform3D.Identity;
 		_leverDefaultTransform = (Lever != null) ? Lever.Transform : Transform3D.Identity;
 	}
+
+
+
+
+
+
 
 	public async Task<bool> Start(int[] results)
 	{
@@ -45,6 +56,8 @@ public partial class SlotMachineAnimator : Node
 
 		Vector3 leverDefaultRotation = _leverDefaultTransform.Basis.GetEuler();
 		Vector3 leverPulledRotation = leverDefaultRotation - new Vector3(0, 0, Mathf.DegToRad(100));
+
+		AudioManager.Instance.PlaySfx3D(LeverSFX, Lever, volumeDb: -5f);
 
 		_leverTween.TweenProperty(Lever, "rotation", leverPulledRotation, 0.5f)
 			.SetTrans(Tween.TransitionType.Linear);

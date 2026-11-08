@@ -7,10 +7,10 @@ public partial class AudioManager : Node
 
     [Export] public int SfxPoolSize = 12;
 
-    private readonly List<AudioStreamPlayer> _sfxPool = new();
-    private AudioStreamPlayer _musicA, _musicB, _activeMusic;
+    private readonly List<AudioStreamPlayer3D> _sfxPool = new();
+    private AudioStreamPlayer3D _musicA, _musicB, _activeMusic;
     private readonly RandomNumberGenerator _rng = new();
-    private readonly Dictionary<string, AudioStreamPlayer> _loops = new();
+    private readonly Dictionary<string, AudioStreamPlayer3D> _loops = new();
 
     public override void _Ready()
     {
@@ -18,13 +18,13 @@ public partial class AudioManager : Node
 
         for (int i = 0; i < SfxPoolSize; i++)
         {
-            var p = new AudioStreamPlayer { Bus = "SFX" };
+            var p = new AudioStreamPlayer3D { Bus = "SFX" };
             AddChild(p);
             _sfxPool.Add(p);
         }
 
-        _musicA = new AudioStreamPlayer { Bus = "Music" };
-        _musicB = new AudioStreamPlayer { Bus = "Music" };
+        _musicA = new AudioStreamPlayer3D { Bus = "Music" };
+        _musicB = new AudioStreamPlayer3D { Bus = "Music" };
         AddChild(_musicA);
         AddChild(_musicB);
         _activeMusic = _musicA;
@@ -45,11 +45,12 @@ public partial class AudioManager : Node
             Stream = stream,
             Bus = "SFX",
             PitchScale = 1f + _rng.RandfRange(-pitchVariance, pitchVariance),
-            VolumeDb = volumeDb
+            VolumeDb = volumeDb,
+            PanningStrength = 3.0f,
+            MaxDistance = 6.5f
         };
 
-        GetTree().CurrentScene.AddChild(player);
-        player.Reparent(parent, false);
+        parent.AddChild(player);
         player.Finished += player.QueueFree;
         player.Play();
     }
@@ -83,12 +84,26 @@ public partial class AudioManager : Node
 
     
 
-    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float fadeTime = 0.5f, string bus = "SFX")
+    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float fadeTime = 0.5f, string bus = "SFX", Node3D parent = null)
     {
         if (_loops.ContainsKey(key)) return; // already running
 
-        var player = new AudioStreamPlayer { Stream = stream, Bus = bus, VolumeDb = -80f };
-        AddChild(player);
+        var player = new AudioStreamPlayer3D
+        {
+            Stream = stream,
+            Bus = bus,
+            VolumeDb = -80f,
+        };
+
+        if (parent != null)
+        {
+            parent.AddChild(player);
+            player.PanningStrength = 3.0f;
+            player.MaxDistance = 25f;
+        }
+        else
+            AddChild(player);
+        
         player.Play();
         _loops[key] = player;
 

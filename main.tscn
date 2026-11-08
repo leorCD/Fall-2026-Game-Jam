@@ -8,12 +8,12 @@
 [ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
 [ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
 [ext_resource type="Texture2D" uid="uid://d3pu6n82v5eye" path="res://Textures/11wall.jpg" id="6_efxa6"]
-[ext_resource type="Texture2D" uid="uid://bit8n2gmdd61e" path="res://Textures/floor.png" id="7_5vw27"]
 [ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
-[ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="11_efxa6"]
+[ext_resource type="Texture2D" uid="uid://dxk2djl8ecxls" path="res://Textures/newfloor.jpg" id="12_w48qg"]
 [ext_resource type="AudioStream" uid="uid://djdy6kien3cc5" path="res://Audio/Droning_torch.wav" id="13_vivmo"]
+[ext_resource type="PackedScene" uid="uid://dk4gmdnqnq61v" path="res://Monk/Types/Tall Monk/tall_monk.tscn" id="14_w48qg"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -85,7 +85,7 @@ albedo_texture = ExtResource("6_272bh")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
-albedo_texture = ExtResource("7_5vw27")
+albedo_texture = ExtResource("12_w48qg")
 uv1_triplanar = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ycdy4"]
@@ -372,13 +372,7 @@ material = SubResource("StandardMaterial3D_dg77c")
 [node name="Ceiling" type="CSGBox3D" parent="environment/RenderedRoom"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6336758, 0)
 use_collision = true
-size = Vector3(7.105, 1, 12.74)
-material = SubResource("StandardMaterial3D_ycdy4")
-
-[node name="Ceiling2" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.607973, 4.491414, 0)
-use_collision = true
-size = Vector3(7.105, 1, 29.835)
+size = Vector3(18.29, 1, 37.16)
 material = SubResource("StandardMaterial3D_ycdy4")
 
 [node name="Torch" type="CSGBox3D" parent="environment"]
@@ -415,20 +409,21 @@ omni_attenuation = 3.755
 [node name="Positions" type="Node" parent="enemies"]
 
 [node name="SpawnMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, 0, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, -8)
 
 [node name="AwayMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, 0, 5.2832813)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, 5.2832813)
 
 [node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, 0, -1.6901159)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6983604, -1.0681641, -1.6901159)
 
-[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Marker_Spawn", "Marker_Away", "Marker_Doorway", "activeMonks")]
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "Marker_Spawn", "Marker_Away", "Marker_Doorway", "activeMonks")]
 script = ExtResource("11_dg77c")
+Player = NodePath("../../Player")
 Marker_Spawn = NodePath("../Positions/SpawnMarker")
 Marker_Away = NodePath("../Positions/AwayMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
-activeMonks = [NodePath("FastMonk")]
+activeMonks = [NodePath("TallMonk")]
 
-[node name="FastMonk" parent="enemies/ActiveMonks" instance=ExtResource("11_efxa6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2552433, 0.21763134, -1.7240994)
+[node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.128064, -1.1366925, -11.473728)

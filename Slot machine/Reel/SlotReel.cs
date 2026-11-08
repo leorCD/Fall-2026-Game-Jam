@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 public partial class SlotReel : Node3D
 {
+    [Export] public ReelAudioComponent Ticker;
+    private int _lastFaceIndex;
+    private float _lastAngle;
+
     [Export] public float SpinSpeed { get; set; } = Mathf.DegToRad(720f); // ~2 full rotations/sec
     public bool IsSpinning {get; private set;}
     private float _angle;
@@ -20,6 +24,8 @@ public partial class SlotReel : Node3D
     public override void _Ready()
     {
         _baseBasis = this.Basis;
+        _lastFaceIndex = 0;
+        _lastAngle = 0f;
 
         // remember original layout, this is the source of truth
         _homeFrames = new int[Faces.Count];
@@ -95,6 +101,20 @@ public partial class SlotReel : Node3D
     // use this to rotate instead of RotateX() bc i was running into issues with Godot auto-handling euler decomposition
     private void SetAngle(float a)
     {
+        float step = Mathf.Tau / Faces.Count;
+
+        // wrap-safe: PosMod means your Tau re-normalizing never fakes a tick
+        int faceIndex = Mathf.PosMod(Mathf.FloorToInt(a / step), Faces.Count);
+        if (faceIndex != _lastFaceIndex)
+        {
+            _lastFaceIndex = faceIndex;
+
+            float dt = Mathf.Max((float)GetProcessDeltaTime(), 0.0001f);
+            float speed01 = Mathf.Clamp(Mathf.Abs(a - _lastAngle) / dt / SpinSpeed, 0f, 1f);
+            Ticker?.PlayTick(speed01);
+        }
+        _lastAngle = a;
+
         _angle = a;
         Basis = new Basis(Vector3.Forward, _angle) * _baseBasis;
     }

@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/F Monk FTSP_Export.wav-07facec0b2b50b6d6ab86c
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

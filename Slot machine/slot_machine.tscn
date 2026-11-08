@@ -1,9 +1,10 @@
-[gd_scene load_steps=37 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=38 format=4 uid="uid://baow7d1r5q6f2"]
 
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
 [ext_resource type="Script" uid="uid://r64nymcr2g4i" path="res://Slot machine/SlotMachineAnimator.cs" id="2_umstu"]
 [ext_resource type="Script" uid="uid://dgavurra5q2m1" path="res://Slot machine/SlotMachineRewarder.cs" id="2_yaq0p"]
+[ext_resource type="AudioStream" uid="uid://i4epru38xo32" path="res://Audio/Slots lever-Poly.wav" id="5_yxx8c"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfqw8"]
 resource_name = "Material"
@@ -442,6 +443,7 @@ printOutcome = false
 script = ExtResource("2_umstu")
 Lever = NodePath("../Lever")
 Reels = [NodePath("../Reel"), NodePath("../Reel2"), NodePath("../Reel3")]
+LeverSFX = ExtResource("5_yxx8c")
 
 [node name="Cube" type="MeshInstance3D" parent="."]
 transform = Transform3D(2.3455691, 0, 0, 0, 2.3455691, 0, 0, 0, 2.3455691, 0, 2.2394404, 0)
@@ -514,3 +516,11 @@ transform = Transform3D(-4.371139e-08, -1.2709674, -4.371139e-08, -1.9106855e-15
 text = "* * * * *"
 font = SubResource("SystemFont_yxx8c")
 font_size = 115
+
+[node name="SlotsLeverPoly" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(5.2453663e-07, 0, -4, 0, 4, 0, 4, 0, 5.2453663e-07, 0.016304862, 6.0237355, -2.4540114)
+stream = ExtResource("5_yxx8c")
+volume_db = -1.67
+max_db = 0.665
+panning_strength = 3.0
+bus = &"SFX"
