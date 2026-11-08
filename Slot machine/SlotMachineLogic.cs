@@ -45,11 +45,11 @@ public partial class SlotMachineLogic : Node3D
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
 	[Export] public float TimeUntilVignetteStarts = 35f; // 35s grace period until you start getting pressured to gamble
-	[Export] public float TimeMaxLimit = 42f; // 42-35 = 7s until the vignette peaks
+	[Export] public float TimeMaxLimit = 7f; // 7s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
 	private bool _maxedFired = false;
-	private bool _pressureDebounce = false;
+	private bool _isForcedSpin = false;
 
 
 	[ExportCategory("DEBUG")]
@@ -86,8 +86,11 @@ public partial class SlotMachineLogic : Node3D
 
 		if (_isActive) // player is gambling
 		{
-			_idleTime = 0f; // spinning counts as playing
-			_maxedFired = false;
+			if (!_isForcedSpin)
+            {
+                _idleTime = 0f;
+                _maxedFired = false;
+            }
 		}
 		else // player isn't gambling
 		{
@@ -101,7 +104,9 @@ public partial class SlotMachineLogic : Node3D
 
 	private void VignetteLogic()
 	{
-		float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit - TimeUntilVignetteStarts), 0f, 1f);
+		float t = _isForcedSpin 
+            ? 1f 
+            : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
 		Vignette?.SetTarget(t);
 
 		if (t >= 1f && !_maxedFired) // max vignette intensity reached
@@ -187,8 +192,10 @@ public partial class SlotMachineLogic : Node3D
 			
 			GetTree().CreateTimer(5.0).Timeout += () => SlotMachineHeadDisplay.Text = "* * * * *";
 		}
-			
 
+		_isForcedSpin = false;
+        _idleTime = 0f;
+        _maxedFired = false;
 		_isActive = false;
 		SpinFinished?.Invoke();
 	}
@@ -200,6 +207,7 @@ public partial class SlotMachineLogic : Node3D
 		BigInteger bet = Player.Chips.Balance;
 		if (bet <= 0) return;
 
+		_isForcedSpin = true;
 		CurrentBet = bet;
 		Start();
 	}
