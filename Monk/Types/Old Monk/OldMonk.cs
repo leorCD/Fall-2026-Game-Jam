@@ -29,11 +29,11 @@ public partial class OldMonk : Monk
 
     private void PlayFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -3f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, -4f, 0.1f, "SFX_Hallway", this);
     }
     private void StopFootstepSFX()
     {
-        AudioManager.Instance.StopLoop("tallmonk_footstep");
+        AudioManager.Instance.StopLoop("oldmonk_footstep");
     }
 
 
@@ -46,6 +46,7 @@ public partial class OldMonk : Monk
         {
             await ToSignal(GetTree().CreateTimer(5), Timer.SignalName.Timeout); // lingers for 5 sec in the doorway
             SendBack();
+
             Player.SetThreat(0);
         }
     }

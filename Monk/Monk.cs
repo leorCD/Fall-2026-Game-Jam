@@ -213,7 +213,7 @@ public abstract partial class Monk : CharacterBody3D
     public virtual void SendBack()
     {
         _atDoor = false;
-        _targetMarker = Marker_Away; // walks away, doesn't teleport WWWWW
+        _targetMarker = RandomNextWaypoint(); // walks away, doesn't teleport WWWWW
     }
 
     protected virtual void DoorProcess(double delta)

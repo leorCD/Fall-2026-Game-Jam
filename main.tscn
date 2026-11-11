@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=39 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://dk4gmdnqnq61v" path="res://Monk/Types/Tall Monk/tall_monk.tscn" id="14_w48qg"]
 [ext_resource type="Texture2D" uid="uid://clfhwlshou6c0" path="res://Textures/crate2_diffuse.png" id="14_yaehf"]
 [ext_resource type="Texture2D" uid="uid://b5t7lnk8vdclt" path="res://Textures/crate2_normal.png" id="15_074og"]
+[ext_resource type="Texture2D" uid="uid://bok5o4n1jqn3" path="res://common/title.png" id="18_getpj"]
 [ext_resource type="PackedScene" uid="uid://k3q2ykfyr6yq" path="res://Monk/Types/Old Monk/old_monk.tscn" id="21_getpj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
@@ -210,7 +211,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Shader" type="CanvasLayer" parent="Player"]
 layer = 7
-visible = false
 
 [node name="ColorRect" type="ColorRect" parent="Player/Shader"]
 material = SubResource("ShaderMaterial_vivmo")
@@ -254,7 +254,6 @@ environment = SubResource("Environment_4c57u")
 
 [node name="Coin" type="CSGCylinder3D" parent="environment" node_paths=PackedStringArray("Player", "SlotMachine", "MonkManager", "Canvas")]
 transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, 0, -1.0651642, -2.603025)
-visible = false
 use_collision = true
 radius = 0.045
 height = 0.006
@@ -264,7 +263,7 @@ script = ExtResource("11_cegan")
 Player = NodePath("../../Player")
 SlotMachine = NodePath("../Slot_Machine")
 MonkManager = NodePath("../../enemies/ActiveMonks")
-Canvas = [NodePath("../../Player/Shader"), NodePath("../../Player/HUD")]
+Canvas = [NodePath("../../Player/HUD")]
 
 [node name="CoinInner" type="CSGCylinder3D" parent="environment/Coin"]
 transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0.0018742085, 0)
@@ -285,6 +284,7 @@ omni_attenuation = 0.955
 
 [node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "Vignette") instance=ExtResource("9_kek77")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 4.777603e-09, -1.041632, -2.8276558)
+visible = false
 Player = NodePath("../../Player")
 Vignette = NodePath("../../Player/Vignette/ColorRect")
 
@@ -292,7 +292,7 @@ Vignette = NodePath("../../Player/Vignette/ColorRect")
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
 
 [node name="ScreenLight" type="SpotLight3D" parent="environment/Slot_Machine"]
-transform = Transform3D(-1.7484555e-07, -1.5075488, 3.7050366, 0, 3.7050366, 1.5075488, -4, 6.589705e-08, -1.619523e-07, 7.5689607, 7.1719317, 0.022144023)
+transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 7.5689607, 7.1719317, 0.022144023)
 light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
 light_energy = 1.47
 light_specular = 0.0
@@ -428,6 +428,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6336758, 0)
 use_collision = true
 size = Vector3(7.135, 1, 37.16)
 material = SubResource("StandardMaterial3D_ycdy4")
+
+[node name="title" type="Sprite3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0015555024, 1.759716, -4.367672)
+modulate = Color(0.47007585, 0.47007585, 0.47007585, 0.4117647)
+pixel_size = 0.0025
+texture = ExtResource("18_getpj")
 
 [node name="enemies" type="Node" parent="."]
 

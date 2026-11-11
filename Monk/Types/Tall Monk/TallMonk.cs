@@ -23,7 +23,7 @@ public partial class TallMonk : Monk
 
     private void PlayFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -3f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -5f, 0.1f, "SFX_Hallway", this);
     }
     private void StopFootstepSFX()
     {
@@ -36,13 +36,9 @@ public partial class TallMonk : Monk
         ChangeSprite(Idle);
         StopFootstepSFX();
 
-        if (CurrentMarker == Marker_Doorway) // clean later
+        if (CurrentMarker == Marker_Doorway)
         {
             AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 5f, 0.1f, "SFX_Hallway", this);
-        }
-        else
-        {
-            AudioManager.Instance.StopLoop("tallmonk_whisper");
         }
     }
 
@@ -50,6 +46,11 @@ public partial class TallMonk : Monk
     protected override Marker3D RandomNextWaypoint()
     {
         var next = base.RandomNextWaypoint();
+
+        if (next != Marker_Doorway)
+        {
+            AudioManager.Instance.StopLoop("tallmonk_whisper");
+        }
 
         ChangeSprite(Moving);
         PlayFootstepSFX();

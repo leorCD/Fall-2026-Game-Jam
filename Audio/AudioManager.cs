@@ -49,6 +49,7 @@ public partial class AudioManager : Node
             PanningStrength = 3.0f,
             MaxDistance = 6.5f,
             MaxDb = 50f,
+            MaxPolyphony = 12,
         };
 
         parent.AddChild(player);
@@ -95,18 +96,21 @@ public partial class AudioManager : Node
             Bus = bus,
             VolumeDb = -80f,
             MaxDb = 50f,
+            MaxPolyphony = 12,
         };
 
         if (parent != null)
         {
             parent.AddChild(player);
             player.PanningStrength = 3.0f;
-            player.MaxDistance = 25f;
+            player.MaxDistance = 6.5f;
         }
         else
             AddChild(player);
         
         player.Play();
+        GD.Print($"[loop] {key} playing={player.Playing} bus={bus} parent={parent?.Name} " +
+         $"dist={(parent != null && GetViewport().GetCamera3D() != null ? parent.GlobalPosition.DistanceTo(GetViewport().GetCamera3D().GlobalPosition) : -1f)}");
         _loops[key] = player;
 
         CreateTween().TweenProperty(player, "volume_db", volumeDb, fadeTime);
