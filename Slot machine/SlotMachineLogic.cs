@@ -10,7 +10,7 @@ public partial class SlotMachineLogic : Node3D
 	[Export] public SlotMachineRewarder RewardComponent {get; private set;}
 
 	private Random _random = new Random();
-	private bool _isActive = false;
+	public bool isActive = false;
 	public event Action SpinFinished;
 	public event Action SpinStarted;
 
@@ -44,7 +44,7 @@ public partial class SlotMachineLogic : Node3D
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 5f; // 10s grace period until you start getting pressured to gamble
+	[Export] public float TimeUntilVignetteStarts = 8f; // 10s grace period until you start getting pressured to gamble
 	[Export] public float TimeMaxLimit = 7f; // 7s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;
@@ -106,7 +106,7 @@ public partial class SlotMachineLogic : Node3D
 		if (this.Visible == false) return;
 		if (Player.IsDead) return;
 
-		if (_isActive) // player is gambling
+		if (isActive) // player is gambling
 		{
 			if (!_isForcedSpin)
             {
@@ -192,11 +192,11 @@ public partial class SlotMachineLogic : Node3D
 
 	private async void Start()
 	{
-		if (_isActive == true || Player == null) return;
+		if (isActive == true || Player == null) return;
 		BigInteger bet = CurrentBet;
 		if (!Player.Chips.SpendChips(bet)) return; // check if they have enough chips first
 
-		_isActive = true;
+		isActive = true;
 		_idleTime = 0f;
 		CurrentBet = 0;
 
@@ -219,13 +219,13 @@ public partial class SlotMachineLogic : Node3D
 		_isForcedSpin = false;
         _idleTime = 0f;
         _maxedFired = false;
-		_isActive = false;
+		isActive = false;
 		SpinFinished?.Invoke();
 	}
 
 	public void ForceSpin()
 	{
-		if (_isActive || Player == null) return;
+		if (isActive || Player == null) return;
 
 		BigInteger bet = Player.Chips.Balance;
 		if (bet <= 0) return;

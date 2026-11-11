@@ -2,10 +2,10 @@
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
-room_size = 0.58
-damping = 0.35
-spread = 0.64
-dry = 0.8
+room_size = 0.45
+damping = 0.44
+spread = 0.56
+dry = 0.72
 wet = 0.2
 
 [sub_resource type="AudioEffectEQ" id="AudioEffectEQ_j3pel"]
@@ -25,7 +25,6 @@ spread = 0.23
 wet = 0.1
 
 [resource]
-bus/0/send = &"Footsteps"
 bus/1/name = &"Ambience"
 bus/1/solo = false
 bus/1/mute = false

@@ -47,7 +47,8 @@ public partial class AudioManager : Node
             PitchScale = 1f + _rng.RandfRange(-pitchVariance, pitchVariance),
             VolumeDb = volumeDb,
             PanningStrength = 3.0f,
-            MaxDistance = 6.5f
+            MaxDistance = 6.5f,
+            MaxDb = 50f,
         };
 
         parent.AddChild(player);
@@ -93,6 +94,7 @@ public partial class AudioManager : Node
             Stream = stream,
             Bus = bus,
             VolumeDb = -80f,
+            MaxDb = 50f,
         };
 
         if (parent != null)

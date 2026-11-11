@@ -1,32 +1,40 @@
 using System;
-using System.Dynamic;
+using System.Linq;
 using Godot;
 
 public partial class StaticPlayerController : CharacterBody3D
 {
 	public bool IsDead = false;
 	public event Action Died;
-	public bool IsHiding = false;
+	public bool IsHiding {get;private set;} = false;
 
+	[ExportGroup("Sound")]
 	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
 	private readonly System.Collections.Generic.Dictionary<int, float> _originalBusVolumes = new();
 	private Tween _audioTween;
 
-	[Export] public float InteractRange = 5f;
-	[Export(PropertyHint.Layers3DPhysics)] public uint InteractMask = 1;
-
-	[ExportCategory("References")]
+	[ExportGroup("References")]
 	[Export] public ChipManager Chips {get; private set;}
 	[Export] public SlotMachineLogic SlotMachine {get; private set;}
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
 
-	[ExportCategory("Camera")]
+	[ExportGroup("Threat Meter")]
+	[Export] private ProgressBar _threatBar;
+	public float Threat { get; private set; }
+	public event Action ThreatMaxed;
+	private bool _maxed;
+	[Export] public float DecayRate { get; set; } = 0.2f;
+
+	[ExportGroup("Camera")]
 	[Export] public float max_yaw_deg = 45.0f; // maximum horizontal camera rotation
 	[Export] public float max_pitch_deg = 30.0f; // maximum vertical camera rotation.
 	[Export] public float smooth_speed = 8.0f; // controls how smoothly the camera moves.
 	[Export] public float base_fov = 75f;
+	[ExportSubgroup("Interaction")]
+	[Export] public float Range = 5f;
+	[Export(PropertyHint.Layers3DPhysics)] public uint Mask = 1;
 
 	private Camera3D _camera;
 	private Vector3 _targetRotation = Vector3.Zero;
@@ -87,9 +95,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 			if (Chips != null && Chips.Balance <= 0)
 			{
-				IsDead = true;
-				YouLoseScreen();
-				return;
+				Kill();
 			}
 			
 			_zoomTween?.Kill();
@@ -105,47 +111,46 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
-	// Runs every frame. delta is the amount of time since the previous frame.
+	// Runs every frame: gameplay logic that isn't camera-related
 	public override void _Process(double delta)
 	{
+		if (IsHiding && !_maxed)
+			SetThreat(Threat - DecayRate * (float)delta);
+	}
+
+	// Runs at the fixed physics rate: camera movement
+	public override void _PhysicsProcess(double delta)
+	{
 		if (_camera == null) return;
-		
+
 		Vector2I screenSize = DisplayServer.WindowGetSize();
 		Vector2 screenCenter = new Vector2(screenSize.X * 0.5f, screenSize.Y * 0.5f);
-		Vector2 mousePosition = !IsDead 
+		Vector2 mousePosition = !IsDead
 			? DisplayServer.MouseGetPosition() - (Vector2)DisplayServer.WindowGetPosition()
 			: screenCenter;
-		
-		// 		old : for some reason would not fix itself when the screen size was readjusted
-		// Vector2 screenSize = GetViewport().GetVisibleRect().Size;
-		// Vector2 screenCenter = screenSize * 0.5f;
-		// Vector2 mousePosition = !IsDead ? GetViewport().GetMousePosition() : screenCenter;
 
 		if (IsForcedToGamble)
-        {
+		{
 			float pullWeight = Mathf.Clamp((float)(MousePullSpeed * delta), 0f, 1f);
 			mousePosition = mousePosition.Lerp(screenCenter, pullWeight);
 
 			Input.WarpMouse(mousePosition);
-        }
+		}
 
-		float normX = (mousePosition.X / screenSize.X - 0.5f) * 2.0f;
-		float normY = (mousePosition.Y / screenSize.Y - 0.5f) * 2.0f;
-		normX = Mathf.Clamp(normX, -1.0f, 1.0f);
-		normY = Mathf.Clamp(normY, -1.0f, 1.0f);
+		float normX = Mathf.Clamp((mousePosition.X / screenSize.X - 0.5f) * 2.0f, -1.0f, 1.0f);
+		float normY = Mathf.Clamp((mousePosition.Y / screenSize.Y - 0.5f) * 2.0f, -1.0f, 1.0f);
 		float targetYaw = -normX * Mathf.DegToRad(max_yaw_deg);
 		float targetPitch = -normY * Mathf.DegToRad(max_pitch_deg);
 
-
 		_targetRotation = new Vector3(targetPitch, targetYaw, 0.0f);
 		float interpolation = IsForcedToGamble ? 0.85f : (float)(smooth_speed * delta);
-		
+
 		Vector3 cameraRotation = _camera.Rotation;
 		cameraRotation.X = Mathf.LerpAngle(cameraRotation.X, _targetRotation.X, interpolation);
 		cameraRotation.Y = Mathf.LerpAngle(cameraRotation.Y, _targetRotation.Y, interpolation);
 		_camera.Rotation = cameraRotation;
 	}
-
+	
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
@@ -194,10 +199,6 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
-
-
-
-
 	// Returns the collider under the cursor (and the hit point), or null
 	private GodotObject GetObjectUnderCursor(out Vector3 hitPosition)
 	{
@@ -206,9 +207,9 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		Vector2 mousePos = GetViewport().GetMousePosition();
 		Vector3 from = _camera.ProjectRayOrigin(mousePos);
-		Vector3 to = from + _camera.ProjectRayNormal(mousePos) * InteractRange;
+		Vector3 to = from + _camera.ProjectRayNormal(mousePos) * Range;
 
-		var query = PhysicsRayQueryParameters3D.Create(from, to, InteractMask);
+		var query = PhysicsRayQueryParameters3D.Create(from, to, Mask);
 		query.CollideWithAreas = true; // set false if you only want bodies
 		query.Exclude = new Godot.Collections.Array<Rid> { GetRid() }; // ignore the player itself
 
@@ -218,6 +219,13 @@ public partial class StaticPlayerController : CharacterBody3D
 		hitPosition = (Vector3)result["position"];
 		return result["collider"].AsGodotObject();
 	}
+
+
+
+
+
+
+
 
 
 	private void SetForcedAudio(bool forced)
@@ -264,6 +272,44 @@ public partial class StaticPlayerController : CharacterBody3D
 			_audioTween.Finished += () => _originalBusVolumes.Clear();
 	}
 
+
+
+
+
+
+
+
+
+	public void AddThreat(float amount)
+	{
+		if (_maxed) return;
+		SetThreat(Threat + amount);
+	}
+	public void SetThreat(float value)
+	{
+		Threat = Mathf.Clamp(value, 0f, 1f);
+		if (_threatBar != null)
+			_threatBar.Value = Threat * _threatBar.MaxValue;
+
+		if (Threat >= 1f && !_maxed)
+		{
+			_maxed = true;
+			ThreatMaxed?.Invoke(); // fires once
+		}
+	}
+
+
+
+
+
+
+
+	public void Kill()
+	{
+		if (IsDead) return;
+		IsDead = true;
+		YouLoseScreen();
+	}
 	private void YouLoseScreen()
 	{
 		if (DeadScreen == null) return;

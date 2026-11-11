@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 // yes i ripped a page out of fnaf
@@ -9,18 +10,27 @@ public abstract partial class Monk : CharacterBody3D
     protected StaticPlayerController Player;
     private Random _random = new Random();
     private bool _ready = false;
+    private float TickInterval = 5f; // update every 5 ticks
 
-    [Export] public float HeightMeters { get; set; } = 3f;
-    [Export] public float MovementSpeed {get; set;} = 0.5f;
-    [Export] public int Aggresiveness {get; set;} = 20; // scale from 0-20 like fnaf
-    [Export] public float TickInterval {get; set;} = 5f; // update every 5 ticks
+    [ExportCategory("General Settings")]
+    [Export] protected int Aggresiveness {get; set;} = 10; // scale from 0-20 like fnaf
 
-    public event Action<Monk> ArrivedAtDoor;
+    [ExportCategory("Monk Settings")]
+    [Export] protected float HeightMeters { get; set; } = 3f;
+    [Export] protected float MovementSpeed {get; set;} = 0.8f;
+
+    [ExportGroup("Threat")]
+    [Export] public float BuildRate { get; set; } = 0.1f;      // bar fraction per second while player is visible
+    [Export] public float ArrivalThreat { get; set; } = 0.2f;  // one-time bump on reaching the door
+    public float ActionMeter { get; private set; }
+    public event Action<Monk, float> ActionMeterChanged;        // 0-1, handy for a UI bar or audio
+    private bool _atDoor;
+
     public event Action<Monk> Attacking;
 
-    public Marker3D Marker_Spawn {get; private set;}
-    public Marker3D Marker_Doorway {get; private set;}
-    public Marker3D Marker_Away {get; private set;}
+    protected Marker3D Marker_Spawn {get; private set;}
+    protected Marker3D Marker_Doorway {get; private set;}
+    protected Marker3D Marker_Away {get; private set;}
 
     protected Vector3 MoveDirection {get; private set;}
     protected Marker3D CurrentMarker {get; private set;}
@@ -30,27 +40,27 @@ public abstract partial class Monk : CharacterBody3D
     {
         get => _targetMarker != null;
     }
-    private double _pendingDwell;     // dwell queued for the marker we're walking to
-    private double _dwellRemaining;   // dwell currently being served
 
     [ExportGroup("Textures")]
     protected Sprite3D Sprite1, Sprite2;
-    [Export] public Texture2D Idle;
-    [Export] public Texture2D Moving;
+    [Export] protected Texture2D Idle;
+    [Export] protected Texture2D Moving;
 
 
-    public void Init(StaticPlayerController player, Marker3D spawn, Marker3D doorway, Marker3D away)
+    public async Task Init(StaticPlayerController player, Marker3D spawn, Marker3D doorway, Marker3D away)
     {
         this.Player = player;
         Marker_Spawn = spawn;
         Marker_Doorway = doorway;
         Marker_Away = away;
 
-        CurrentMarker = spawn;
-        GlobalPosition = spawn.GlobalPosition;
+        CurrentMarker = _random.Next(2) == 0 ? spawn : away;
+        GlobalPosition = CurrentMarker.GlobalPosition;
 
         _ready = true;
     }
+
+
 
 
 
@@ -84,6 +94,10 @@ public abstract partial class Monk : CharacterBody3D
     }
 
 
+
+
+
+
     private void ApplySprite(Sprite3D sprite, Texture2D tex)
     {
         sprite.Texture = tex;
@@ -98,6 +112,13 @@ public abstract partial class Monk : CharacterBody3D
         ApplySprite(Sprite2, tex);
     }
 
+
+
+
+
+
+
+
     public override void _Process(double delta)
     {
         if (!_ready) return;
@@ -108,17 +129,14 @@ public abstract partial class Monk : CharacterBody3D
             
             TransitionProcess(delta);
 
-            return; // stop early, no dwell or wandering
+            return; // stop early
         }
 
-        // dwelling
-        if (_dwellRemaining > 0)
+        // at door
+        if (_atDoor)
         {
-            _dwellRemaining -= delta;
-            DwellProcess(delta);
-            if (_dwellRemaining <= 0) OnDwellEnded();
-
-            return; // stop early, no wandering while dwelling
+            DoorProcess(delta);
+            return;
         }
 
         // wandering
@@ -131,13 +149,17 @@ public abstract partial class Monk : CharacterBody3D
         }
     }
 
+
+
+
+
     private void Step(double delta)
     {
         var dest = _targetMarker.GlobalPosition;
         MoveDirection = (dest - GlobalPosition).Normalized();   // before moving
 
         this.GlobalPosition = GlobalPosition.MoveToward(dest, (float)delta * GetSpeed());
-        if (this.GlobalPosition.DistanceTo(_targetMarker.GlobalPosition) > 0.05f) return; // safety check incase the distance between two poitns are negligable
+        if (this.GlobalPosition.DistanceTo(_targetMarker.GlobalPosition) > 0.01f) return; // safety check incase the distance between two poitns are negligable
 
         Marker3D from = CurrentMarker;
         CurrentMarker = _targetMarker;
@@ -145,17 +167,21 @@ public abstract partial class Monk : CharacterBody3D
 
         OnArrived(from, CurrentMarker);
 
-        _dwellRemaining = _pendingDwell;
-        _pendingDwell = 0;
-
         if (CurrentMarker == Marker_Doorway)
-            ArrivedAtDoor?.Invoke(this);
+        {
+            _atDoor = true;
+            Player.AddThreat(ArrivalThreat);
+        }
+        else
+        {
+            _atDoor = false;
+        }
     }
-
-    protected void Dwell(double seconds) => _pendingDwell += seconds; // call this right after choosing a target: "when you get there, stay this long"
 
 
     // --- shared, overridable defaults ---
+    public bool IsAtDoor => _atDoor;
+    public void Freeze() { _atDoor = false; _ready = false; }
     protected virtual bool ShouldMove() => GD.RandRange(1, 20) <= Aggresiveness;
     protected virtual float GetSpeed() => MovementSpeed;
     protected virtual bool CanMove() => true; // freeze conditions
@@ -181,19 +207,27 @@ public abstract partial class Monk : CharacterBody3D
         var available = positions.Where(m => m != CurrentMarker && m != null).ToArray();
         if (available.Length == 0) return CurrentMarker;
 
-        return available[_random.Next(0, available.Length)];
-    } 
-    protected virtual void OnAtDoorTick(double delta) {GD.Print($"{nameof(FastMonk)} is at the door");} // hook for when they reached the doorway
+        var next = available[_random.Next(0, available.Length)];
+        return next;
+    }
     public virtual void SendBack()
     {
-        _pendingDwell = 0;
-        _dwellRemaining = 0;
+        _atDoor = false;
         _targetMarker = Marker_Away; // walks away, doesn't teleport WWWWW
     }
 
-    protected virtual void DwellProcess(double delta) { }   // looming effects, etc.
-    protected virtual void OnDwellEnded() // e.g. fire Attackin
+    protected virtual void DoorProcess(double delta)
     {
-        GD.Print("Dwell ended");
+        if (!Player.IsHiding)
+            Player.AddThreat(BuildRate * (float)delta);
+        else if (Player.Threat <= 0f)
+            SendBack(); // player drained the bar, monk gives up
     }
+
+    // protected virtual void Attack()
+    // {
+    //     _atDoor = false;
+    //     _ready = false;           // freeze the monk
+    //     Attacking?.Invoke(this);
+    // }
 }

@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://k3q2ykfyr6yq"]
+
+[ext_resource type="Script" uid="uid://c03tt6imchd1n" path="res://Monk/Types/Old Monk/OldMonk.cs" id="1_plnks"]
+[ext_resource type="Texture2D" uid="uid://bw3i2a42ixit7" path="res://Monk/Types/Old Monk/lighter.png" id="2_plnks"]
+[ext_resource type="AudioStream" uid="uid://c3eixtfnqjgmg" path="res://Audio/O Monk_FTSP_Cane.wav" id="2_xj8hr"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cfrkh"]
+
+[node name="OldMonk" type="CharacterBody3D"]
+script = ExtResource("1_plnks")
+footstepSFX = ExtResource("2_xj8hr")
+HeightMeters = 3.2
+MovementSpeed = 0.5
+Idle = ExtResource("2_plnks")
+Moving = ExtResource("2_plnks")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_cfrkh")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.715, 0, 0, 0, 0.715, 0, 0, 0, 0.715, 0, 0, 0.025904836)
+pixel_size = 0.0025
+billboard = 2
+shaded = true
+texture = ExtResource("2_plnks")
+
+[node name="Sprite3D2" type="Sprite3D" parent="."]
+transform = Transform3D(-3.125364e-08, 0, -0.715, 0, 0.715, 0, 0.715, 0, -3.125364e-08, 0, 0, 0.025904836)
+pixel_size = 0.0025
+billboard = 2
+shaded = true
+texture = ExtResource("2_plnks")

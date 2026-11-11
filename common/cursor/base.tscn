@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd1yggpdpae6d"]
+
+[ext_resource type="Texture2D" uid="uid://bvj6nqj2vfk2i" path="res://common/cursor/hand.png" id="1_ev1es"]
+[ext_resource type="Script" uid="uid://cifpkvo62k73n" path="res://common/cursor/Cursor.cs" id="2_3tb8n"]
+
+[node name="cursor" type="Sprite2D"]
+texture = ExtResource("1_ev1es")
+offset = Vector2(15.455, 11.12)
+script = ExtResource("2_3tb8n")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

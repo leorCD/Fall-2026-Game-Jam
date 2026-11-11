@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=38 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://dk4gmdnqnq61v" path="res://Monk/Types/Tall Monk/tall_monk.tscn" id="14_w48qg"]
 [ext_resource type="Texture2D" uid="uid://clfhwlshou6c0" path="res://Textures/crate2_diffuse.png" id="14_yaehf"]
 [ext_resource type="Texture2D" uid="uid://b5t7lnk8vdclt" path="res://Textures/crate2_normal.png" id="15_074og"]
+[ext_resource type="PackedScene" uid="uid://k3q2ykfyr6yq" path="res://Monk/Types/Old Monk/old_monk.tscn" id="21_getpj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -49,7 +50,7 @@ font_size = 26
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vivmo"]
 shader = ExtResource("7_w48qg")
 shader_parameter/aberration_strength = 3.0
-shader_parameter/blur_strength = 1.5400000731499999
+shader_parameter/blur_strength = 1.54000007315
 shader_parameter/noise_strength = 0.0370000017575
 shader_parameter/vignette_strength = 0.78
 shader_parameter/scanline_strength = 0.016
@@ -60,6 +61,8 @@ shader_parameter/ghost_jitter = 0.75
 shader_parameter/ghost_min_strength = 0.15
 shader_parameter/ghost_distance = 0.012
 shader_parameter/flicker_strength = 0.005
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cegan"]
 
 [sub_resource type="Environment" id="Environment_4c57u"]
 ambient_light_source = 1
@@ -120,13 +123,14 @@ script = ExtResource("1_ycdy4")
 player = NodePath("../Player")
 Droning = ExtResource("3_2cqfq")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen", "_threatBar") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
 DeadScreen = NodePath("DeadScreen")
+_threatBar = NodePath("Action meter/ProgressBar")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
@@ -199,7 +203,7 @@ offset_top = -1.0
 offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "you have no more money"
+text = "game over"
 label_settings = SubResource("LabelSettings_efxa6")
 horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -218,10 +222,25 @@ grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
 
+[node name="Action meter" type="CanvasLayer" parent="Player"]
+
+[node name="ProgressBar" type="ProgressBar" parent="Player/Action meter"]
+anchors_preset = -1
+anchor_left = 0.4253472
+anchor_top = 0.041666668
+anchor_right = 0.5746528
+anchor_bottom = 0.083333336
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/fill = SubResource("StyleBoxFlat_cegan")
+show_percentage = false
+metadata/_edit_use_anchors_ = true
+
 [node name="environment" type="Node" parent="."]
 
 [node name="DroningTorch" type="AudioStreamPlayer3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.482482, 1.3635912, -6.2911415)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.119421, 1.3635912, -6.2911415)
 stream = ExtResource("13_vivmo")
 volume_db = -2.6
 unit_size = 9.58
@@ -234,7 +253,7 @@ bus = &"SFX_Hallway"
 environment = SubResource("Environment_4c57u")
 
 [node name="Coin" type="CSGCylinder3D" parent="environment" node_paths=PackedStringArray("Player", "SlotMachine", "MonkManager", "Canvas")]
-transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, 0, -1.0651642, -2.261376)
+transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, 0, -1.0651642, -2.603025)
 visible = false
 use_collision = true
 radius = 0.045
@@ -258,10 +277,11 @@ material = SubResource("StandardMaterial3D_82xsv")
 [node name="OmniLight3D" type="OmniLight3D" parent="environment/Coin"]
 transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0.020849347, 0)
 light_color = Color(0.5756733, 0.5405527, 0.485088, 1)
+light_energy = 0.085
 light_size = 4.515
 shadow_enabled = true
-omni_range = 0.12
-omni_attenuation = 0.385
+omni_range = 1.11
+omni_attenuation = 0.955
 
 [node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "Vignette") instance=ExtResource("9_kek77")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 4.777603e-09, -1.041632, -2.8276558)
@@ -272,23 +292,24 @@ Vignette = NodePath("../../Player/Vignette/ColorRect")
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
 
 [node name="ScreenLight" type="SpotLight3D" parent="environment/Slot_Machine"]
-transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 6.2888656, 7.1719317, 0.022144074)
+transform = Transform3D(-1.7484555e-07, -1.5075488, 3.7050366, 0, 3.7050366, 1.5075488, -4, 6.589705e-08, -1.619523e-07, 7.5689607, 7.1719317, 0.022144023)
 light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
-light_energy = 1.29
+light_energy = 1.47
 light_specular = 0.0
 shadow_enabled = true
-spot_range = 4.47
-spot_attenuation = 0.98
-spot_angle = 83.05
+spot_range = 5.8
+spot_attenuation = 2.23
+spot_angle = 84.0
 
 [node name="DoorwayLight" type="SpotLight3D" parent="environment/Slot_Machine"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3112154, 7.1719317, -14.003361)
-light_color = Color(0.96543616, 0.5495843, 0.20775142, 1)
+transform = Transform3D(1, -1.6453668e-15, -6.694861e-16, 1.7763567e-15, 0.92625916, 0.3768872, -5.293956e-23, -0.3768872, 0.92625916, 5.347129, 7.1719317, -6.668339)
+light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
+light_energy = 1.47
 light_specular = 0.0
 shadow_enabled = true
-spot_range = 2.105
-spot_attenuation = -1.0
-spot_angle = 83.05
+spot_range = 2.007
+spot_attenuation = 2.13
+spot_angle = 83.2
 
 [node name="LightFromScreen" type="SpotLight3D" parent="environment/Slot_Machine"]
 transform = Transform3D(-0.111139216, 0, -0.9938049, 0, 1, 0, 0.9938049, 0, -0.111139216, 4.2135, 7.7678633, -1.8417788e-07)
@@ -331,18 +352,18 @@ material = SubResource("StandardMaterial3D_5vw27")
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 
 [node name="Torch" type="CSGBox3D" parent="environment"]
-transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 7.9940386, 1.5905014, -3.921474)
+transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 5.6309776, 0.5034691, -4.6985054)
 size = Vector3(0.1, 0.575, 0.1)
 
 [node name="torch_Light" type="OmniLight3D" parent="environment/Torch"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006980419, 0.43334556, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5124097, 0.6802933, 0)
 light_color = Color(0.97508925, 0.4187714, 0.17127562, 1)
-light_energy = 0.813
+light_energy = 3.323
 light_size = 0.053
 light_specular = 0.025
 shadow_enabled = true
-omni_range = 3.035
-omni_attenuation = 3.755
+omni_range = 4.401
+omni_attenuation = 5.035
 script = ExtResource("13_2cqfq")
 PulseAmount = 1.31
 PulseSpeed = 0.78
@@ -361,18 +382,18 @@ material = SubResource("StandardMaterial3D_cegan")
 [node name="RenderedRoom" type="Node3D" parent="environment"]
 
 [node name="wall" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4954085, 0.77398777, -0.003227234)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4330957, 0.77398777, -0.003227234)
 size = Vector3(0.1, 8, 32.63)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="div" type="CSGBox3D" parent="environment/RenderedRoom/wall"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.30708182, -1.7375071)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.30708182, -1.514148)
 operation = 2
 size = Vector3(0.1, 3.17, 2.37)
 material = SubResource("StandardMaterial3D_4c57u")
 
 [node name="wall6" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 8.135769, 0.82185745, -0.003227234)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.772708, 0.82185745, -0.003227234)
 size = Vector3(0.1, 13.67, 28.66)
 material = SubResource("StandardMaterial3D_kek77")
 
@@ -382,7 +403,7 @@ size = Vector3(0.1, 8, 11.695)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall3" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.5018513, -0.38369703, -4.456897)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.5641642, -0.38369703, -4.456897)
 size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
@@ -392,7 +413,7 @@ size = Vector3(0.1, 10.805, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
 [node name="wall4" type="CSGBox3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.1855695e-07, -0.38369703, 3.4499836)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.1219685, -0.38369703, 3.4499836)
 size = Vector3(0.1, 8, 10)
 material = SubResource("StandardMaterial3D_kek77")
 
@@ -413,13 +434,13 @@ material = SubResource("StandardMaterial3D_ycdy4")
 [node name="Positions" type="Node" parent="enemies"]
 
 [node name="SpawnMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, -8)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -8)
 
 [node name="AwayMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.594284, -1.0681641, 5.2832813)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 5.2832813)
 
 [node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0537376, -1.0681641, -1.6901159)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9394093, -1.0681641, -1.7982302)
 
 [node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "Marker_Spawn", "Marker_Away", "Marker_Doorway", "activeMonks")]
 script = ExtResource("11_dg77c")
@@ -427,8 +448,12 @@ Player = NodePath("../../Player")
 Marker_Spawn = NodePath("../Positions/SpawnMarker")
 Marker_Away = NodePath("../Positions/AwayMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
-activeMonks = [NodePath("TallMonk")]
+activeMonks = [NodePath("OldMonk"), NodePath("TallMonk")]
+
+[node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6357794, 0, -14.328474)
+visible = false
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.135336, -1.1366925, -11.475029)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.1983795, 0, 3.8379552)
 visible = false
