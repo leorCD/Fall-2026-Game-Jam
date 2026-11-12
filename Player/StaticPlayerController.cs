@@ -6,7 +6,8 @@ public partial class StaticPlayerController : CharacterBody3D
 {
 	public bool IsDead = false;
 	public event Action Died;
-	public bool IsHiding {get;private set;} = false;
+	public bool IsHiding { get; private set; } = false;
+	public event Action<bool> HidingChanged;
 
 	[ExportGroup("Sound")]
 	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
@@ -14,18 +15,18 @@ public partial class StaticPlayerController : CharacterBody3D
 	private Tween _audioTween;
 
 	[ExportGroup("References")]
-	[Export] public ChipManager Chips {get; private set;}
-	[Export] public SlotMachineLogic SlotMachine {get; private set;}
+	[Export] public ChipManager Chips { get; private set; }
+	[Export] public SlotMachineLogic SlotMachine { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
 
 	[ExportGroup("Threat Meter")]
 	[Export] private ProgressBar _threatBar;
+	[Export] public float DecayRate { get; set; } = 0.2f; // per second while hiding
 	public float Threat { get; private set; }
 	public event Action ThreatMaxed;
 	private bool _maxed;
-	[Export] public float DecayRate { get; set; } = 0.2f;
 
 	[ExportGroup("Camera")]
 	[Export] public float max_yaw_deg = 45.0f; // maximum horizontal camera rotation
@@ -37,15 +38,13 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export(PropertyHint.Layers3DPhysics)] public uint Mask = 1;
 
 	private Camera3D _camera;
+	public Camera3D Camera => _camera;
 	private Vector3 _targetRotation = Vector3.Zero;
 	private Tween _zoomTween;
 	private Tween _moveTween;
 
-    public bool IsForcedToGamble = false;
-    public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
-
-
-
+	public bool IsForcedToGamble = false;
+	public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
 
 
 	// Runs once when the Player enters the scene.
@@ -72,17 +71,15 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (DeadScreen != null && IsDead == false) DeadScreen.Visible = false;
 
 
-
-
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
-			IsHiding = false;
+			SetHiding(false);
 			IsForcedToGamble = true;
 			SetForcedAudio(true);
 
 			_zoomTween?.Kill();
 			_zoomTween = CreateTween();
-			_zoomTween.TweenProperty(_camera, "fov", base_fov-10, 2f)
+			_zoomTween.TweenProperty(_camera, "fov", base_fov - 10, 2f)
 				.SetTrans(Tween.TransitionType.Sine)
 				.SetEase(Tween.EaseType.Out);
 
@@ -96,8 +93,9 @@ public partial class StaticPlayerController : CharacterBody3D
 			if (Chips != null && Chips.Balance <= 0)
 			{
 				Kill();
+				return;
 			}
-			
+
 			_zoomTween?.Kill();
 			_zoomTween = CreateTween();
 			_zoomTween.TweenProperty(_camera, "fov", base_fov, 0.65f)
@@ -107,20 +105,13 @@ public partial class StaticPlayerController : CharacterBody3D
 	}
 
 
-
-
-
-
-	// Runs every frame: gameplay logic that isn't camera-related
+	// Runs every frame. delta is the amount of time since the previous frame.
 	public override void _Process(double delta)
 	{
 		if (IsHiding && !_maxed)
 			SetThreat(Threat - DecayRate * (float)delta);
-	}
 
-	// Runs at the fixed physics rate: camera movement
-	public override void _PhysicsProcess(double delta)
-	{
+		// camera logic (kept in _Process so the interaction raycast always aims from an up-to-date camera)
 		if (_camera == null) return;
 
 		Vector2I screenSize = DisplayServer.WindowGetSize();
@@ -150,7 +141,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		cameraRotation.Y = Mathf.LerpAngle(cameraRotation.Y, _targetRotation.Y, interpolation);
 		_camera.Rotation = cameraRotation;
 	}
-	
+
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)
 	{
@@ -170,14 +161,20 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (!@event.IsActionPressed("Spacebar")) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
 
-
 		Transform3D targetTransform = IsHiding
 			? GamblingPosition.GlobalTransform
 			: HidingPosition.GlobalTransform;
-		
+
 		MoveTo(targetTransform);
 
-		IsHiding = !IsHiding;
+		SetHiding(!IsHiding);
+	}
+
+	private void SetHiding(bool value)
+	{
+		if (IsHiding == value) return;
+		IsHiding = value;
+		HidingChanged?.Invoke(value);
 	}
 
 	public async void MoveTo(Transform3D target)
@@ -190,13 +187,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		_moveTween.TweenProperty(this, "global_transform", target, 0.5f)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
-		
+
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
 	}
-
-
-
-
 
 
 	// Returns the collider under the cursor (and the hit point), or null
@@ -219,13 +212,6 @@ public partial class StaticPlayerController : CharacterBody3D
 		hitPosition = (Vector3)result["position"];
 		return result["collider"].AsGodotObject();
 	}
-
-
-
-
-
-
-
 
 
 	private void SetForcedAudio(bool forced)
@@ -273,19 +259,12 @@ public partial class StaticPlayerController : CharacterBody3D
 	}
 
 
-
-
-
-
-
-
-
 	public void AddThreat(float amount)
 	{
 		if (_maxed) return;
 		SetThreat(Threat + amount);
 	}
-	public void SetThreat(float value)
+	private void SetThreat(float value)
 	{
 		Threat = Mathf.Clamp(value, 0f, 1f);
 		if (_threatBar != null)
@@ -297,11 +276,6 @@ public partial class StaticPlayerController : CharacterBody3D
 			ThreatMaxed?.Invoke(); // fires once
 		}
 	}
-
-
-
-
-
 
 
 	public void Kill()
@@ -318,7 +292,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		DeadScreen.Visible = true;
 		Died?.Invoke();
-		
+
 		RestartGameButton.Pressed += () =>
 		{
 			GetTree().ReloadCurrentScene();

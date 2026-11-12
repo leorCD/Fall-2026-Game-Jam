@@ -12,13 +12,11 @@ public partial class TallMonk : Monk
     {
         base._Ready();
 
-        if (footstepSFX == null)
+        if (footstepSFX == null || whisperingSFX == null)
         {
-            GD.PrintErr("Empty sfx, no sound will play");
+            GD.PrintErr("Empty sfx, some sounds will not play");
         }
     }
-
-
 
 
     private void PlayFootstepSFX()
@@ -36,7 +34,7 @@ public partial class TallMonk : Monk
         ChangeSprite(Idle);
         StopFootstepSFX();
 
-        if (CurrentMarker == Marker_Doorway)
+        if (to == Markers.Doorway)
         {
             AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 5f, 0.1f, "SFX_Hallway", this);
         }
@@ -47,7 +45,7 @@ public partial class TallMonk : Monk
     {
         var next = base.RandomNextWaypoint();
 
-        if (next != Marker_Doorway)
+        if (next != Markers.Doorway)
         {
             AudioManager.Instance.StopLoop("tallmonk_whisper");
         }
@@ -56,5 +54,13 @@ public partial class TallMonk : Monk
         PlayFootstepSFX();
 
         return next;
+    }
+
+
+    public override void Freeze()
+    {
+        base.Freeze();
+        AudioManager.Instance.StopLoop("tallmonk_whisper");
+        StopFootstepSFX();
     }
 }

@@ -1,8 +1,13 @@
 using Godot;
 using System;
 
+// Stands at the doorway for a few seconds. Only kills you if you gamble in front of him.
+// Set ArrivalThreat to 0 in the inspector so he doesn't add to the shared bar on arrival.
 public partial class OldMonk : Monk
 {
+    [ExportGroup("Old Monk")]
+    [Export] private float LingerSeconds = 5f;
+
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
 
@@ -18,18 +23,19 @@ public partial class OldMonk : Monk
     }
 
 
+    // no BuildRate and no give-up check: he only reacts to gambling
     protected override void DoorProcess(double delta)
-	{
-		if (Player.SlotMachine.isActive) // if the player gambles at any time while he's around
-		{
-			Player.AddThreat(1);
-		}
-	}
+    {
+        if (Player.SlotMachine != null && Player.SlotMachine.isActive)
+        {
+            Player.AddThreat(1f);
+        }
+    }
 
 
     private void PlayFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, -4f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, -7f, 0.1f, "SFX_Hallway", this);
     }
     private void StopFootstepSFX()
     {
@@ -37,17 +43,17 @@ public partial class OldMonk : Monk
     }
 
 
-    protected async override void OnArrived(Marker3D from, Marker3D to)
+    protected override async void OnArrived(Marker3D from, Marker3D to)
     {
         ChangeSprite(Idle);
         StopFootstepSFX();
 
-        if (CurrentMarker == Marker_Doorway)
+        if (to == Markers.Doorway)
         {
-            await ToSignal(GetTree().CreateTimer(5), Timer.SignalName.Timeout); // lingers for 5 sec in the doorway
-            SendBack();
+            await ToSignal(GetTree().CreateTimer(LingerSeconds), SceneTreeTimer.SignalName.Timeout);
 
-            Player.SetThreat(0);
+            if (IsEngaged) // skip if the monk was frozen while waiting
+                SendBack();
         }
     }
 
@@ -59,5 +65,12 @@ public partial class OldMonk : Monk
         PlayFootstepSFX();
 
         return next;
+    }
+
+
+    public override void Freeze()
+    {
+        base.Freeze();
+        StopFootstepSFX();
     }
 }

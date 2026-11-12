@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://dk4gmdnqnq61v"]
+[gd_scene load_steps=7 format=3 uid="uid://dk4gmdnqnq61v"]
 
 [ext_resource type="Script" uid="uid://l1ejnfcapekx" path="res://Monk/Types/Tall Monk/TallMonk.cs" id="1_i3vr4"]
 [ext_resource type="Texture2D" uid="uid://c30qcy42hotqa" path="res://Monk/Types/Tall Monk/tallmonk_forward.png" id="2_1g4kx"]
 [ext_resource type="AudioStream" uid="uid://ddyupn1nli6vs" path="res://Audio/T Monk FTSP_Export.wav" id="2_feedq"]
 [ext_resource type="Texture2D" uid="uid://crbahiuorbcqr" path="res://Monk/Types/Tall Monk/tallmonk_walk.png" id="3_feedq"]
 [ext_resource type="AudioStream" uid="uid://u4hxs5wab7tw" path="res://Audio/Muttering_1.wav" id="3_tsm3h"]
-[ext_resource type="Texture2D" uid="uid://bw3i2a42ixit7" path="res://Monk/Types/Old Monk/lighter.png" id="5_feedq"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hiwi7"]
 
@@ -21,14 +20,14 @@ Moving = ExtResource("3_feedq")
 shape = SubResource("BoxShape3D_hiwi7")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
-pixel_size = 0.002
+pixel_size = 0.001
 billboard = 2
 shaded = true
-texture = ExtResource("5_feedq")
+texture = ExtResource("2_1g4kx")
 
 [node name="Sprite3D2" type="Sprite3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
-pixel_size = 0.002
+pixel_size = 0.001
 billboard = 2
 shaded = true
 texture = ExtResource("2_1g4kx")

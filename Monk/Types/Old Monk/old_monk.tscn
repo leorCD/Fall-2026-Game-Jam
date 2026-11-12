@@ -9,7 +9,7 @@
 [node name="OldMonk" type="CharacterBody3D"]
 script = ExtResource("1_plnks")
 footstepSFX = ExtResource("2_xj8hr")
-HeightMeters = 3.2
+HeightMeters = 3.35
 MovementSpeed = 0.5
 Idle = ExtResource("2_plnks")
 Moving = ExtResource("2_plnks")

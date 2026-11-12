@@ -7,6 +7,7 @@ public partial class Coin : CsgCylinder3D, IInteractable
 	[Export] private SlotMachineLogic SlotMachine;
 	[Export] private MonkManager MonkManager;
     [Export] private CanvasLayer[] Canvas;
+    [Export] private Sprite3D Title;
 
 
     public override void _Ready()
@@ -24,6 +25,7 @@ public partial class Coin : CsgCylinder3D, IInteractable
     {
         if (SlotMachine == null || MonkManager == null) return;
 		
+        Title.Visible = false;
 		this.Visible = false;
 
 		SlotMachine.Visible = true;
