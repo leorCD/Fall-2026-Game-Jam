@@ -95,3 +95,4 @@ common/physics_interpolation=true
 
 rendering_device/driver.windows="d3d12"
 textures/vram_compression/import_etc2_astc=true
+lights_and_shadows/positional_shadow/atlas_size=8192
