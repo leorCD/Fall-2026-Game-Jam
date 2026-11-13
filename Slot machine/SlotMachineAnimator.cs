@@ -57,7 +57,7 @@ public partial class SlotMachineAnimator : Node
 		Vector3 leverDefaultRotation = _leverDefaultTransform.Basis.GetEuler();
 		Vector3 leverPulledRotation = leverDefaultRotation - new Vector3(0, 0, Mathf.DegToRad(100));
 
-		AudioManager.Instance.PlaySfx3D(LeverSFX, Lever, "SFX_SlotMachine", volumeDb: -5f);
+		AudioManager.Instance.PlaySfx3D(LeverSFX, Lever, "SFX_SlotMachine", volumeDb: -10f);
 
 		_leverTween.TweenProperty(Lever, "rotation", leverPulledRotation, 0.5f)
 			.SetTrans(Tween.TransitionType.Linear);

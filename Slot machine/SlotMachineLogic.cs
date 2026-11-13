@@ -45,7 +45,7 @@ public partial class SlotMachineLogic : Node3D
 		{ 7, 14 },
 		{ 8, 13 },
 	};
-	private int _matchWeightBonus = 25; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
+	private int _matchWeightBonus = 50; // weight added to a face each time its rolled in a sequence to give the player the illusion they're lucky=
 	[Export] public Label3D SlotMachineHeadDisplay;
 
 

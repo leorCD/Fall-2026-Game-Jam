@@ -18,6 +18,8 @@ public partial class TorchLight : OmniLight3D
 	private float _time;
 	private float _baseRange;
 
+	public bool Active = true;
+
 	public override void _Ready()
 	{
 		_baseRange = OmniRange;
@@ -27,6 +29,7 @@ public partial class TorchLight : OmniLight3D
 
 	public override void _Process(double delta)
 	{
+		if (Active == false) return;
 		_time += (float)delta;
 
 		float pulse = Mathf.Sin(_time * PulseSpeed);

@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=63 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://de6lq2uvxsnwk" path="res://Textures/wall.jpg" id="6_272bh"]
 [ext_resource type="Texture2D" uid="uid://d3pu6n82v5eye" path="res://Textures/11wall.jpg" id="6_efxa6"]
 [ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
+[ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://TorchObject.cs" id="9_0odxb"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/Shine.gdshader" id="10_074og"]
 [ext_resource type="Script" uid="uid://b3yqyi6vjfycq" path="res://common/Coin.cs" id="11_cegan"]
@@ -23,6 +24,8 @@
 [ext_resource type="Texture2D" uid="uid://b5t7lnk8vdclt" path="res://Textures/crate2_normal.png" id="15_074og"]
 [ext_resource type="Texture2D" uid="uid://bok5o4n1jqn3" path="res://Textures/title.png" id="18_getpj"]
 [ext_resource type="PackedScene" uid="uid://k3q2ykfyr6yq" path="res://Monk/Types/Old Monk/old_monk.tscn" id="21_getpj"]
+[ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="22_ryguw"]
+[ext_resource type="AudioStream" uid="uid://3yqwct1qm5hs" path="res://Audio/F Monk FTSP_Export.wav" id="26_lswn8"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -310,14 +313,13 @@ script = ExtResource("1_ycdy4")
 player = NodePath("../Player")
 Droning = ExtResource("3_2cqfq")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen", "_threatBar") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
 DeadScreen = NodePath("DeadScreen")
-_threatBar = NodePath("Action meter/ProgressBar")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
@@ -435,12 +437,12 @@ spot_attenuation = -1.0
 spot_angle = 83.2
 
 [node name="LightFromScreen" type="SpotLight3D" parent="environment"]
-transform = Transform3D(-0.9938049, 0, 0.11113926, 0, 1, 0, -0.11113926, 0, -0.9938049, 4.777589e-09, 0.90033376, -1.7742808)
+transform = Transform3D(-0.9996682, 0, -0.025758326, 0, 1, 0, 0.025758326, 0, -0.9996682, 4.777589e-09, 0.90033376, -1.7742808)
 light_color = Color(0.90555984, 0.67913526, 0.62288743, 1)
 light_specular = 0.0
-spot_range = 4.695
+spot_range = 6.53
 spot_attenuation = 0.86
-spot_angle = 33.7
+spot_angle = 55.4
 spot_angle_attenuation = 12.996028
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
@@ -493,9 +495,13 @@ material = SubResource("StandardMaterial3D_5vw27")
 [node name="Hidden" type="Marker3D" parent="environment/ClosetTemp"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 
-[node name="Torch" type="MeshInstance3D" parent="environment"]
+[node name="Torch" type="MeshInstance3D" parent="environment" node_paths=PackedStringArray("light", "fire", "sound")]
 transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 5.6309776, 0.7411541, -2.0661566)
 mesh = SubResource("ArrayMesh_1u8w0")
+script = ExtResource("9_0odxb")
+light = NodePath("torch_Light")
+fire = NodePath("fire")
+sound = NodePath("DroningTorch")
 
 [node name="torch_Light" type="OmniLight3D" parent="environment/Torch"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038092613, 0.67811406, 0)
@@ -505,7 +511,7 @@ light_size = 0.06
 light_specular = 0.0
 light_cull_mask = 4293918721
 shadow_enabled = true
-omni_range = 4.053
+omni_range = 4.0
 omni_attenuation = 3.575
 script = ExtResource("13_2cqfq")
 PulseAmount = 1.31
@@ -576,12 +582,12 @@ pixel_size = 0.0025
 texture = ExtResource("18_getpj")
 
 [node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "SlotMachine", "MonkManager", "Canvas", "Title")]
-transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, 0, -1.0651642, -2.603025)
+transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, -0.6988373, -1.0651642, -3.2747014)
 script = ExtResource("11_cegan")
 Player = NodePath("../../Player")
 SlotMachine = NodePath("../Slot_Machine")
 MonkManager = NodePath("../../enemies/ActiveMonks")
-Canvas = [NodePath("../../Player/HUD")]
+Canvas = []
 Title = NodePath("../title")
 
 [node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="environment/Coin"]
@@ -608,6 +614,9 @@ shape = SubResource("BoxShape3D_ok6jj")
 [node name="SpawnMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -8)
 
+[node name="SpawnMarker2" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -9.628004)
+
 [node name="AwayMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 5.2832813)
 
@@ -615,19 +624,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 5.2832
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9394093, -1.0681641, -1.7982302)
 
 [node name="InsideMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5156493, -1.0681641, -1.0959419)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4120624, -1.0681641, -1.4870651)
 
-[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "Marker_Spawn", "Marker_Away", "Marker_Doorway", "Marker_Inside", "activeMonks")]
+[node name="InsideMarker2" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21829844, -1.0681641, 0.8804836)
+
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "Marker_Spawn", "Marker_Spawn2", "Marker_Away", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "activeMonks")]
 script = ExtResource("11_dg77c")
 Player = NodePath("../../Player")
 Marker_Spawn = NodePath("../Positions/SpawnMarker")
+Marker_Spawn2 = NodePath("../Positions/SpawnMarker2")
 Marker_Away = NodePath("../Positions/AwayMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
-activeMonks = [NodePath("OldMonk"), NodePath("TallMonk")]
+Marker_DeepInside = NodePath("../Positions/InsideMarker2")
+activeMonks = [NodePath("FastMonk"), NodePath("OldMonk"), NodePath("TallMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6357794, 0, -14.328474)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.03673)
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.1983795, 0, 3.8379552)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.03673)
+
+[node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.499781)
+_torch = NodePath("../../../environment/Torch")
+footstepSFX = ExtResource("26_lswn8")
+ArrivalThreat = 0.4

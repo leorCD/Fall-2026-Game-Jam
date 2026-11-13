@@ -2,15 +2,25 @@ using Godot;
 using System;
 using System.Linq;
 
+
+
+
+public readonly record struct MonkMarkers(Marker3D Spawn, Marker3D Spawn2, Marker3D Doorway, Marker3D Away, Marker3D Inside, Marker3D DeepInside);
+
+
+
+
 public partial class MonkManager : Node
 {
 	[Export] public StaticPlayerController Player;
 
 	[ExportCategory("Markers")]
 	[Export] public Marker3D Marker_Spawn;
+	[Export] public Marker3D Marker_Spawn2;
 	[Export] public Marker3D Marker_Away;
 	[Export] public Marker3D Marker_Doorway;
 	[Export] public Marker3D Marker_Inside;
+	[Export] public Marker3D Marker_DeepInside;
 
 	[Export] public Monk[] activeMonks;
 
@@ -35,7 +45,7 @@ public partial class MonkManager : Node
 	{
 		if (activeMonks == null || Player == null) return;
 
-		var markers = new MonkMarkers(Marker_Spawn, Marker_Doorway, Marker_Away, Marker_Inside);
+		var markers = new MonkMarkers(Marker_Spawn, Marker_Spawn2, Marker_Doorway, Marker_Away, Marker_Inside, Marker_DeepInside);
 
 		foreach (var monk in activeMonks)
 		{

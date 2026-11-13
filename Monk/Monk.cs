@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public readonly record struct MonkMarkers(Marker3D Spawn, Marker3D Doorway, Marker3D Away, Marker3D Inside);
-
 // yes i ripped a page out of fnaf
 public abstract partial class Monk : CharacterBody3D
 {
@@ -33,12 +31,12 @@ public abstract partial class Monk : CharacterBody3D
     protected Vector3 MoveDirection { get; private set; }
     protected Marker3D CurrentMarker { get; private set; }
 
-    private Marker3D _targetMarker;
-    private readonly Queue<Marker3D> _route = new(); // extra stops after _targetMarker
+    protected Marker3D TargetMarker;
+    private readonly Queue<Marker3D> _route = new(); // extra stops after TargetMarker
     private double _timer;
     private bool _engaged; // standing at a marker where DoorProcess runs (doorway, or inside)
 
-    public bool IsMoving => _targetMarker != null;
+    public bool IsMoving => TargetMarker != null;
     public bool IsEngaged => _engaged;
 
 
@@ -100,7 +98,7 @@ public abstract partial class Monk : CharacterBody3D
     {
         if (!_ready) return;
 
-        if (_targetMarker != null)
+        if (TargetMarker != null)
         {
             if (CanMove())
                 Step(delta);
@@ -121,26 +119,26 @@ public abstract partial class Monk : CharacterBody3D
         {
             _timer = 0;
             if (ShouldMove())
-                _targetMarker = RandomNextWaypoint();
+                TargetMarker = RandomNextWaypoint();
         }
     }
 
 
     private void Step(double delta)
     {
-        var dest = _targetMarker.GlobalPosition;
+        var dest = TargetMarker.GlobalPosition;
         MoveDirection = (dest - GlobalPosition).Normalized(); // before moving
 
         GlobalPosition = GlobalPosition.MoveToward(dest, (float)delta * GetSpeed());
         if (GlobalPosition.DistanceTo(dest) > 0.01f) return;
 
         Marker3D from = CurrentMarker;
-        CurrentMarker = _targetMarker;
-        _targetMarker = null;
+        CurrentMarker = TargetMarker;
+        TargetMarker = null;
 
-        if (_route.Count > 0) // passing through, not arriving
+        if (_route.Count > 0) // if a route exxists, dequeue once one is reached
         {
-            _targetMarker = _route.Dequeue();
+            TargetMarker = _route.Dequeue();
             return;
         }
 
@@ -159,15 +157,29 @@ public abstract partial class Monk : CharacterBody3D
 
 
     // walk through the given markers in order (use this when a straight line would cut through the room)
-    protected void GoTo(params Marker3D[] route)
+    protected void StartRoute(params Marker3D[] route)
     {
-        if (route.Length == 0) return;
+        if (route.Length == 0) return; // early exit
 
         _engaged = false;
-        _route.Clear();
-        foreach (var m in route) _route.Enqueue(m);
-        _targetMarker = _route.Dequeue();
+        _route.Clear(); // clear local route
+        foreach (var m in route) // no wait time between points
+            _route.Enqueue(m);
+        TargetMarker = _route.Dequeue();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // --- shared, overridable defaults ---
@@ -199,7 +211,7 @@ public abstract partial class Monk : CharacterBody3D
     protected virtual Marker3D RandomNextWaypoint()
     {
         // Inside is intentionally not here: it's only reachable through scripted GoTo calls
-        Marker3D[] positions = { Markers.Spawn, Markers.Doorway, Markers.Away };
+        Marker3D[] positions = { Markers.Spawn, Markers.Doorway, Markers.Away, Markers.Spawn2 };
 
         var available = positions.Where(m => m != CurrentMarker && m != null).ToArray();
         if (available.Length == 0) return CurrentMarker;
@@ -211,7 +223,7 @@ public abstract partial class Monk : CharacterBody3D
     {
         _engaged = false;
         _route.Clear();
-        _targetMarker = RandomNextWaypoint(); // walks away, doesn't teleport WWWWW
+        TargetMarker = RandomNextWaypoint(); // walks away, doesn't teleport WWWWW
     }
 
     protected virtual void DoorProcess(double delta)
@@ -227,7 +239,7 @@ public abstract partial class Monk : CharacterBody3D
     {
         if (cam == null) return;
 
-        Vector3 front = cam.GlobalPosition - cam.GlobalTransform.Basis.Z * 1.5f;
+        Vector3 front = cam.GlobalPosition - cam.GlobalTransform.Basis.Z * 1.5f; // moves the monk infront of the player
         CreateTween()
             .TweenProperty(this, "global_position", new Vector3(front.X, GlobalPosition.Y, front.Z), 0.4f)
             .SetTrans(Tween.TransitionType.Expo)

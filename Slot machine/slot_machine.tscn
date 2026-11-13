@@ -485,7 +485,7 @@ mesh = SubResource("ArrayMesh_pvy5e")
 skeleton = NodePath("")
 
 [node name="Cylinder" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5443243, 0, 0, 0, -1.0492149e-08, 0.5443243, 0, -0.2400324, -2.379317e-08, 2.0141664, 5.451843, -2.2027888)
+transform = Transform3D(0.5443243, 0, 0, 0, -1.0492149e-08, 0.5443243, 0, -0.2400324, -2.379317e-08, 2.0141664, 5.451843, 2.230354)
 mesh = SubResource("ArrayMesh_hqpcx")
 skeleton = NodePath("")
 
@@ -499,10 +499,10 @@ transform = Transform3D(0.7062166, 1.1097374e-07, 3.1672199, 3.1672199, -1.38443
 transform = Transform3D(0.7062166, 1.1097374e-07, 3.1672199, 3.1672199, -1.3844358e-07, -0.7062166, 1.1097374e-07, 3.245, -1.3844358e-07, 0.9206566, 6.936638, -1.0126182)
 
 [node name="Lever" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0314767, 5.439058, -2.6062493)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.031477, 5.439058, 2.7982066)
 
 [node name="Cylinder_001" type="MeshInstance3D" parent="Lever"]
-transform = Transform3D(0.36682257, 0, 0, 0, -1.6034324e-08, 0.36682257, 0, -0.36682257, -1.6034324e-08, -0.017310381, 0.012784958, 0.19934106)
+transform = Transform3D(0.36682257, 0, 0, 0, -1.6034324e-08, 0.36682257, 0, -0.36682257, -1.6034324e-08, -0.01731062, 0.012784958, -0.15939212)
 mesh = SubResource("ArrayMesh_u0pp1")
 skeleton = NodePath("")
 

@@ -5,15 +5,17 @@ using System;
 // doorway, she walks Inside and watches you. Leave the hiding spot while she's watching and you die.
 public partial class FastMonk : Monk
 {
+    private Random _random = new Random();
+
+    [ExportGroup("References")]
+    [Export] private TorchObject _torch;
+
     [ExportGroup("Inside Watch")]
     [Export] private float WatchSeconds = 6f;
     private double _watchTimer;
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
-
-
-    protected override float GetSpeed() => MovementSpeed * 2f;
 
 
     public override void Init(StaticPlayerController player, MonkMarkers markers)
@@ -50,7 +52,7 @@ public partial class FastMonk : Monk
         if (!hiding || !IsEngaged || CurrentMarker != Markers.Doorway) return;
 
         _watchTimer = 0;
-        GoTo(Markers.Inside);
+        StartRoute(Markers.Inside, Markers.DeepInside);
         StartWalking();
     }
 
@@ -65,6 +67,12 @@ public partial class FastMonk : Monk
     {
         var next = base.RandomNextWaypoint();
         StartWalking();
+        
+        if (next == Markers.Doorway)
+        {
+            _torch.TurnOff();
+        }
+        
         return next;
     }
 
@@ -86,7 +94,9 @@ public partial class FastMonk : Monk
         _watchTimer += delta;
         if (_watchTimer >= WatchSeconds)
         {
-            GoTo(Markers.Doorway, Markers.Away); // leaves the way she came
+            Marker3D last = _random.Next(2) == 0 ? Markers.Spawn : Markers.Away;
+
+            StartRoute(Markers.Inside, Markers.Doorway, last); // leaves the way she came
             StartWalking();
         }
     }
