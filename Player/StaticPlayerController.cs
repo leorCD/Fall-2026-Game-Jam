@@ -46,6 +46,17 @@ public partial class StaticPlayerController : CharacterBody3D
 	public bool IsForcedToGamble = false;
 	public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
 
+	private GodotObject _focused;
+
+
+
+
+
+
+
+
+
+
 
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
@@ -140,6 +151,8 @@ public partial class StaticPlayerController : CharacterBody3D
 		cameraRotation.X = Mathf.LerpAngle(cameraRotation.X, _targetRotation.X, interpolation);
 		cameraRotation.Y = Mathf.LerpAngle(cameraRotation.Y, _targetRotation.Y, interpolation);
 		_camera.Rotation = cameraRotation;
+
+		UpdateFocus();
 	}
 
 	// Runs whenever the player sends an input event.
@@ -192,6 +205,15 @@ public partial class StaticPlayerController : CharacterBody3D
 	}
 
 
+
+
+
+
+
+
+
+
+
 	// Returns the collider under the cursor (and the hit point), or null
 	private GodotObject GetObjectUnderCursor(out Vector3 hitPosition)
 	{
@@ -212,6 +234,28 @@ public partial class StaticPlayerController : CharacterBody3D
 		hitPosition = (Vector3)result["position"];
 		return result["collider"].AsGodotObject();
 	}
+
+	private void UpdateFocus()
+	{
+		GodotObject target = null;
+		if (!IsDead && !IsForcedToGamble || IsHiding)
+			target = GetObjectUnderCursor(out _);
+
+		if (target == _focused) return;
+
+		if (GodotObject.IsInstanceValid(_focused))
+			(_focused as IFocusable)?.OnUnfocus();
+
+		_focused = target;
+		(_focused as IFocusable)?.OnFocus();
+	}
+
+
+
+
+
+
+
 
 
 	private void SetForcedAudio(bool forced)
@@ -259,6 +303,12 @@ public partial class StaticPlayerController : CharacterBody3D
 	}
 
 
+
+
+
+
+
+
 	public void AddThreat(float amount)
 	{
 		if (_maxed) return;
@@ -276,6 +326,14 @@ public partial class StaticPlayerController : CharacterBody3D
 			ThreatMaxed?.Invoke(); // fires once
 		}
 	}
+
+
+
+
+
+
+
+
 
 
 	public void Kill()

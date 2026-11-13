@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=47 format=3 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -15,7 +15,9 @@
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dxk2djl8ecxls" path="res://Textures/newfloor.jpg" id="12_w48qg"]
 [ext_resource type="Script" uid="uid://d07x67hgln8iy" path="res://common/TorchLight.cs" id="13_2cqfq"]
+[ext_resource type="Shader" uid="uid://cn1yrvuu74seh" path="res://common/Fire.gdshader" id="13_ryguw"]
 [ext_resource type="AudioStream" uid="uid://djdy6kien3cc5" path="res://Audio/Droning_torch.wav" id="13_vivmo"]
+[ext_resource type="Texture2D" uid="uid://cninxtfm3vlhx" path="res://Textures/fire.png" id="14_d13ii"]
 [ext_resource type="PackedScene" uid="uid://dk4gmdnqnq61v" path="res://Monk/Types/Tall Monk/tall_monk.tscn" id="14_w48qg"]
 [ext_resource type="Texture2D" uid="uid://clfhwlshou6c0" path="res://Textures/crate2_diffuse.png" id="14_yaehf"]
 [ext_resource type="Texture2D" uid="uid://b5t7lnk8vdclt" path="res://Textures/crate2_normal.png" id="15_074og"]
@@ -94,6 +96,34 @@ albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
 transparency = 1
 albedo_color = Color(0.7036076, 0.38954917, 0.30943543, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1u8w0"]
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_d13ii"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_0odxb"]
+noise_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lswn8"]
+noise = SubResource("FastNoiseLite_0odxb")
+color_ramp = SubResource("Gradient_d13ii")
+seamless = true
+seamless_blend_skirt = 0.923
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d13ii"]
+render_priority = 0
+shader = ExtResource("13_ryguw")
+shader_parameter/albedo_texture = ExtResource("14_d13ii")
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_lswn8")
+shader_parameter/uv_offset = Vector2(0, 0)
+shader_parameter/intensity = 0.7
+shader_parameter/framerate = 30.0
+shader_parameter/resolution = 64.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_1u8w0"]
+material = SubResource("ShaderMaterial_d13ii")
+size = Vector2(0.27, 0.4)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cegan"]
 albedo_texture = ExtResource("14_yaehf")
@@ -213,7 +243,6 @@ metadata/_edit_use_anchors_ = true
 layer = 7
 
 [node name="Static" type="ColorRect" parent="Player/Shader"]
-visible = false
 material = SubResource("ShaderMaterial_vivmo")
 anchors_preset = 15
 anchor_right = 1.0
@@ -352,23 +381,40 @@ material = SubResource("StandardMaterial3D_5vw27")
 [node name="Hidden" type="Marker3D" parent="environment/ClosetTemp"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 
-[node name="Torch" type="CSGBox3D" parent="environment"]
+[node name="Torch" type="CSGCylinder3D" parent="environment"]
 transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 5.6309776, 0.5034691, -4.6985054)
-size = Vector3(0.1, 0.575, 0.1)
+radius = 0.05
+height = 0.67
+material = SubResource("StandardMaterial3D_1u8w0")
+
+[node name="Torch2" type="CSGBox3D" parent="environment/Torch"]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 0, 0.33883947, 0)
+size = Vector3(0.15, 0.08, 0.15)
+material = SubResource("StandardMaterial3D_1u8w0")
+
+[node name="Torch3" type="CSGBox3D" parent="environment/Torch/Torch2"]
+transform = Transform3D(1, 0, -2.9802322e-08, 0, 1, 0, -2.9802322e-08, 0, 1, 0, 0.055258512, 0)
+operation = 2
+size = Vector3(0.1, 0.08, 0.1)
+material = SubResource("StandardMaterial3D_1u8w0")
 
 [node name="torch_Light" type="OmniLight3D" parent="environment/Torch"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5124097, 0.6802933, 0)
-light_color = Color(0.97508925, 0.4187714, 0.17127562, 1)
-light_energy = 3.323
-light_size = 0.053
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.03809247, 0.67811406, 0)
+light_color = Color(0.8439405, 0.37850982, 0.15559474, 1)
+light_energy = 1.64
+light_size = 0.07
 light_specular = 0.025
 shadow_enabled = true
-omni_range = 4.401
-omni_attenuation = 5.035
+omni_range = 4.053
+omni_attenuation = 3.575
 script = ExtResource("13_2cqfq")
 PulseAmount = 1.31
 PulseSpeed = 0.78
 FlickerAmount = 0.35
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="environment/Torch"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06800357, 0.5105388, 0)
+mesh = SubResource("QuadMesh_1u8w0")
 
 [node name="Crate" type="CSGBox3D" parent="environment"]
 transform = Transform3D(0.98763365, 0, 0.15677921, 0, 1, 0, -0.15677921, 0, 0.98763365, -2.4491405, -0.43816411, -3.2256756)

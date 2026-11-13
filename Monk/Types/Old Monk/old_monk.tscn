@@ -11,6 +11,7 @@ script = ExtResource("1_plnks")
 footstepSFX = ExtResource("2_xj8hr")
 HeightMeters = 3.35
 MovementSpeed = 0.5
+ArrivalThreat = 0.0
 Idle = ExtResource("2_plnks")
 Moving = ExtResource("2_plnks")
 

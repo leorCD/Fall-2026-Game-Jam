@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=42 format=4 uid="uid://baow7d1r5q6f2"]
 
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dgavurra5q2m1" path="res://Slot machine/SlotMachineRewarder.cs" id="2_yaq0p"]
 [ext_resource type="AudioStream" uid="uid://i4epru38xo32" path="res://Audio/Slots lever-Poly.wav" id="5_yxx8c"]
 [ext_resource type="Script" uid="uid://uru8j2x2equm" path="res://Slot machine/AutoFitLabel3D.cs" id="6_yxx8c"]
+[ext_resource type="Script" uid="uid://brffiwntv3rug" path="res://Slot machine/Betbutton.cs" id="7_kanra"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfqw8"]
 resource_name = "Material"
@@ -417,6 +418,9 @@ _surfaces = [{
 blend_shape_mode = 0
 shadow_mesh = SubResource("ArrayMesh_tmaip")
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_kanra"]
+size = Vector3(0.585, 2.06, 0.755)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_umstu"]
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
@@ -428,6 +432,9 @@ size = Vector2(0.995, 4.015)
 [sub_resource type="SystemFont" id="SystemFont_yxx8c"]
 font_names = PackedStringArray("BIZ UDGothic")
 subpixel_positioning = 0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_yxx8c"]
+size = Vector3(0.45, 0.355, 0.125)
 
 [node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("AnimationComponent", "RewardComponent", "BetDisplay", "SlotMachineHeadDisplay")]
 transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
@@ -509,6 +516,17 @@ transform = Transform3D(0.24531014, 0, 0, 0, 0.24531014, 0, 0, 0, 0.24531014, 0.
 mesh = SubResource("ArrayMesh_owgwk")
 skeleton = NodePath("")
 
+[node name="Area3D3" type="Area3D" parent="Lever" node_paths=PackedStringArray("_slotMachine")]
+transform = Transform3D(-4.3577348e-08, 0.094594926, 0.9955159, -3.0227731e-10, 0.9955159, -0.094594926, -1, -4.4231174e-09, -4.3353346e-08, 0.34590644, 1.995484, -0.008097426)
+script = ExtResource("7_kanra")
+_slotMachine = NodePath("../..")
+_action = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Lever/Area3D3"]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+shape = SubResource("BoxShape3D_kanra")
+debug_color = Color(0, 0.6, 0.69803923, 1)
+
 [node name="DisplayBackboard" type="MeshInstance3D" parent="."]
 transform = Transform3D(-4.3711385e-08, 1, 4.371139e-08, -1, -4.371139e-08, 4.371139e-08, 4.371139e-08, -4.371139e-08, 1, 2.1981318, 9.739165, -9.608339e-08)
 mesh = SubResource("PlaneMesh_yaq0p")
@@ -547,12 +565,30 @@ text = "<<"
 font = SubResource("SystemFont_yxx8c")
 font_size = 70
 
+[node name="Area3D" type="Area3D" parent="DisplayBackboard2/GreatDecrease" node_paths=PackedStringArray("_slotMachine")]
+script = ExtResource("7_kanra")
+_slotMachine = NodePath("../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/GreatDecrease/Area3D"]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+shape = SubResource("BoxShape3D_yxx8c")
+
 [node name="Decrease" type="Label3D" parent="DisplayBackboard2"]
 transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, 0.19582984, 0.001914688, 1.633)
 shaded = true
 text = "<"
 font = SubResource("SystemFont_yxx8c")
 font_size = 70
+
+[node name="Area3D2" type="Area3D" parent="DisplayBackboard2/Decrease" node_paths=PackedStringArray("_slotMachine")]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+script = ExtResource("7_kanra")
+_slotMachine = NodePath("../../..")
+_action = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/Decrease/Area3D2"]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+shape = SubResource("BoxShape3D_yxx8c")
 
 [node name="GreatIncrease" type="Label3D" parent="DisplayBackboard2"]
 transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, -0.17569403, 0.001914676, -1.633)
@@ -561,9 +597,29 @@ text = ">>"
 font = SubResource("SystemFont_yxx8c")
 font_size = 70
 
+[node name="Area3D2" type="Area3D" parent="DisplayBackboard2/GreatIncrease" node_paths=PackedStringArray("_slotMachine")]
+transform = Transform3D(0.9999997, -3.0531133e-15, 1.1657342e-15, 2.7755576e-17, 0.99999946, 2.9802322e-08, -2.220446e-16, 5.9604645e-08, 0.9999996, 0, 0, 0)
+script = ExtResource("7_kanra")
+_slotMachine = NodePath("../../..")
+_action = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/GreatIncrease/Area3D2"]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+shape = SubResource("BoxShape3D_yxx8c")
+
 [node name="Increase" type="Label3D" parent="DisplayBackboard2"]
 transform = Transform3D(-5.0923767e-08, -1.009, -4.37551e-08, 0, -4.4104787e-08, 1.001, -1.165, 4.4104787e-08, 1.9125962e-15, 0.1958297, 0.001914688, -1.633)
 shaded = true
 text = ">"
 font = SubResource("SystemFont_yxx8c")
 font_size = 70
+
+[node name="Area3D2" type="Area3D" parent="DisplayBackboard2/Increase" node_paths=PackedStringArray("_slotMachine")]
+transform = Transform3D(0.9999996, -3.0253577e-15, 1.110223e-15, 2.7755576e-17, 0.9999994, 2.9802322e-08, -2.220446e-16, 1.1920929e-07, 0.99999946, 0, 0, 0)
+script = ExtResource("7_kanra")
+_slotMachine = NodePath("../../..")
+_action = 2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/Increase/Area3D2"]
+transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
+shape = SubResource("BoxShape3D_yxx8c")

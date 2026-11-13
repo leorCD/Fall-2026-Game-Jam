@@ -16,7 +16,7 @@ public partial class SlotMachineLogic : Node3D
 
 	[Export] public AutoFitLabel3D BetDisplay;
 	private BigInteger _currentBet = BigInteger.Zero;
-	private BigInteger CurrentBet
+	public BigInteger CurrentBet // was private
 	{
 		get => _currentBet;
 		set
@@ -25,6 +25,13 @@ public partial class SlotMachineLogic : Node3D
 			if (BetDisplay != null)
 				BetDisplay.SetText($"{ChipManager.FormatBigNumber(_currentBet)}");
 		}
+	}
+
+	public void TrySpin(StaticPlayerController player)
+	{
+		if (player.IsHiding) return;
+		if (player.Chips.HasEnoughChips(1) && CurrentBet > 0)
+			Start();
 	}
 
 	private Dictionary<int, int> _faceWeights = new()
@@ -144,42 +151,9 @@ public partial class SlotMachineLogic : Node3D
 
 
 
-	private bool _shiftHeld = false;
-    public override void _Input(InputEvent @event)
-    {
-		if (Input.IsActionPressed("Shift"))
-			_shiftHeld = true;
-		if (Input.IsActionJustReleased("Shift"))
-			_shiftHeld = false;
-    }
-
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		if (Player == null) return;
-    
-		// scale bet adjustment steps proportionally if balance is massive
-		BigInteger step = _shiftHeld ? BigInteger.Max(5, Player.Chips.Balance / 20) : 1;
-		if (@event.IsActionPressed("MoveLeft", true))
-		{
-			if (CurrentBet <= BigInteger.Zero)
-				CurrentBet = Player.Chips.Balance;
-			else
-			{
-				CurrentBet -= step;
-				if (CurrentBet < BigInteger.Zero)
-					CurrentBet = BigInteger.Zero;
-			}
-		}
-
-		if (@event.IsActionPressed("MoveRight", true))
-		{
-			if (CurrentBet >= Player.Chips.Balance)
-				CurrentBet = BigInteger.Zero;
-			else
-				CurrentBet += step;
-				if (CurrentBet > Player.Chips.Balance)
-					CurrentBet = Player.Chips.Balance;
-   		}
 
 		if (Player.IsHiding == false && @event.IsActionPressed("StartGambling"))
 		{

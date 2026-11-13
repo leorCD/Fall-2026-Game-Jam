@@ -109,8 +109,8 @@ public partial class AudioManager : Node
             AddChild(player);
         
         player.Play();
-        GD.Print($"[loop] {key} playing={player.Playing} bus={bus} parent={parent?.Name} " +
-         $"dist={(parent != null && GetViewport().GetCamera3D() != null ? parent.GlobalPosition.DistanceTo(GetViewport().GetCamera3D().GlobalPosition) : -1f)}");
+        // GD.Print($"[loop] {key} playing={player.Playing} bus={bus} parent={parent?.Name} " +
+        //  $"dist={(parent != null && GetViewport().GetCamera3D() != null ? parent.GlobalPosition.DistanceTo(GetViewport().GetCamera3D().GlobalPosition) : -1f)}");
         _loops[key] = player;
 
         CreateTween().TweenProperty(player, "volume_db", volumeDb, fadeTime);
