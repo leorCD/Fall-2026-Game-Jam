@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Coin : CsgCylinder3D, IInteractable
+public partial class Coin : StaticBody3D, IInteractable
 {
     [Export] private StaticPlayerController Player;
 	[Export] private SlotMachineLogic SlotMachine;
