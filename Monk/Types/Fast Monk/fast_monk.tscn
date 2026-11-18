@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://yl5oh0u7fiqf"]
+[gd_scene load_steps=6 format=3 uid="uid://yl5oh0u7fiqf"]
 
 [ext_resource type="Script" uid="uid://cjyab6bfcbqdw" path="res://Monk/Types/Fast Monk/FastMonk.cs" id="1_q5di1"]
 [ext_resource type="AudioStream" uid="uid://3yqwct1qm5hs" path="res://Audio/F Monk FTSP_Export.wav" id="2_cfrkh"]
@@ -6,11 +6,21 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cfrkh"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cfrkh"]
+transparency = 2
+alpha_scissor_threshold = 0.3
+alpha_antialiasing_mode = 1
+alpha_antialiasing_edge = 0.3
+cull_mode = 2
+albedo_texture = ExtResource("4_008c1")
+billboard_mode = 2
+billboard_keep_scale = true
+
 [node name="FastMonk" type="CharacterBody3D"]
 script = ExtResource("1_q5di1")
 footstepSFX = ExtResource("2_cfrkh")
 HeightMeters = 3.5
-MovementSpeed = 3.2
+MovementSpeed = 4.0
 Idle = ExtResource("4_008c1")
 Moving = ExtResource("4_008c1")
 
@@ -19,13 +29,7 @@ shape = SubResource("BoxShape3D_cfrkh")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(0.715, 0, 0, 0, 0.715, 0, 0, 0, 0.715, 0, 0, 0.025904836)
-pixel_size = 0.001
-billboard = 2
-shaded = true
-texture = ExtResource("4_008c1")
-
-[node name="Sprite3D2" type="Sprite3D" parent="."]
-transform = Transform3D(-3.125364e-08, 0, -0.715, 0, 0.715, 0, 0.715, 0, -3.125364e-08, 0, 0, 0.025904836)
+material_override = SubResource("StandardMaterial3D_cfrkh")
 pixel_size = 0.001
 billboard = 2
 shaded = true

@@ -25,7 +25,7 @@ public abstract partial class Monk : CharacterBody3D
     [ExportGroup("Textures")]
     [Export] protected Texture2D Idle;
     [Export] protected Texture2D Moving;
-    protected Sprite3D Sprite1, Sprite2;
+    protected Sprite3D Sprite;
 
     protected MonkMarkers Markers { get; private set; }
     protected Vector3 MoveDirection { get; private set; }
@@ -68,19 +68,17 @@ public abstract partial class Monk : CharacterBody3D
         {
             if (child is Sprite3D sprite)
             {
-                if (Sprite1 == null)
+                if (Sprite == null)
                 {
-                    Sprite1 = sprite;
+                    this.Sprite = sprite;
                     continue;
                 }
-
-                Sprite2 = sprite;
             }
         }
 
-        if (Sprite1 == null || Sprite2 == null)
+        if (Sprite == null)
         {
-            GD.PrintErr($"{Name} missing sprite objects");
+            GD.PrintErr($"{Name} missing sprite object");
             return;
         }
 
@@ -88,20 +86,36 @@ public abstract partial class Monk : CharacterBody3D
     }
 
 
+
+
+
     private void ApplySprite(Sprite3D sprite, Texture2D tex)
     {
         sprite.Texture = tex;
+
+        StandardMaterial3D mat = sprite.MaterialOverride as StandardMaterial3D;
+        if (mat != null)
+        {
+            mat.AlbedoTexture = tex;
+            mat.BacklightTexture = tex;
+        }
+        
         sprite.PixelSize = HeightMeters / tex.GetHeight();
         sprite.Offset = new Vector2(0, tex.GetHeight() / 2f); // feet at the node origin
     }
-
     protected virtual void ChangeSprite(Texture2D tex)
     {
-        if (tex == null || Sprite1 == null || Sprite2 == null) return;
+        GD.Print($"[{Name}] ChangeSprite -> {tex?.ResourcePath} | frame {Engine.GetProcessFrames()} | moving={IsMoving} | at {CurrentMarker?.Name}");
+        // GD.Print(System.Environment.StackTrace); // uncomment if the caller isn't obvious
 
-        ApplySprite(Sprite1, tex);
-        ApplySprite(Sprite2, tex);
+        if (tex == null || Sprite == null) return;
+
+        ApplySprite(Sprite, tex);
     }
+    
+
+
+
 
 
     public override void _Process(double delta)
@@ -208,12 +222,11 @@ public abstract partial class Monk : CharacterBody3D
 
     protected virtual void TransitionProcess(double delta) // hook for footsteps, flicker, etc.
     {
-        if (Sprite1 == null || Sprite2 == null) return;
+        if (Sprite == null) return;
         if (Mathf.Abs(MoveDirection.Z) < 0.01f) return; // no Z movement: keep the last facing
 
         bool flip = MoveDirection.Z < 0;
-        Sprite1.FlipH = flip;
-        Sprite2.FlipH = flip;
+        Sprite.FlipH = flip;
     }
 
     protected virtual Marker3D RandomNextWaypoint()
@@ -225,7 +238,8 @@ public abstract partial class Monk : CharacterBody3D
             .ToArray();
 
         if (options.Length == 0) return null;
-        return options[_random.Next(options.Length)];
+        // return options[_random.Next(options.Length)];
+        return Markers.Doorway;
     }
 
     public virtual void SendBack()

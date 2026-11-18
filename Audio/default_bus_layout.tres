@@ -3,17 +3,17 @@
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
 room_size = 0.45
-damping = 0.44
+damping = 0.12
 spread = 0.56
-dry = 0.63
-wet = 0.25
+dry = 0.84
+wet = 0.18
 
 [sub_resource type="AudioEffectEQ" id="AudioEffectEQ_j3pel"]
 resource_name = "EQ"
-band_db/32_hz = 22.7
+band_db/32_hz = 24.0
 band_db/100_hz = 12.1
-band_db/320_hz = 4.5
-band_db/1000_hz = -17.8
+band_db/320_hz = -2.0
+band_db/1000_hz = 3.2
 band_db/3200_hz = -5.5
 band_db/10000_hz = -1.8
 
@@ -34,7 +34,7 @@ bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
 bus/1/effect/0/enabled = true
 bus/1/effect/1/effect = SubResource("AudioEffectEQ_j3pel")
-bus/1/effect/1/enabled = true
+bus/1/effect/1/enabled = false
 bus/2/name = &"SFX_Hallway"
 bus/2/solo = false
 bus/2/mute = false

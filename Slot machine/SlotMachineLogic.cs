@@ -151,16 +151,6 @@ public partial class SlotMachineLogic : Node3D
 
 
 
-	public override void _UnhandledInput(InputEvent @event)
-	{
-		if (Player == null) return;
-
-		if (Player.IsHiding == false && @event.IsActionPressed("StartGambling"))
-		{
-			if (Player.Chips.HasEnoughChips(1) && CurrentBet > 0) // has atleast 1 chip to bet
-				Start();
-		}
-	}
 
 
 

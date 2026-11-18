@@ -8,6 +8,7 @@ public partial class Coin : StaticBody3D, IInteractable
 	[Export] private MonkManager MonkManager;
     [Export] private CanvasLayer[] Canvas;
     [Export] private Sprite3D Title;
+    [Export] public AudioStream StartGameSFX;
 
 
     public override void _Ready()
@@ -36,6 +37,7 @@ public partial class Coin : StaticBody3D, IInteractable
         ToggleCanvasLayers(true);
 
         Player.Chips.AddChips(100);
+        AudioManager.Instance.PlaySfxClip(StartGameSFX, 0f, 1.35f, volumeDb: -10f, parent: this);
     }
 
 

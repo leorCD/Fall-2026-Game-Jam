@@ -58,13 +58,49 @@ public partial class AudioManager : Node
     }
 
     // pooled, with slight pitch variation so repeats don't sound identical
-    public void PlaySfx(AudioStream stream, float pitchVariance = 0.08f, float volumeDb = 0f)
+    public void PlaySfx(AudioStream stream, float pitchAdditive = 0.2f, float volumeDb = 0f)
     {
         var player = _sfxPool.Find(p => !p.Playing) ?? _sfxPool[0]; // steal oldest if full
         player.Stream = stream;
-        player.PitchScale = 1f + _rng.RandfRange(-pitchVariance, pitchVariance);
+        player.PitchScale = 1f + pitchAdditive;
         player.VolumeDb = volumeDb;
         player.Play();
+    }
+
+    // plays only part of a stream: 'start' and 'length' are in seconds of the original audio
+    public void PlaySfxClip(AudioStream stream, float start, float length, float fadeOut = 0.05f, float pitch = 1f, float volumeDb = 0f, string bus = "Master", Node3D parent = null)
+    {
+        if (stream == null || length <= 0f) return;
+
+        var player = new AudioStreamPlayer3D
+        {
+            Stream = stream,
+            Bus = bus,
+            PitchScale = pitch,
+            VolumeDb = volumeDb,
+            MaxDb = 50f,
+        };
+
+        if (parent != null)
+        {
+            parent.AddChild(player);
+            player.PanningStrength = 3.0f; // same spatial settings as PlaySfx3D
+            player.MaxDistance = 9f;
+        }
+        else
+            AddChild(player);
+
+        player.Finished += player.QueueFree; // covers the case where the clip runs past the end of the stream
+        player.Play(start);
+
+        // pitch changes playback speed, so the clip lasts length / pitch in real time
+        float realLength = length / pitch;
+        float fade = Mathf.Min(fadeOut, realLength);
+
+        var tween = CreateTween();
+        tween.TweenInterval(realLength - fade);
+        tween.TweenProperty(player, "volume_db", -80f, fade);
+        tween.TweenCallback(Callable.From(player.QueueFree));
     }
 
     // crossfade between two players so tension music never cuts abruptly
@@ -86,7 +122,7 @@ public partial class AudioManager : Node
 
     
 
-    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float fadeTime = 0.5f, string bus = "SFX_Hallway", Node3D parent = null)
+    public void PlayLoop(string key, AudioStream stream, float volumeDb = 0f, float pitch = 1f, float fadeTime = 0.5f, string bus = "SFX_Hallway", Node3D parent = null)
     {
         if (_loops.ContainsKey(key)) return; // already running
 
@@ -94,6 +130,8 @@ public partial class AudioManager : Node
         {
             Stream = stream,
             Bus = bus,
+            PitchScale = pitch,
+            VolumeDb = -80f,
             MaxDb = 50f,
             MaxPolyphony = 12,
         };

@@ -8,6 +8,8 @@ public partial class StaticPlayerController : CharacterBody3D
 	public event Action Died;
 	public bool IsHiding { get; private set; } = false;
 	public event Action<bool> HidingChanged;
+	public event Action ClosetInteracted;
+	public event Action MoveFinished; // fires when the player stops moving (arrived inside, or back at the machine)
 
 	[ExportGroup("Sound")]
 	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
@@ -18,7 +20,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public ChipManager Chips { get; private set; }
 	[Export] public SlotMachineLogic SlotMachine { get; private set; }
 	[Export] public Marker3D GamblingPosition { get; private set; }
-	[Export] public Marker3D HidingPosition { get; private set; }
+	private Marker3D HidingPosition;
 	[Export] public CanvasLayer DeadScreen;
 	[Export] public Label Indicator;
 	[Export] public Closet closet;
@@ -39,11 +41,18 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public float Range = 5f;
 	[Export(PropertyHint.Layers3DPhysics)] public uint Mask = 1;
 
+	[ExportSubgroup("Hide Transition")]
+	[Export] public float HideLookTime = 0.2f;  // turn toward the hiding spot
+	[Export] public float HideWalkTime = 0.5f;  // move into it
+	[Export] public float HideTurnTime = 0.2f;  // turn to the hiding marker's rotation
+	
 	private Camera3D _camera;
 	public Camera3D Camera => _camera;
+	private PlayerAudio _audio;
 	private Vector3 _targetRotation = Vector3.Zero;
 	private Tween _zoomTween;
 	private Tween _moveTween;
+	private bool _panLocked; // true during the hide-in: camera pans back to center and ignores the mouse
 
 	public bool IsForcedToGamble = false;
 	public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
@@ -64,18 +73,25 @@ public partial class StaticPlayerController : CharacterBody3D
 	public override void _Ready()
 	{
 		SetForcedAudio(false);
+		
+		// chip manager
 		Chips = GetNodeOrNull<ChipManager>("ChipManager");
 		if (Chips == null)
 		{
 			GD.PrintErr("No chips component");
 		}
 
+		// camera
 		_camera = GetNodeOrNull<Camera3D>("Neck/Camera3D");
 		if (_camera != null)
 			_camera.Fov = base_fov;
 		else
 			GD.PrintErr("No camera");
 
+		// get position
+		HidingPosition = closet.HiddenPosition;
+
+		// set position
 		if (GamblingPosition != null)
 		{
 			Position = GamblingPosition.GlobalPosition;
@@ -117,7 +133,7 @@ public partial class StaticPlayerController : CharacterBody3D
 				.SetEase(Tween.EaseType.Out);
 		};
 
-		closet.Interacted += OnClosetInteract;
+		closet.interactor.Interacted += OnClosetInteract;
 	}
 
 
@@ -149,7 +165,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		float targetYaw = -normX * Mathf.DegToRad(max_yaw_deg);
 		float targetPitch = -normY * Mathf.DegToRad(max_pitch_deg);
 
-		_targetRotation = new Vector3(targetPitch, targetYaw, 0.0f);
+		_targetRotation = _panLocked
+			? Vector3.Zero // look straight along the body's facing
+			: new Vector3(targetPitch, targetYaw, 0.0f);
 		float interpolation = IsForcedToGamble ? 0.85f : (float)(smooth_speed * delta);
 
 		Vector3 cameraRotation = _camera.Rotation;
@@ -186,47 +204,121 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	public async void MoveTo(Transform3D target)
 	{
+    	_panLocked = false;
+
 		if (_moveTween != null && _moveTween.IsRunning())
 			_moveTween.Kill();
 
 		_moveTween = CreateTween();
 
-		_moveTween.TweenProperty(this, "global_transform", target, 0.5f)
+		_moveTween.TweenProperty(this, "global_transform", target, HideWalkTime)
 			.SetTrans(Tween.TransitionType.Circ)
 			.SetEase(Tween.EaseType.Out);
 
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
+		MoveFinished?.Invoke();
 	}
-
-
-
-
-
-
-
-
 
 	private void OnClosetInteract()
 	{
 		if (IsForcedToGamble || IsDead) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
 
-		float zoom = !IsHiding ? base_fov-20 : base_fov;
+		// ignore clicks while a move is still playing, otherwise spamming the closet restarts the sequence
+		if (_moveTween != null && _moveTween.IsValid() && _moveTween.IsRunning()) return;
+
+		bool entering = !IsHiding;
+		float zoomTime = HideLookTime + HideWalkTime + HideTurnTime;
+
+		float zoom = entering ? base_fov - 20 : base_fov;
 		_zoomTween?.Kill();
 		_zoomTween = CreateTween();
-		_zoomTween.TweenProperty(_camera, "fov", zoom, 0.65f)
+		_zoomTween.TweenProperty(_camera, "fov", zoom, zoomTime)
 			.SetTrans(Tween.TransitionType.Sine)
 			.SetEase(Tween.EaseType.Out);
 
-		Transform3D targetTransform = IsHiding
-			? GamblingPosition.GlobalTransform
-			: HidingPosition.GlobalTransform;
+		ClosetInteracted?.Invoke();
 
-		MoveTo(targetTransform);
+		if (entering)
+			EnterHiding();
+		else
+			ExitHiding();
 
-		SetHiding(!IsHiding);
-		GD.Print(IsHiding);
+		SetHiding(entering);
 	}
+
+	private async void EnterHiding()
+	{
+		_moveTween?.Kill();
+		_moveTween = CreateTween();
+
+		_panLocked = true;
+		Transform3D start = GlobalTransform;
+		Transform3D hide = HidingPosition.GlobalTransform;
+
+		// flat direction toward the hiding spot, so the body only yaws and never pitches
+		Vector3 flatDir = hide.Origin - start.Origin;
+		flatDir.Y = 0f;
+
+		if (flatDir.LengthSquared() > 0.0025f) // skip the look + walk steps if the spot is basically on top of us
+		{
+			Basis lookBasis = Basis.LookingAt(flatDir.Normalized(), Vector3.Up);
+
+			// 1) turn toward the hiding spot
+			_moveTween.TweenProperty(this, "global_transform", new Transform3D(lookBasis, start.Origin), HideLookTime)
+				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+			// 2) walk in, keeping that facing
+			_moveTween.TweenProperty(this, "global_transform", new Transform3D(lookBasis, hide.Origin), HideWalkTime)
+				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		}
+
+		// 3) turn to match the hiding marker's rotation
+		_moveTween.TweenProperty(this, "global_transform", hide, HideTurnTime)
+			.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+		await ToSignal(_moveTween, Tween.SignalName.Finished);
+		_panLocked = false;
+		MoveFinished?.Invoke();
+	}
+
+	public async void ExitHiding()
+	{
+		_moveTween?.Kill();
+		_moveTween = CreateTween();
+
+		_panLocked = true;
+		Transform3D start = GlobalTransform;
+		Transform3D finish = GamblingPosition.GlobalTransform;
+
+		// flat direction toward the hiding spot, so the body only yaws and never pitches
+		Vector3 flatDir = finish.Origin - start.Origin;
+		flatDir.Y = 0f;
+
+		if (flatDir.LengthSquared() > 0.0025f) // skip the look + walk steps if the spot is basically on top of us
+		{
+			Basis lookBasis = Basis.LookingAt(flatDir.Normalized(), Vector3.Up);
+
+			// 1) turn toward the hiding spot
+			_moveTween.TweenProperty(this, "global_transform", new Transform3D(lookBasis, start.Origin), HideLookTime)
+				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+			// 2) walk in, keeping that facing
+			_moveTween.TweenProperty(this, "global_transform", new Transform3D(lookBasis, finish.Origin), HideWalkTime)
+				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		}
+
+		// 3) turn to match the hiding marker's rotation
+		_moveTween.TweenProperty(this, "global_transform", finish, HideTurnTime)
+			.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+		await ToSignal(_moveTween, Tween.SignalName.Finished);
+		_panLocked = false;
+		MoveFinished?.Invoke();
+	}
+
+
+
 
 	// Returns the collider under the cursor (and the hit point), or null
 	private GodotObject GetObjectUnderCursor(out Vector3 hitPosition)
@@ -266,7 +358,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		_focused = target;
 		(_focused as IFocusable)?.OnFocus();
 
-		if (target == closet)
+		if (target is ClosetInteraction)
 		{
 			Indicator.Text = IsHiding ? "Leave" : "Hide";
 		}

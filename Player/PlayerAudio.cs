@@ -4,20 +4,27 @@ using System;
 public partial class PlayerAudio : Node
 {
 	[Export] public StaticPlayerController player;
+	[ExportGroup("SFX")]
 	[Export] public AudioStream Droning;
+	[Export] public AudioStream PlayerFootsteps;
 
     public override void _Ready()
     {
-		if (player != null)
-		{
-			player.Died += StopLoop;
-		}
+		if (player == null) return;
 
-        AudioManager.Instance.PlayLoop("Droning", Droning, -25f, 1f, "Ambience");
+		player.Died += StopLoop;
+		player.ClosetInteracted += OnClosetInteracted;
+
+        AudioManager.Instance.PlayLoop("Droning", Droning, -20f, 0.48f, 1f, "Ambience");
     }
 
 	private void StopLoop()
 	{
 		AudioManager.Instance.StopLoop("Droning", 0.5f);
+	}
+
+	private void OnClosetInteracted()
+	{
+		AudioManager.Instance.PlaySfxClip(PlayerFootsteps, 0f, 0.85f, pitch: 1.2f, volumeDb: -5f, bus: "Ambience");
 	}
 }

@@ -1,0 +1,69 @@
+[gd_scene load_steps=8 format=3 uid="uid://osfc3wi0gsle"]
+
+[ext_resource type="Texture2D" uid="uid://b3o1ybxk3cdb8" path="res://Textures/closet/wood_cabinet_worn_long_diff_4k.jpg" id="1_crbcg"]
+[ext_resource type="Material" uid="uid://dp1mr8bea4ces" path="res://Textures/closet/closetpanel.tres" id="2_ttm5r"]
+[ext_resource type="Script" uid="uid://cpbugff7f8hsb" path="res://Closet/Closet.cs" id="3_v485a"]
+[ext_resource type="Script" uid="uid://ous0g6q7xci8" path="res://Closet/ClosetInteraction.cs" id="4_ttm5r"]
+[ext_resource type="AudioStream" uid="uid://khroivmboaty" path="res://Audio/189666__sangtao__closing-closet-door.wav" id="5_v485a"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xuqvo"]
+albedo_texture = ExtResource("1_crbcg")
+uv1_triplanar = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_a6jrf"]
+size = Vector3(0.22, 3.84, 2.2)
+
+[node name="ClosetTemp" type="Node3D" node_paths=PackedStringArray("interactor", "HiddenPosition")]
+script = ExtResource("3_v485a")
+interactor = NodePath("Interaction")
+HiddenPosition = NodePath("Hidden")
+
+[node name="Body" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29183578, 0)
+size = Vector3(1, 2.72, 1.255)
+material = SubResource("StandardMaterial3D_xuqvo")
+
+[node name="div" type="CSGBox3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07181072, 0, 3.1389504e-09)
+operation = 2
+size = Vector3(1, 2.62, 1.195)
+material = SubResource("StandardMaterial3D_xuqvo")
+
+[node name="LeftDoor" type="Node3D" parent="."]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.5092153, 0.29183578, 0.6038483)
+
+[node name="left" type="CSGBox3D" parent="LeftDoor"]
+transform = Transform3D(1.0000004, 0, 0, 0, 1, 0, 0, 0, 1.0000004, -0.015995502, 0, -0.27807838)
+size = Vector3(0.05, 2.685, 0.575)
+material = ExtResource("2_ttm5r")
+
+[node name="RightDoor" type="Node3D" parent="."]
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.5146331, 0.29183578, -0.5850964)
+
+[node name="right" type="CSGBox3D" parent="RightDoor"]
+transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, -0.010706663, 0, 0.2723887)
+size = Vector3(0.05, 2.685, 0.575)
+material = ExtResource("2_ttm5r")
+
+[node name="Interaction" type="Area3D" parent="." node_paths=PackedStringArray("LeftHinge", "RightHinge")]
+script = ExtResource("4_ttm5r")
+LeftHinge = NodePath("../LeftDoor")
+RightHinge = NodePath("../RightDoor")
+DoorCloseOpen = ExtResource("5_v485a")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Interaction"]
+transform = Transform3D(0.9999998, -4.440892e-16, -1.4901161e-08, 2.7755576e-17, 0.9999999, 0, 1.4901161e-08, 2.9802319e-08, 0.99999976, 0.5125346, 0, 0.37512073)
+shape = SubResource("BoxShape3D_a6jrf")
+debug_color = Color(0.84233946, 0.36934224, 0.25040877, 0.21176471)
+
+[node name="ClosetLight" type="SpotLight3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 0.99999994, 0, 1, 0, -4.371139e-08, 0, 0.5960437, 0)
+light_color = Color(0.8833368, 0.6840599, 0.63580555, 1)
+light_energy = 0.445
+light_specular = 0.0
+spot_range = 0.887
+spot_attenuation = -0.5
+spot_angle = 88.95
+
+[node name="Hidden" type="Marker3D" parent="."]
+transform = Transform3D(1.3113416e-07, 0, -0.9999999, 0, 1, 0, 0.9999999, 0, 1.3113416e-07, 0.2093652, 0, -9.151644e-09)

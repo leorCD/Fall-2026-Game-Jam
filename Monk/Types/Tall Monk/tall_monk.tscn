@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dk4gmdnqnq61v"]
+[gd_scene load_steps=8 format=3 uid="uid://dk4gmdnqnq61v"]
 
 [ext_resource type="Script" uid="uid://l1ejnfcapekx" path="res://Monk/Types/Tall Monk/TallMonk.cs" id="1_i3vr4"]
 [ext_resource type="Texture2D" uid="uid://c30qcy42hotqa" path="res://Monk/Types/Tall Monk/tallmonk_forward.png" id="2_1g4kx"]
@@ -8,12 +8,21 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hiwi7"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_feedq"]
+resource_local_to_scene = true
+transparency = 1
+cull_mode = 2
+albedo_texture = ExtResource("3_feedq")
+backlight_texture = ExtResource("3_feedq")
+billboard_mode = 2
+billboard_keep_scale = true
+
 [node name="TallMonk" type="CharacterBody3D"]
 script = ExtResource("1_i3vr4")
 footstepSFX = ExtResource("2_feedq")
 whisperingSFX = ExtResource("3_tsm3h")
 HeightMeters = 4.0
-MovementSpeed = 1.1
+MovementSpeed = 1.3
 Idle = ExtResource("2_1g4kx")
 Moving = ExtResource("3_feedq")
 
@@ -21,14 +30,8 @@ Moving = ExtResource("3_feedq")
 shape = SubResource("BoxShape3D_hiwi7")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
+material_override = SubResource("StandardMaterial3D_feedq")
 pixel_size = 0.001
 billboard = 2
 shaded = true
 texture = ExtResource("3_feedq")
-
-[node name="Sprite3D2" type="Sprite3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
-pixel_size = 0.001
-billboard = 2
-shaded = true
-texture = ExtResource("2_1g4kx")

@@ -1,56 +1,5 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-
-
-public readonly record struct MonkMarkers(
-	Marker3D TopRight, Marker3D TopLeft, Marker3D BottomLeft, Marker3D BottomRight,
-	Marker3D Doorway, Marker3D Inside, Marker3D DeepInside)
-{
-	// Hallway is a ring around the room; the doorway is only reachable from TopRight or BottomRight
-	public Marker3D[] Neighbors(Marker3D m)
-	{
-		if (m == TopRight)    return new[] { TopLeft, BottomRight, Doorway };
-		if (m == TopLeft)     return new[] { TopRight, BottomLeft };
-		if (m == BottomLeft)  return new[] { TopLeft, BottomRight };
-		if (m == BottomRight) return new[] { BottomLeft, TopRight, Doorway };
-		if (m == Doorway)     return new[] { TopRight, BottomRight, Inside };
-		if (m == Inside)      return new[] { Doorway, DeepInside };
-		if (m == DeepInside)  return new[] { Inside };
-		return Array.Empty<Marker3D>();
-	}
-
-	/// Shortest list of markers from 'from' to 'to' (excludes 'from'). Empty if unreachable.
-	public List<Marker3D> FindPath(Marker3D from, Marker3D to)
-	{
-		var path = new List<Marker3D>();
-		if (from == null || to == null || from == to) return path;
-
-		var cameFrom = new Dictionary<Marker3D, Marker3D>();
-		var queue = new Queue<Marker3D>();
-		queue.Enqueue(from);
-		cameFrom[from] = null;
-
-		while (queue.Count > 0)
-		{
-			var cur = queue.Dequeue();
-			if (cur == to) break;
-			foreach (var n in Neighbors(cur))
-			{
-				if (n == null || cameFrom.ContainsKey(n)) continue;
-				cameFrom[n] = cur;
-				queue.Enqueue(n);
-			}
-		}
-
-		if (!cameFrom.ContainsKey(to)) return path;
-		for (var c = to; c != from; c = cameFrom[c]) path.Insert(0, c);
-		return path;
-	}
-}
-
-
 
 
 public partial class MonkManager : Node
@@ -76,8 +25,7 @@ public partial class MonkManager : Node
 	public override void _Ready()
 	{
 		if (Player == null) { GD.PrintErr("[MonkManager] Missing player export"); return; }
-		if (TopRight == null || TopLeft == null || BottomLeft == null || BottomRight == null
-			|| Marker_Doorway == null || Marker_Inside == null)
+		if (TopRight == null || TopLeft == null || BottomLeft == null || BottomRight == null || Marker_Doorway == null || Marker_Inside == null || Marker_DeepInside == null)
 		{
 			GD.PrintErr("[MonkManager] Missing critical marker");
 			return;

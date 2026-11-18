@@ -1,4 +1,9 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://dp1mr8bea4ces"]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://dp1mr8bea4ces"]
+
+[ext_resource type="Texture2D" uid="uid://b3o1ybxk3cdb8" path="res://Textures/closet/wood_cabinet_worn_long_diff_4k.jpg" id="1_01cwl"]
+[ext_resource type="Texture2D" uid="uid://qnitvh1bjf1i" path="res://Textures/closet/wood_cabinet_worn_long_disp_4k.png" id="2_f8j5s"]
 
 [resource]
-albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
+albedo_texture = ExtResource("1_01cwl")
+heightmap_texture = ExtResource("2_f8j5s")
+uv1_triplanar = true

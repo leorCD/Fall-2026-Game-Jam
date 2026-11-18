@@ -24,6 +24,7 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 	private Color _baseOutlineColor;
 	private int _baseOutlineSize;
 	private Tween _tween;
+	private bool _playerIsHiding;
 
 	public override void _Ready()
 	{
@@ -35,6 +36,8 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 			_baseOutlineColor = _label.OutlineModulate;
 			_baseOutlineSize = _label.OutlineSize;
 		}
+
+		_slotMachine.Player.MoveFinished += OnMoveFinished;
 	}
 
 	public void OnFocus() => Highlight(true);
@@ -59,6 +62,13 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 		_tween?.Kill();
 	}
 
+
+
+	private void OnMoveFinished()
+	{
+		_playerIsHiding = _slotMachine.Player.IsHiding;
+	}
+
 	public void Interact(StaticPlayerController player)
 	{
 		if (_slotMachine == null)
@@ -66,7 +76,7 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 			GD.PrintErr($"[{nameof(Betbutton)}] No slot machine assigned on {GetParent<Node3D>().Name}");
 			return;
 		}
-		if (_slotMachine.isActive || _slotMachine.Player.IsHiding) return; // no bet changes mid-spin
+		if (_slotMachine.isActive || _playerIsHiding) return; // no bet changes mid-spin
 
 		BigInteger balance = player.Chips.Balance;
 		BigInteger great = BigInteger.Max(5, balance / 20); // scales with a massive balance
