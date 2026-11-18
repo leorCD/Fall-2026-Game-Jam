@@ -1,30 +1,32 @@
-[gd_scene load_steps=6 format=3 uid="uid://yl5oh0u7fiqf"]
+[gd_scene load_steps=5 format=3 uid="uid://yl5oh0u7fiqf"]
 
 [ext_resource type="Script" uid="uid://cjyab6bfcbqdw" path="res://Monk/Types/Fast Monk/FastMonk.cs" id="1_q5di1"]
-[ext_resource type="Texture2D" uid="uid://c30qcy42hotqa" path="res://Monk/Types/Tall Monk/tallmonk_forward.png" id="2_008c1"]
-[ext_resource type="Texture2D" uid="uid://df52h5re2dqnt" path="res://these do not stay/Jesus_Static_2.png" id="2_xm2ta"]
-[ext_resource type="Texture2D" uid="uid://crbahiuorbcqr" path="res://Monk/Types/Tall Monk/tallmonk_walk.png" id="3_6wr6m"]
+[ext_resource type="AudioStream" uid="uid://3yqwct1qm5hs" path="res://Audio/F Monk FTSP_Export.wav" id="2_cfrkh"]
+[ext_resource type="Texture2D" uid="uid://cy8o1deb0m82f" path="res://Monk/Types/Fast Monk/monk.png" id="4_008c1"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_cfrkh"]
 
 [node name="FastMonk" type="CharacterBody3D"]
 script = ExtResource("1_q5di1")
+footstepSFX = ExtResource("2_cfrkh")
 HeightMeters = 3.5
-MovementSpeed = 2.2
-Idle = ExtResource("2_008c1")
-Moving = ExtResource("3_6wr6m")
+MovementSpeed = 3.2
+Idle = ExtResource("4_008c1")
+Moving = ExtResource("4_008c1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_cfrkh")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 transform = Transform3D(0.715, 0, 0, 0, 0.715, 0, 0, 0, 0.715, 0, 0, 0.025904836)
+pixel_size = 0.001
 billboard = 2
 shaded = true
-texture = ExtResource("2_xm2ta")
+texture = ExtResource("4_008c1")
 
 [node name="Sprite3D2" type="Sprite3D" parent="."]
 transform = Transform3D(-3.125364e-08, 0, -0.715, 0, 0.715, 0, 0.715, 0, -3.125364e-08, 0, 0, 0.025904836)
+pixel_size = 0.001
 billboard = 2
 shaded = true
-texture = ExtResource("2_xm2ta")
+texture = ExtResource("4_008c1")

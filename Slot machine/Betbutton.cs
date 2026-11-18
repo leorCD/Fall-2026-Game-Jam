@@ -31,6 +31,7 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 		if (parent is Label3D label)
 		{
 			this._label = label;
+			label.Shaded = true;
 			_baseOutlineColor = _label.OutlineModulate;
 			_baseOutlineSize = _label.OutlineSize;
 		}
@@ -43,13 +44,14 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 	{
 		if (_label == null) return;
 		
-		_tween?.Kill();
-		_tween = CreateTween().SetParallel(true);
+		// _tween?.Kill();
+		// _tween = CreateTween().SetParallel(true);
+		// _tween.TweenProperty(_label, "outline_modulate",
+		// 	on ? _highlightOutlineColor : _baseOutlineColor, _fadeTime);
+		// _tween.TweenProperty(_label, "outline_size",
+		// 	on ? _highlightOutlineSize : _baseOutlineSize, _fadeTime);
 
-		_tween.TweenProperty(_label, "outline_modulate",
-			on ? _highlightOutlineColor : _baseOutlineColor, _fadeTime);
-		_tween.TweenProperty(_label, "outline_size",
-			on ? _highlightOutlineSize : _baseOutlineSize, _fadeTime);
+		_label.Shaded = !on;
 	}
 
 	public override void _ExitTree()

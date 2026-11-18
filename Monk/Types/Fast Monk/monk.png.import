@@ -2,9 +2,9 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ilnivs4e0mdb"
-path.s3tc="res://.godot/imported/IMG_0492.png-49b8827a87b2eb9f35750e1859efac94.s3tc.ctex"
-path.etc2="res://.godot/imported/IMG_0492.png-49b8827a87b2eb9f35750e1859efac94.etc2.ctex"
+uid="uid://cy8o1deb0m82f"
+path.s3tc="res://.godot/imported/monk.png-29e301fe4e888d5589e9a7b032f3009f.s3tc.ctex"
+path.etc2="res://.godot/imported/monk.png-29e301fe4e888d5589e9a7b032f3009f.etc2.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ metadata={
 
 [deps]
 
-source_file="res://Monk/Types/Old Monk/IMG_0492.png"
-dest_files=["res://.godot/imported/IMG_0492.png-49b8827a87b2eb9f35750e1859efac94.s3tc.ctex", "res://.godot/imported/IMG_0492.png-49b8827a87b2eb9f35750e1859efac94.etc2.ctex"]
+source_file="res://Monk/Types/Fast Monk/monk.png"
+dest_files=["res://.godot/imported/monk.png-29e301fe4e888d5589e9a7b032f3009f.s3tc.ctex", "res://.godot/imported/monk.png-29e301fe4e888d5589e9a7b032f3009f.etc2.ctex"]
 
 [params]
 

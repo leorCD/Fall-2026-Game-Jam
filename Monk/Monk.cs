@@ -112,8 +112,7 @@ public abstract partial class Monk : CharacterBody3D
             DoorProcess(delta);
             return;
         }
-
-        // wandering
+        
         _timer += delta;
         if (_timer >= TickInterval)
         {
@@ -149,7 +148,7 @@ public abstract partial class Monk : CharacterBody3D
             _engaged = true;
             Player.AddThreat(ArrivalThreat);
         }
-        else if (CurrentMarker == Markers.Inside)
+        else if (CurrentMarker == Markers.Inside || CurrentMarker == Markers.DeepInside)
         {
             _engaged = true;
         }

@@ -79,7 +79,7 @@ public partial class FastMonk : Monk
 
     protected override void DoorProcess(double delta)
     {
-        if (CurrentMarker != Markers.Inside)
+        if (CurrentMarker != Markers.DeepInside)
         {
             base.DoorProcess(delta);
             return;

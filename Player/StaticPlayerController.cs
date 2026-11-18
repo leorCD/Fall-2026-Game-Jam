@@ -20,6 +20,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
+	[Export] public Closet closet;
 
 	[ExportGroup("Threat Meter")]
 	[Export] private ProgressBar _threatBar;
@@ -113,6 +114,8 @@ public partial class StaticPlayerController : CharacterBody3D
 				.SetTrans(Tween.TransitionType.Sine)
 				.SetEase(Tween.EaseType.Out);
 		};
+
+		closet.Interacted += OnClosetInteract;
 	}
 
 
@@ -170,17 +173,6 @@ public partial class StaticPlayerController : CharacterBody3D
 			}
 		}
 
-		if (IsForcedToGamble || IsDead) return;
-		if (!@event.IsActionPressed("Spacebar")) return;
-		if (GamblingPosition == null || HidingPosition == null) return;
-
-		Transform3D targetTransform = IsHiding
-			? GamblingPosition.GlobalTransform
-			: HidingPosition.GlobalTransform;
-
-		MoveTo(targetTransform);
-
-		SetHiding(!IsHiding);
 	}
 
 	private void SetHiding(bool value)
@@ -212,7 +204,20 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+	private void OnClosetInteract()
+	{
+		if (IsForcedToGamble || IsDead) return;
+		if (GamblingPosition == null || HidingPosition == null) return;
 
+		Transform3D targetTransform = IsHiding
+			? GamblingPosition.GlobalTransform
+			: HidingPosition.GlobalTransform;
+
+		MoveTo(targetTransform);
+
+		SetHiding(!IsHiding);
+		GD.Print(IsHiding);
+	}
 
 	// Returns the collider under the cursor (and the hit point), or null
 	private GodotObject GetObjectUnderCursor(out Vector3 hitPosition)
