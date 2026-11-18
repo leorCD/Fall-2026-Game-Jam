@@ -1,4 +1,4 @@
-[gd_scene load_steps=57 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=59 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -8,9 +8,11 @@
 [ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
 [ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
 [ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://TorchObject.cs" id="9_0odxb"]
+[ext_resource type="Material" uid="uid://dhdn0p07ymtyj" path="res://Textures/closet/closetboard.tres" id="9_a6jrf"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Script" uid="uid://ous0g6q7xci8" path="res://Closet.cs" id="9_lswn8"]
 [ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/Shine.gdshader" id="10_074og"]
+[ext_resource type="Material" uid="uid://dp1mr8bea4ces" path="res://Textures/closet/closetpanel.tres" id="10_xuqvo"]
 [ext_resource type="Script" uid="uid://b3yqyi6vjfycq" path="res://common/Coin.cs" id="11_cegan"]
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dxk2djl8ecxls" path="res://Textures/newfloor.jpg" id="12_w48qg"]
@@ -40,13 +42,21 @@ shader_parameter/vignette_softness = 0.52100002311756
 shader_parameter/chromatic_aberration = 0.02400000114
 
 [sub_resource type="SystemFont" id="SystemFont_efxa6"]
-font_names = PackedStringArray("Rockwell")
+font_names = PackedStringArray("BIZ UDPMincho")
 
 [sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
 font = SubResource("SystemFont_efxa6")
 font_size = 24
 
+[sub_resource type="SystemFont" id="SystemFont_a6jrf"]
+font_names = PackedStringArray("BIZ UDPMincho")
+
+[sub_resource type="LabelSettings" id="LabelSettings_xuqvo"]
+font = SubResource("SystemFont_a6jrf")
+font_size = 24
+
 [sub_resource type="SystemFont" id="SystemFont_ycdy4"]
+font_names = PackedStringArray("BIZ UDPMincho")
 
 [sub_resource type="LabelSettings" id="LabelSettings_efxa6"]
 font = SubResource("SystemFont_ycdy4")
@@ -75,12 +85,6 @@ glow_enabled = true
 adjustment_enabled = true
 adjustment_contrast = 1.11
 adjustment_saturation = 1.4
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_272bh"]
-albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
-albedo_color = Color(0.3372549, 0.16470589, 0.12156863, 0.92156863)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a6jrf"]
 size = Vector3(0.09, 3.365, 2.53)
@@ -248,13 +252,14 @@ script = ExtResource("1_ycdy4")
 player = NodePath("../Player")
 Droning = ExtResource("3_2cqfq")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen", "closet", "_threatBar") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "HidingPosition", "DeadScreen", "Indicator", "closet", "_threatBar") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 HidingPosition = NodePath("../environment/ClosetTemp/Hidden")
 DeadScreen = NodePath("DeadScreen")
+Indicator = NodePath("HUD/Indicator")
 closet = NodePath("../environment/ClosetTemp/Clicktohide")
 _threatBar = NodePath("Action meter/ProgressBar")
 max_yaw_deg = 90.0
@@ -290,6 +295,20 @@ offset_bottom = -4.0
 size_flags_vertical = 0
 text = "Chips : 0"
 label_settings = SubResource("LabelSettings_4c57u")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Indicator" type="Label" parent="Player/HUD"]
+anchors_preset = -1
+anchor_left = 0.3689236
+anchor_top = 0.41666666
+anchor_right = 0.6310764
+anchor_bottom = 0.5833333
+grow_horizontal = 2
+grow_vertical = 2
+text = "n/a"
+label_settings = SubResource("LabelSettings_xuqvo")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -337,6 +356,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Shader" type="CanvasLayer" parent="Player"]
 layer = 7
+visible = false
 
 [node name="Static" type="ColorRect" parent="Player/Shader"]
 material = SubResource("ShaderMaterial_vivmo")
@@ -375,13 +395,13 @@ spot_attenuation = -1.0
 spot_angle = 83.2
 
 [node name="LightFromScreen" type="SpotLight3D" parent="environment"]
-transform = Transform3D(-0.48103482, 0, 0.8767015, 0, 1, 0, -0.8767015, 0, -0.48103482, -0.40753648, 0.90033376, -1.7742808)
+transform = Transform3D(-0.6312717, 0, 0.77556175, 0, 1, 0, -0.77556175, 0, -0.6312717, -0.40753648, 0.90033376, -1.7742808)
 light_color = Color(0.90555984, 0.67913526, 0.62288743, 1)
 light_specular = 0.0
 spot_range = 4.65
-spot_attenuation = -0.44
+spot_attenuation = 0.21
 spot_angle = 55.4
-spot_angle_attenuation = 12.996028
+spot_angle_attenuation = 19.698288
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_4c57u")
@@ -411,23 +431,23 @@ metadata/_edit_group_ = true
 [node name="CSGBox3D" type="CSGBox3D" parent="environment/ClosetTemp"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29183578, 0)
 size = Vector3(1, 2.72, 2.375)
-material = SubResource("StandardMaterial3D_272bh")
+material = ExtResource("10_xuqvo")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="environment/ClosetTemp/CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07181072, 0, 3.1389504e-09)
 operation = 2
 size = Vector3(1, 2.62, 2.265)
-material = SubResource("StandardMaterial3D_272bh")
+material = ExtResource("10_xuqvo")
 
 [node name="left" type="CSGBox3D" parent="environment/ClosetTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, 0.6564757)
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.50392604, 0.29183578, 0.65647566)
 size = Vector3(0.05, 2.685, 1.163)
-material = SubResource("StandardMaterial3D_5vw27")
+material = ExtResource("9_a6jrf")
 
 [node name="right" type="CSGBox3D" parent="environment/ClosetTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.660837)
+transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.5039263, 0.29183578, -0.6608369)
 size = Vector3(0.05, 2.685, 1.163)
-material = SubResource("StandardMaterial3D_5vw27")
+material = ExtResource("9_a6jrf")
 
 [node name="Hidden" type="Marker3D" parent="environment/ClosetTemp"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
@@ -438,13 +458,14 @@ script = ExtResource("9_lswn8")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="environment/ClosetTemp/Clicktohide"]
 transform = Transform3D(0.9999998, -4.440892e-16, -1.4901161e-08, 2.7755576e-17, 0.9999999, 0, 1.4901161e-08, 2.9802319e-08, 0.99999976, 0.5125346, 0, 0.0662573)
 shape = SubResource("BoxShape3D_a6jrf")
+debug_color = Color(0.84233946, 0.36934224, 0.25040877, 0.21176471)
 
 [node name="DoorwayLight" type="SpotLight3D" parent="environment/ClosetTemp"]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 0.99999994, 0, 1, 0, -4.371139e-08, 0, 0.5960437, 0)
-light_color = Color(0.9521021, 0.6459144, 0.55984336, 1)
-light_energy = 0.64
+light_color = Color(0.69989127, 0.30550438, 0.19875112, 1)
+light_energy = 0.445
 light_specular = 0.0
-spot_range = 0.787
+spot_range = 0.882
 spot_attenuation = -1.0
 spot_angle = 85.05
 
@@ -492,7 +513,7 @@ mesh = SubResource("ArrayMesh_1u8w0")
 script = ExtResource("9_0odxb")
 light = NodePath("torch_Light")
 fire = NodePath("fire")
-sound = NodePath("DroningTorch")
+sound = NodePath("")
 
 [node name="torch_Light" type="OmniLight3D" parent="environment/Torch2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038092613, 0.67811406, 0)
@@ -506,23 +527,14 @@ omni_range = 4.0
 omni_attenuation = 3.575
 script = ExtResource("13_2cqfq")
 PulseAmount = 1.31
-PulseSpeed = 0.78
+PulseSpeed = 0.65
 FlickerAmount = 0.35
+FlickerSpeed = 5.82
 
 [node name="fire" type="MeshInstance3D" parent="environment/Torch2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06800318, 0.5105388, 0)
 mesh = SubResource("QuadMesh_1u8w0")
 skeleton = NodePath("")
-
-[node name="DroningTorch" type="AudioStreamPlayer3D" parent="environment/Torch2"]
-transform = Transform3D(0.8844344, 0.4666645, 0, -0.4666645, 0.8844344, 0, 0, 0, 1, -0.16196966, 0.7892307, -0.9583378)
-stream = ExtResource("13_vivmo")
-volume_db = -2.6
-unit_size = 9.58
-max_db = 0.048
-pitch_scale = 4.0
-autoplay = true
-bus = &"SFX_Hallway"
 
 [node name="Crate" type="MeshInstance3D" parent="environment"]
 transform = Transform3D(0.98763365, 0, 0.15677921, 0, 1, 0, -0.15677921, 0, 0.98763365, -2.4491405, -0.43816411, -3.2256756)
@@ -547,8 +559,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.010059863, -1.568164, -0.0
 mesh = SubResource("ArrayMesh_jq2sk")
 
 [node name="ceiling" type="MeshInstance3D" parent="environment/RenderedRoom"]
-transform = Transform3D(2.4187293, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6336758, 0)
-visible = false
+transform = Transform3D(2.4187114, 0.0037953379, -0.0005690688, -0.009180062, 0.9999929, -0.00012133352, 0.0013753071, 0.00012347774, 0.9999998, 0, 3.6336758, 0)
 mesh = SubResource("ArrayMesh_4k2k6")
 
 [node name="title" type="Sprite3D" parent="environment"]
@@ -618,7 +629,7 @@ BottomRight = NodePath("../Positions/bottomrightMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
-activeMonks = [NodePath("TallMonk"), NodePath("OldMonk"), NodePath("FastMonk")]
+activeMonks = [NodePath("FastMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.206017, -0.17420721, 10.971029)

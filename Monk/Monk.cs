@@ -9,7 +9,7 @@ public abstract partial class Monk : CharacterBody3D
     protected StaticPlayerController Player;
     private readonly Random _random = new Random();
     private bool _ready = false;
-    private float TickInterval = 5f; // wander decision every 5 seconds
+    private float TickInterval = 2f; // wander decision every 2 seconds
 
     [ExportCategory("General Settings")]
     [Export] protected int Aggresiveness { get; set; } = 10; // scale from 0-20 like fnaf
@@ -38,6 +38,15 @@ public abstract partial class Monk : CharacterBody3D
 
     public bool IsMoving => TargetMarker != null;
     public bool IsEngaged => _engaged;
+
+    [ExportGroup("Jumpscare")]
+    [Export] protected float LookHeightFraction { get; set; } = 0.85f; // 0 = feet, 1 = top of the sprite
+    [Export] protected float LookTime { get; set; } = 0.25f;           // how fast the camera snaps to the monk
+
+
+
+
+
 
 
     public virtual void Init(StaticPlayerController player, MonkMarkers markers)
@@ -237,15 +246,26 @@ public abstract partial class Monk : CharacterBody3D
             SendBack(); // player drained the bar, monk gives up
     }
 
-    // lunges at the camera; override per monk for custom sound or animation
-    public virtual void Jumpscare(Camera3D cam)
-    {
-        if (cam == null) return;
 
-        Vector3 front = cam.GlobalPosition - cam.GlobalTransform.Basis.Z * 1.5f; // moves the monk infront of the player
+    // forces the player's camera to look at the monk's head; override per monk for custom sound or animation
+    public virtual void Jumpscare()
+    {
+        if (Player == null || Player.Camera == null) return;
+
+        // feet are at the node origin, so the head is HeightMeters above it
+        Vector3 lookTarget = GlobalPosition + Vector3.Up * (HeightMeters * LookHeightFraction);
+
+        Vector3 camPos = Player.Camera.GlobalPosition;
+        Quaternion from = Player.Camera.GlobalTransform.Basis.GetRotationQuaternion();
+        Quaternion to = Player.Camera.GlobalTransform.LookingAt(lookTarget, Vector3.Up).Basis.GetRotationQuaternion();
+
         CreateTween()
-            .TweenProperty(this, "global_position", new Vector3(front.X, GlobalPosition.Y, front.Z), 0.4f)
+            .TweenMethod(Callable.From<float>(t =>
+            {
+                var basis = new Basis(from.Slerp(to, t));
+                Player.Camera.GlobalTransform = new Transform3D(basis, camPos);
+            }), 0f, 1f, LookTime)
             .SetTrans(Tween.TransitionType.Expo)
-            .SetEase(Tween.EaseType.In);
+            .SetEase(Tween.EaseType.Out); // fast snap, then settles
     }
 }

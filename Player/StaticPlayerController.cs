@@ -20,6 +20,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public Marker3D GamblingPosition { get; private set; }
 	[Export] public Marker3D HidingPosition { get; private set; }
 	[Export] public CanvasLayer DeadScreen;
+	[Export] public Label Indicator;
 	[Export] public Closet closet;
 
 	[ExportGroup("Threat Meter")]
@@ -82,6 +83,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		if (DeadScreen != null && IsDead == false) DeadScreen.Visible = false;
 
+		Indicator.Text = "";
 
 		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
 		{
@@ -256,10 +258,18 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (target == _focused) return;
 
 		if (GodotObject.IsInstanceValid(_focused))
+		{
 			(_focused as IFocusable)?.OnUnfocus();
+			Indicator.Text = "";
+		}
 
 		_focused = target;
 		(_focused as IFocusable)?.OnFocus();
+
+		if (target == closet)
+		{
+			Indicator.Text = IsHiding ? "Leave" : "Hide";
+		}
 	}
 
 

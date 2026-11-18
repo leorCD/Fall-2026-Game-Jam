@@ -24,7 +24,7 @@ shape = SubResource("BoxShape3D_hiwi7")
 pixel_size = 0.001
 billboard = 2
 shaded = true
-texture = ExtResource("2_1g4kx")
+texture = ExtResource("3_feedq")
 
 [node name="Sprite3D2" type="Sprite3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)

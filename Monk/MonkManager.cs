@@ -108,7 +108,7 @@ public partial class MonkManager : Node
 		Monk killer = activeMonks.FirstOrDefault(m => m != null && m.IsEngaged);
 		FreezeAll();
 
-		killer?.Jumpscare(Player.Camera);
+		killer?.Jumpscare();
 		GetTree().CreateTimer(KillDelaySeconds).Timeout += Player.Kill;
 	}
 
