@@ -94,7 +94,7 @@ public partial class FastMonk : Monk
         _watchTimer += delta;
         if (_watchTimer >= WatchSeconds)
         {
-            Marker3D last = _random.Next(2) == 0 ? Markers.Spawn : Markers.Away;
+            Marker3D last = _random.Next(2) == 0 ? Markers.TopRight : Markers.BottomRight;
 
             StartRoute(Markers.Inside, Markers.Doorway, last); // leaves the way she came
             StartWalking();

@@ -209,6 +209,13 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (IsForcedToGamble || IsDead) return;
 		if (GamblingPosition == null || HidingPosition == null) return;
 
+		float zoom = !IsHiding ? base_fov-20 : base_fov;
+		_zoomTween?.Kill();
+		_zoomTween = CreateTween();
+		_zoomTween.TweenProperty(_camera, "fov", zoom, 0.65f)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+
 		Transform3D targetTransform = IsHiding
 			? GamblingPosition.GlobalTransform
 			: HidingPosition.GlobalTransform;

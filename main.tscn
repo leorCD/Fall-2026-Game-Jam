@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=57 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -80,8 +80,7 @@ adjustment_saturation = 1.4
 albedo_color = Color(0.29411766, 0.17254902, 0.078431375, 0.4745098)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5vw27"]
-transparency = 1
-albedo_color = Color(0.7036076, 0.38954917, 0.30943543, 0.6)
+albedo_color = Color(0.3372549, 0.16470589, 0.12156863, 0.92156863)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_a6jrf"]
 size = Vector3(0.09, 3.365, 2.53)
@@ -167,18 +166,6 @@ _surfaces = [{
 "vertex_data": PackedByteArray("zcxMvVK42sCuR2VBzcxMvVK42sCuR2XBzcxMvVK42kCuR2XBzcxMPVK42sCuR2XBzcxMvVK42sCuR2XBzcxMvVK42sCuR2VBzcxMvVK42kCuR2XBzcxMvVK42sCuR2XBzcxMPVK42sCuR2XBzcxMvVK42kCuR2XBzcxMvVK42kCuR2VBzcxMvVK42sCuR2VBzcxMvVK42sCuR2VBzcxMvVK42kCuR2VBzcxMPVK42kCuR2VBzcxMPVK42kCuR2VBzcxMvVK42kCuR2VBzcxMvVK42kCuR2XBzcxMvVK42sCuR2VBzcxMPVK42sCuR2VBzcxMPVK42sCuR2XBzcxMPVK42kCuR2VBzcxMPVK42sCuR2VBzcxMvVK42sCuR2VBzcxMPVK42sCuR2XBzcxMPVK42sCuR2VBzcxMPVK42kCuR2VBzcxMPVK42sCuR2XBzcxMPVK42kCuR2XBzcxMvVK42kCuR2XBzcxMvVK42kCuR2XBzcxMPVK42kCuR2XBzcxMPVK42kCuR2VBzcxMPVK42kCuR2VBzcxMPVK42kCuR2XBzcxMPVK42sCuR2XBAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_kq58d"]
-_surfaces = [{
-"aabb": AABB(-0.05, -4, -5, 0.1, 8, 10),
-"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
-"format": 34359738391,
-"material": ExtResource("16_1u8w0"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("zcxMvQAAgMAAAKBAzcxMvQAAgMAAAKDAzcxMvQAAgEAAAKDAzcxMPQAAgMAAAKDAzcxMvQAAgMAAAKDAzcxMvQAAgMAAAKBAzcxMvQAAgEAAAKDAzcxMvQAAgMAAAKDAzcxMPQAAgMAAAKDAzcxMvQAAgEAAAKDAzcxMvQAAgEAAAKBAzcxMvQAAgMAAAKBAzcxMvQAAgMAAAKBAzcxMvQAAgEAAAKBAzcxMPQAAgEAAAKBAzcxMPQAAgEAAAKBAzcxMvQAAgEAAAKBAzcxMvQAAgEAAAKDAzcxMvQAAgMAAAKBAzcxMPQAAgMAAAKBAzcxMPQAAgMAAAKDAzcxMPQAAgEAAAKBAzcxMPQAAgMAAAKBAzcxMvQAAgMAAAKBAzcxMPQAAgMAAAKDAzcxMPQAAgMAAAKBAzcxMPQAAgEAAAKBAzcxMPQAAgMAAAKDAzcxMPQAAgEAAAKDAzcxMvQAAgEAAAKDAzcxMvQAAgEAAAKDAzcxMPQAAgEAAAKDAzcxMPQAAgEAAAKBAzcxMPQAAgEAAAKBAzcxMPQAAgEAAAKDAzcxMPQAAgMAAAKDAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
-}]
-
 [sub_resource type="ArrayMesh" id="ArrayMesh_seu75"]
 _surfaces = [{
 "aabb": AABB(-0.05, -5.4025, -5, 0.1, 10.805, 10),
@@ -255,10 +242,6 @@ _surfaces = [{
 size = Vector3(0.1, 0.05, 0.1)
 
 [node name="Main" type="Node3D"]
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
 
 [node name="NonpositionalAudio" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("1_ycdy4")
@@ -392,11 +375,11 @@ spot_attenuation = -1.0
 spot_angle = 83.2
 
 [node name="LightFromScreen" type="SpotLight3D" parent="environment"]
-transform = Transform3D(-0.97132957, 0, -0.23773687, 0, 1, 0, 0.23773687, 0, -0.97132957, -0.40753648, 0.90033376, -1.7742808)
+transform = Transform3D(-0.48103482, 0, 0.8767015, 0, 1, 0, -0.8767015, 0, -0.48103482, -0.40753648, 0.90033376, -1.7742808)
 light_color = Color(0.90555984, 0.67913526, 0.62288743, 1)
 light_specular = 0.0
 spot_range = 4.65
-spot_attenuation = 0.86
+spot_attenuation = -0.44
 spot_angle = 55.4
 spot_angle_attenuation = 12.996028
 
@@ -437,12 +420,12 @@ size = Vector3(1, 2.62, 2.265)
 material = SubResource("StandardMaterial3D_272bh")
 
 [node name="left" type="CSGBox3D" parent="environment/ClosetTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, 0.5865281)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, 0.6564757)
 size = Vector3(0.05, 2.685, 1.163)
 material = SubResource("StandardMaterial3D_5vw27")
 
 [node name="right" type="CSGBox3D" parent="environment/ClosetTemp"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.59099317)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50392604, 0.29183578, -0.660837)
 size = Vector3(0.05, 2.685, 1.163)
 material = SubResource("StandardMaterial3D_5vw27")
 
@@ -455,6 +438,15 @@ script = ExtResource("9_lswn8")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="environment/ClosetTemp/Clicktohide"]
 transform = Transform3D(0.9999998, -4.440892e-16, -1.4901161e-08, 2.7755576e-17, 0.9999999, 0, 1.4901161e-08, 2.9802319e-08, 0.99999976, 0.5125346, 0, 0.0662573)
 shape = SubResource("BoxShape3D_a6jrf")
+
+[node name="DoorwayLight" type="SpotLight3D" parent="environment/ClosetTemp"]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 0.99999994, 0, 1, 0, -4.371139e-08, 0, 0.5960437, 0)
+light_color = Color(0.9521021, 0.6459144, 0.55984336, 1)
+light_energy = 0.64
+light_specular = 0.0
+spot_range = 0.787
+spot_attenuation = -1.0
+spot_angle = 85.05
 
 [node name="Torch" type="MeshInstance3D" parent="environment" node_paths=PackedStringArray("light", "fire", "sound")]
 transform = Transform3D(0.8844344, -0.4666645, 0, 0.4666645, 0.8844344, 0, 0, 0, 1, 5.6309776, 0.7411541, -2.0661566)
@@ -546,11 +538,6 @@ mesh = SubResource("ArrayMesh_lswn8")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.772708, 0.82185745, -0.003227234)
 mesh = SubResource("ArrayMesh_xuqvo")
 
-[node name="frontwall" type="MeshInstance3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -2.5641642, -0.38369703, -4.456897)
-visible = false
-mesh = SubResource("ArrayMesh_kq58d")
-
 [node name="ahllwayend" type="MeshInstance3D" parent="environment/RenderedRoom"]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.1639557, 1.0014358, -13.496695)
 mesh = SubResource("ArrayMesh_seu75")
@@ -600,14 +587,17 @@ shape = SubResource("BoxShape3D_ok6jj")
 
 [node name="Positions" type="Node" parent="enemies"]
 
-[node name="SpawnMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -8)
+[node name="toprightMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -9.926611)
 
-[node name="SpawnMarker2" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, -9.628004)
+[node name="topleftMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.708216, -1.0681641, -9.814151)
 
-[node name="AwayMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 5.2832813)
+[node name="bottomrightMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 8.055716)
+
+[node name="bottomleftMarker" type="Marker3D" parent="enemies/Positions"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6403346, -1.0681641, 7.9950714)
 
 [node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9394093, -1.0681641, -1.7982302)
@@ -618,26 +608,30 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4120624, -1.0681641, -1.487
 [node name="InsideMarker2" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21829844, -1.0681641, 0.8804836)
 
-[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "Marker_Spawn", "Marker_Spawn2", "Marker_Away", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "activeMonks")]
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "TopRight", "TopLeft", "BottomLeft", "BottomRight", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "activeMonks")]
 script = ExtResource("11_dg77c")
 Player = NodePath("../../Player")
-Marker_Spawn = NodePath("../Positions/SpawnMarker")
-Marker_Spawn2 = NodePath("../Positions/SpawnMarker2")
-Marker_Away = NodePath("../Positions/AwayMarker")
+TopRight = NodePath("../Positions/toprightMarker")
+TopLeft = NodePath("../Positions/topleftMarker")
+BottomLeft = NodePath("../Positions/bottomleftMarker")
+BottomRight = NodePath("../Positions/bottomrightMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
-activeMonks = [NodePath("TallMonk")]
+activeMonks = [NodePath("TallMonk"), NodePath("OldMonk"), NodePath("FastMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.206017, -0.17420721, 10.971029)
+Aggresiveness = 20
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.03673)
+Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)
 _torch = NodePath("../../../environment/Torch")
+Aggresiveness = 20
 ArrivalThreat = 0.4
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
@@ -672,7 +666,7 @@ operation = 2
 size = Vector3(0.26, 3.05, 2.36)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="."]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.1458492, -0.61060333, -7.964447)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 1.1458493, -0.61060333, -11.067266)
 material_override = ExtResource("16_1u8w0")
 size = Vector3(0.075, 9.01, 16.72)
 

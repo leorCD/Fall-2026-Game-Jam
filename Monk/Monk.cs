@@ -45,7 +45,8 @@ public abstract partial class Monk : CharacterBody3D
         Player = player;
         Markers = markers;
 
-        CurrentMarker = _random.Next(2) == 0 ? markers.Spawn : markers.Away;
+        // spawn in one of the back corners, far from the doorway
+        CurrentMarker = _random.Next(2) == 0 ? markers.TopLeft : markers.BottomLeft;
         GlobalPosition = CurrentMarker.GlobalPosition;
 
         _ready = true;
@@ -112,13 +113,13 @@ public abstract partial class Monk : CharacterBody3D
             DoorProcess(delta);
             return;
         }
-        
+
         _timer += delta;
         if (_timer >= TickInterval)
         {
             _timer = 0;
             if (ShouldMove())
-                TargetMarker = RandomNextWaypoint();
+                TargetMarker = RandomNextWaypoint(); // null if there's nowhere valid to go
         }
     }
 
@@ -135,7 +136,7 @@ public abstract partial class Monk : CharacterBody3D
         CurrentMarker = TargetMarker;
         TargetMarker = null;
 
-        if (_route.Count > 0) // if a route exxists, dequeue once one is reached
+        if (_route.Count > 0) // if a route exists, dequeue once one is reached
         {
             TargetMarker = _route.Dequeue();
             return;
@@ -168,17 +169,16 @@ public abstract partial class Monk : CharacterBody3D
     }
 
 
+    // walks to any marker along the hallway graph, one adjacent marker at a time
+    protected void GoTo(Marker3D goal)
+    {
+        if (goal == null) return;
 
+        var path = Markers.FindPath(CurrentMarker, goal);
+        if (path.Count == 0) return; // already there, or unreachable
 
-
-
-
-
-
-
-
-
-
+        StartRoute(path.ToArray());
+    }
 
 
     // --- shared, overridable defaults ---
@@ -209,20 +209,24 @@ public abstract partial class Monk : CharacterBody3D
 
     protected virtual Marker3D RandomNextWaypoint()
     {
-        // Inside is intentionally not here: it's only reachable through scripted GoTo calls
-        Marker3D[] positions = { Markers.Spawn, Markers.Doorway, Markers.Away, Markers.Spawn2 };
+        // only hops to an adjacent marker, so monks follow the hallway ring.
+        // Inside/DeepInside are intentionally excluded: only reachable through scripted GoTo calls
+        var options = Markers.Neighbors(CurrentMarker)
+            .Where(m => m != null && m != Markers.Inside && m != Markers.DeepInside)
+            .ToArray();
 
-        var available = positions.Where(m => m != CurrentMarker && m != null).ToArray();
-        if (available.Length == 0) return CurrentMarker;
-
-        return available[_random.Next(available.Length)];
+        if (options.Length == 0) return null;
+        return options[_random.Next(options.Length)];
     }
 
     public virtual void SendBack()
     {
         _engaged = false;
         _route.Clear();
-        TargetMarker = RandomNextWaypoint(); // walks away, doesn't teleport WWWWW
+
+        // walks away along the hallway, doesn't teleport WWWWW
+        Marker3D retreat = _random.Next(2) == 0 ? Markers.TopLeft : Markers.BottomLeft;
+        GoTo(retreat);
     }
 
     protected virtual void DoorProcess(double delta)

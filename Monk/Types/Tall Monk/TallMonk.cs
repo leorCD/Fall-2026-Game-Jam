@@ -21,7 +21,7 @@ public partial class TallMonk : Monk
 
     private void PlayFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -3f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -4f, 0.1f, "SFX_Hallway", this);
     }
     private void StopFootstepSFX()
     {
@@ -36,7 +36,7 @@ public partial class TallMonk : Monk
 
         if (to == Markers.Doorway)
         {
-            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 5f, 0.1f, "SFX_Hallway", this);
+            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 5.5f, 0.1f, "SFX_Hallway", this);
         }
     }
 
