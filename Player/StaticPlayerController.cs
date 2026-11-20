@@ -15,6 +15,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
 	private readonly System.Collections.Generic.Dictionary<int, float> _originalBusVolumes = new();
 	private Tween _audioTween;
+	[Export] public AudioStream HeartbeatSFX;
 
 	[ExportGroup("References")]
 	[Export] public ChipManager Chips { get; private set; }
@@ -27,7 +28,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	[ExportGroup("Threat Meter")]
 	[Export] private ProgressBar _threatBar;
-	[Export] public float DecayRate { get; set; } = 0.2f; // per second while hiding
+	[Export] public float DecayRate { get; set; } = 0.15f; // per second while hiding
 	public float Threat { get; private set; }
 	public event Action ThreatMaxed;
 	private bool _maxed;
@@ -101,39 +102,11 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		Indicator.Text = "";
 
-		SlotMachine.IdlePressureMaxed += () => // when the player's temptation reaches peak, force them into the gambling position
-		{
-			SetHiding(false);
-			IsForcedToGamble = true;
-			SetForcedAudio(true);
-
-			_zoomTween?.Kill();
-			_zoomTween = CreateTween();
-			_zoomTween.TweenProperty(_camera, "fov", base_fov - 10, 2f)
-				.SetTrans(Tween.TransitionType.Sine)
-				.SetEase(Tween.EaseType.Out);
-
-			MoveTo(GamblingPosition.GlobalTransform);
-		};
-		SlotMachine.SpinFinished += () => // on spin finished, return player input
-		{
-			IsForcedToGamble = false;
-			SetForcedAudio(false); // before the death check so it always restores
-
-			if (Chips != null && Chips.Balance <= 0)
-			{
-				Kill();
-				return;
-			}
-
-			_zoomTween?.Kill();
-			_zoomTween = CreateTween();
-			_zoomTween.TweenProperty(_camera, "fov", base_fov, 0.65f)
-				.SetTrans(Tween.TransitionType.Sine)
-				.SetEase(Tween.EaseType.Out);
-		};
+		SlotMachine.IdlePressureMaxed += OnIdlePressureMaxed;
+		SlotMachine.SpinFinished += OnSpinFinished;
 
 		closet.interactor.Interacted += OnClosetInteract;
+
 	}
 
 
@@ -280,6 +253,10 @@ public partial class StaticPlayerController : CharacterBody3D
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
 		_panLocked = false;
 		MoveFinished?.Invoke();
+
+		await ToSignal(GetTree().CreateTimer(6f), Timer.SignalName.Timeout);
+		if (IsHiding == true)
+			PlayHeartbeatLoop();
 	}
 
 	public async void ExitHiding()
@@ -315,6 +292,17 @@ public partial class StaticPlayerController : CharacterBody3D
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
 		_panLocked = false;
 		MoveFinished?.Invoke();
+
+		StopHeartbeatloop();
+	}
+
+	private void PlayHeartbeatLoop()
+	{
+		AudioManager.Instance.PlayLoop("closet_heartbeat", HeartbeatSFX, -25f, bus: "Master", parent: this);
+	}
+	private void StopHeartbeatloop()
+	{
+		AudioManager.Instance.StopLoop("closet_heartbeat");
 	}
 
 
@@ -371,6 +359,38 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+	private void OnIdlePressureMaxed()
+	{
+		SetHiding(false);
+		IsForcedToGamble = true;
+		SetForcedAudio(true);
+
+		_zoomTween?.Kill();
+		_zoomTween = CreateTween();
+		_zoomTween.TweenProperty(_camera, "fov", base_fov - 10, 2f)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+
+		MoveTo(GamblingPosition.GlobalTransform);
+	}
+
+	private void OnSpinFinished()
+	{
+		IsForcedToGamble = false;
+		SetForcedAudio(false); // before the death check so it always restores
+
+		if (Chips != null && Chips.Balance <= 0)
+		{
+			Kill();
+			return;
+		}
+
+		_zoomTween?.Kill();
+		_zoomTween = CreateTween();
+		_zoomTween.TweenProperty(_camera, "fov", base_fov, 0.65f)
+			.SetTrans(Tween.TransitionType.Sine)
+			.SetEase(Tween.EaseType.Out);
+	}
 
 	private void SetForcedAudio(bool forced)
 	{
@@ -416,7 +436,10 @@ public partial class StaticPlayerController : CharacterBody3D
 			_audioTween.Finished += () => _originalBusVolumes.Clear();
 	}
 
-
+	public void ChangeIndicatorText(string newText)
+	{
+		Indicator.Text = newText;
+	}
 
 
 

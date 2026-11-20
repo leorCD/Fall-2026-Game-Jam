@@ -15,7 +15,7 @@ public partial class PlayerAudio : Node
 		player.Died += StopLoop;
 		player.ClosetInteracted += OnClosetInteracted;
 
-        AudioManager.Instance.PlayLoop("Droning", Droning, -20f, 0.48f, 1f, "Ambience");
+        AudioManager.Instance.PlayLoop("Droning", Droning, -25f, 0.47f, 1f, "Ambience");
     }
 
 	private void StopLoop()

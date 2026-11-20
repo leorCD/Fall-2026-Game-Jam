@@ -20,7 +20,7 @@ billboard_keep_scale = true
 script = ExtResource("1_q5di1")
 footstepSFX = ExtResource("2_cfrkh")
 HeightMeters = 3.5
-MovementSpeed = 4.0
+MovementSpeed = 4.5
 Idle = ExtResource("4_008c1")
 Moving = ExtResource("4_008c1")
 

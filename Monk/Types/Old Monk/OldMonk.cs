@@ -33,9 +33,13 @@ public partial class OldMonk : Monk
     }
 
 
-    private void PlayFootstepSFX()
+    private void PlayMainFootstepSFX()
     {
         AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, -4f, 1f, 0.1f, "SFX_Hallway", this);
+    }
+    private void PlayDampFootstepSFX()
+    {
+        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, -4f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {
@@ -62,7 +66,10 @@ public partial class OldMonk : Monk
         var next = base.RandomNextWaypoint();
 
         ChangeSprite(Moving);
-        PlayFootstepSFX();
+        if (next == Markers.TopLeft || next == Markers.BottomLeft)
+            PlayDampFootstepSFX();
+        else
+            PlayMainFootstepSFX();
 
         return next;
     }

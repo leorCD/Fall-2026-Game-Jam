@@ -20,7 +20,7 @@ public abstract partial class Monk : CharacterBody3D
 
     [ExportGroup("Threat")]
     [Export] public float BuildRate { get; set; } = 0.1f;      // bar fraction per second while player is visible
-    [Export] public float ArrivalThreat { get; set; } = 0.2f;  // one-time bump on reaching the door
+    [Export] public float ArrivalThreat { get; set; } = 0.4f;  // one-time bump on reaching the door
 
     [ExportGroup("Textures")]
     [Export] protected Texture2D Idle;
@@ -105,8 +105,7 @@ public abstract partial class Monk : CharacterBody3D
     }
     protected virtual void ChangeSprite(Texture2D tex)
     {
-        GD.Print($"[{Name}] ChangeSprite -> {tex?.ResourcePath} | frame {Engine.GetProcessFrames()} | moving={IsMoving} | at {CurrentMarker?.Name}");
-        // GD.Print(System.Environment.StackTrace); // uncomment if the caller isn't obvious
+        // GD.Print($"[{Name}] ChangeSprite -> {tex?.ResourcePath} | moving={IsMoving} | at {CurrentMarker?.Name}");
 
         if (tex == null || Sprite == null) return;
 
@@ -225,6 +224,12 @@ public abstract partial class Monk : CharacterBody3D
         if (Sprite == null) return;
         if (Mathf.Abs(MoveDirection.Z) < 0.01f) return; // no Z movement: keep the last facing
 
+        if (TargetMarker == Markers.TopLeft)
+        {
+            Sprite.FlipH = false;
+            return;
+        }
+
         bool flip = MoveDirection.Z < 0;
         Sprite.FlipH = flip;
     }
@@ -238,8 +243,8 @@ public abstract partial class Monk : CharacterBody3D
             .ToArray();
 
         if (options.Length == 0) return null;
-        // return options[_random.Next(options.Length)];
-        return Markers.Doorway;
+        Marker3D next = options[_random.Next(options.Length)];
+        return next;
     }
 
     public virtual void SendBack()

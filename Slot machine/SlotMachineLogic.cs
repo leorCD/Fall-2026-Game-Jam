@@ -51,7 +51,7 @@ public partial class SlotMachineLogic : Node3D
 
 	[ExportCategory("Idle Vignette")]
 	[Export] public IdleVignette Vignette;
-	[Export] public float TimeUntilVignetteStarts = 8f; // 10s grace period until you start getting pressured to gamble
+	[Export] public float TimeUntilVignetteStarts = 9f; // 9s grace period until you start getting pressured to gamble
 	[Export] public float TimeMaxLimit = 7f; // 7s until the vignette peaks
 	public event Action IdlePressureMaxed;
 	private float _idleTime = 0f;

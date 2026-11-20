@@ -9,10 +9,11 @@ public partial class ClosetInteraction : Area3D, IInteractable
 	[Export] private Node3D RightHinge;
 
 	[ExportGroup("SFX")]
-	[Export] public AudioStream DoorCloseOpen;
+	[Export] public AudioStream DoorClose;
+	[Export] public AudioStream DoorOpen;
 
 	[ExportGroup("Doors")]
-	[Export] public float OpenAngleDeg = 110f;
+	[Export] public float OpenAngleDeg = 97f;
 	[Export] public float OpenTime = 0.2f;
 	[Export] public float CloseTime = 0.15f;
 
@@ -34,7 +35,7 @@ public partial class ClosetInteraction : Area3D, IInteractable
 		if (_player == null)
 		{
 			_player = player;
-			_player.HidingChanged += SetOpen;
+			_player.HidingChanged += OnHidingChanged;
 			_player.MoveFinished += OnMoveFinished;
 		}
 
@@ -44,12 +45,12 @@ public partial class ClosetInteraction : Area3D, IInteractable
 	private void OnHidingChanged(bool hiding)
 	{
 		SetOpen(true);   // entering or leaving: open up
-		AudioManager.Instance.PlaySfxClip(DoorCloseOpen, 0.8f, 2f, pitch: 1.1f, volumeDb: -8f, bus: "Ambience", parent: this);
+		AudioManager.Instance.PlaySfxClip(DoorOpen, 0f, 1.5f, pitch: 0.9f, volumeDb: -4f, bus: "Ambience", parent: this);
 	}
 	private void OnMoveFinished()
 	{
 		SetOpen(false);  // player has settled: shut the doors
-		AudioManager.Instance.PlaySfxClip(DoorCloseOpen, 0.8f, 2f, pitch: 0.8f, volumeDb: -15f, bus: "Ambience", parent: this);
+		AudioManager.Instance.PlaySfxClip(DoorClose, 4.5f, 6f, pitch: 1.1f, volumeDb: -5f, bus: "Ambience", parent: this);
 	}
 
 	public async void SetOpen(bool open)

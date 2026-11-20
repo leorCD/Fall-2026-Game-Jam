@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=4 format=3 uid="uid://ci46wv1hbjf1r"]
+[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://ci46wv1hbjf1r"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
@@ -10,19 +10,29 @@ wet = 0.18
 
 [sub_resource type="AudioEffectEQ" id="AudioEffectEQ_j3pel"]
 resource_name = "EQ"
-band_db/32_hz = 24.0
-band_db/100_hz = 12.1
-band_db/320_hz = -2.0
-band_db/1000_hz = 3.2
-band_db/3200_hz = -5.5
-band_db/10000_hz = -1.8
+band_db/32_hz = 3.5
+band_db/100_hz = 0.5
+band_db/320_hz = -4.5
+band_db/1000_hz = 1.5
+band_db/3200_hz = -1.0
+band_db/10000_hz = 2.2
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_ai37j"]
 resource_name = "Reverb"
-room_size = 0.24
-damping = 0.08
+room_size = 0.35
+damping = 0.41
 spread = 0.23
-wet = 0.1
+dry = 0.25
+wet = 0.22
+
+[sub_resource type="AudioEffectEQ10" id="AudioEffectEQ10_ai37j"]
+resource_name = "EQ10"
+band_db/31_hz = 5.8
+band_db/62_hz = 2.6
+band_db/250_hz = -7.0
+band_db/500_hz = -7.8
+band_db/1000_hz = -15.3
+band_db/2000_hz = -12.7
 
 [resource]
 bus/1/name = &"Ambience"
@@ -34,7 +44,7 @@ bus/1/send = &"Master"
 bus/1/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
 bus/1/effect/0/enabled = true
 bus/1/effect/1/effect = SubResource("AudioEffectEQ_j3pel")
-bus/1/effect/1/enabled = false
+bus/1/effect/1/enabled = true
 bus/2/name = &"SFX_Hallway"
 bus/2/solo = false
 bus/2/mute = false
@@ -43,7 +53,7 @@ bus/2/volume_db = 0.0
 bus/2/send = &"Master"
 bus/2/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
 bus/2/effect/0/enabled = true
-bus/3/name = &"SFX_SlotMachine"
+bus/3/name = &"SFX_HallwayDamp"
 bus/3/solo = false
 bus/3/mute = false
 bus/3/bypass_fx = false
@@ -51,3 +61,13 @@ bus/3/volume_db = 0.0
 bus/3/send = &"Master"
 bus/3/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
 bus/3/effect/0/enabled = true
+bus/3/effect/1/effect = SubResource("AudioEffectEQ10_ai37j")
+bus/3/effect/1/enabled = true
+bus/4/name = &"SFX_SlotMachine"
+bus/4/solo = false
+bus/4/mute = false
+bus/4/bypass_fx = false
+bus/4/volume_db = 0.0
+bus/4/send = &"Master"
+bus/4/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
+bus/4/effect/0/enabled = true

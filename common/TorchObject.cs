@@ -20,17 +20,19 @@ public partial class TorchObject : MeshInstance3D
         _lightTween.TweenProperty(light, "omni_range", 0f, 0.05f)
             .SetTrans(Tween.TransitionType.Circ)
             .SetEase(Tween.EaseType.Out);
+
         fire.Visible = false;
         sound.Playing = false;
+    }
 
-
-
-        await ToSignal(GetTree().CreateTimer(10), Timer.SignalName.Timeout);
-
+    public async void TurnOn()
+    {
+        _lightTween?.Kill();
         _lightTween = CreateTween();
         _lightTween.TweenProperty(light, "omni_range", 4f, 0.05f)
             .SetTrans(Tween.TransitionType.Circ)
             .SetEase(Tween.EaseType.Out);
+            
         fire.Visible = true;
         sound.Playing = true;
 

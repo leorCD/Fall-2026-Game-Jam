@@ -11,7 +11,7 @@ public partial class FastMonk : Monk
     [Export] private TorchObject _torch;
 
     [ExportGroup("Inside Watch")]
-    [Export] private float WatchSeconds = 6f;
+    [Export] private float WatchSeconds = 5f;
     private double _watchTimer;
 
     [ExportGroup("Sound Effects")]
@@ -32,46 +32,68 @@ public partial class FastMonk : Monk
     }
 
 
-    private void PlayFootstepSFX()
+    private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 2f, 1f, 0.1f, "SFX_Hallway", this); // loudest of the three
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 3f, 1f, 0.1f, "SFX_Hallway", this);
+    }
+    private void PlayDampFootstepSFX()
+    {
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 3f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {
         AudioManager.Instance.StopLoop("fastmonk_footstep");
     }
-    private void StartWalking()
+    private void StartWalking(bool isSideHallway = false)
     {
         ChangeSprite(Moving);
-        PlayFootstepSFX();
+        if (isSideHallway)
+            PlayDampFootstepSFX();
+        else
+            PlayMainFootstepSFX();
     }
 
 
-    private void OnPlayerHidingChanged(bool hiding)
+    private async void OnPlayerHidingChanged(bool hiding)
     {
         if (!hiding || !IsEngaged || CurrentMarker != Markers.Doorway) return;
 
+        if (!DecideToComeIn()) return;
+
+        await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+
         _watchTimer = 0;
-        StartRoute(Markers.Inside, Markers.DeepInside);
+        StartRoute(Markers.DeepInside);
         StartWalking();
     }
 
+    private bool DecideToComeIn(int chance = 100) // 20% chance to enter the room
+    {
+        return GD.RandRange(1, 100) <= chance;  
+    }
 
-    protected override void OnArrived(Marker3D from, Marker3D to)
+
+    protected async override void OnArrived(Marker3D from, Marker3D to)
     {
         ChangeSprite(Idle);
         StopFootstepSFX();
+
+        if (CurrentMarker == Markers.DeepInside)
+        {
+            await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+            Player.ChangeIndicatorText("Come out.");
+        }
     }
 
     protected override Marker3D RandomNextWaypoint()
     {
-        var next = base.RandomNextWaypoint();
-        StartWalking();
+        var next = Markers.Doorway;//base.RandomNextWaypoint();
+        StartWalking(isSideHallway: (next == Markers.TopLeft || next == Markers.BottomLeft));
         
         if (next == Markers.Doorway)
-        {
             _torch.TurnOff();
-        }
+        else
+            _torch.TurnOn();
         
         return next;
     }
@@ -96,8 +118,10 @@ public partial class FastMonk : Monk
         {
             Marker3D last = _random.Next(2) == 0 ? Markers.TopRight : Markers.BottomRight;
 
-            StartRoute(Markers.Inside, Markers.Doorway, last); // leaves the way she came
+            StartRoute(Markers.Doorway, last); // leaves the way she came
             StartWalking();
+
+            _torch.TurnOn();
         }
     }
 

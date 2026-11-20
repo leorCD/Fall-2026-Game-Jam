@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://osfc3wi0gsle"]
+[gd_scene load_steps=9 format=3 uid="uid://osfc3wi0gsle"]
 
 [ext_resource type="Texture2D" uid="uid://b3o1ybxk3cdb8" path="res://Textures/closet/wood_cabinet_worn_long_diff_4k.jpg" id="1_crbcg"]
 [ext_resource type="Material" uid="uid://dp1mr8bea4ces" path="res://Textures/closet/closetpanel.tres" id="2_ttm5r"]
 [ext_resource type="Script" uid="uid://cpbugff7f8hsb" path="res://Closet/Closet.cs" id="3_v485a"]
 [ext_resource type="Script" uid="uid://ous0g6q7xci8" path="res://Closet/ClosetInteraction.cs" id="4_ttm5r"]
-[ext_resource type="AudioStream" uid="uid://khroivmboaty" path="res://Audio/189666__sangtao__closing-closet-door.wav" id="5_v485a"]
+[ext_resource type="AudioStream" uid="uid://biwwsxy1d0pen" path="res://Audio/682880__drewsimko__mock_car_door.wav" id="5_lnavr"]
+[ext_resource type="AudioStream" uid="uid://tqhklmvl1ybk" path="res://Audio/113139__jasinski__frontdoor9.wav" id="6_nxpht"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xuqvo"]
 albedo_texture = ExtResource("1_crbcg")
@@ -49,7 +50,8 @@ material = ExtResource("2_ttm5r")
 script = ExtResource("4_ttm5r")
 LeftHinge = NodePath("../LeftDoor")
 RightHinge = NodePath("../RightDoor")
-DoorCloseOpen = ExtResource("5_v485a")
+DoorClose = ExtResource("5_lnavr")
+DoorOpen = ExtResource("6_nxpht")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Interaction"]
 transform = Transform3D(0.9999998, -4.440892e-16, -1.4901161e-08, 2.7755576e-17, 0.9999999, 0, 1.4901161e-08, 2.9802319e-08, 0.99999976, 0.5125346, 0, 0.37512073)

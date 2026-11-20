@@ -7,8 +7,9 @@
 [ext_resource type="Shader" uid="uid://72xejjiimmrh" path="res://common/vignette/vignette.gdshader" id="3_272bh"]
 [ext_resource type="AudioStream" uid="uid://bpigq61f478aa" path="res://Audio/PlayerFootstep.wav" id="3_xuqvo"]
 [ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
+[ext_resource type="AudioStream" uid="uid://btvue6q5jcsal" path="res://Audio/418866__name__heartbeat-loop.wav" id="5_xuqvo"]
 [ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
-[ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://TorchObject.cs" id="9_0odxb"]
+[ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://common/TorchObject.cs" id="9_0odxb"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/Shine.gdshader" id="10_074og"]
 [ext_resource type="PackedScene" uid="uid://osfc3wi0gsle" path="res://Closet/closet.tscn" id="10_a6jrf"]
@@ -170,18 +171,6 @@ _surfaces = [{
 "vertex_data": PackedByteArray("zcxMvVK42sCuR2VBzcxMvVK42sCuR2XBzcxMvVK42kCuR2XBzcxMPVK42sCuR2XBzcxMvVK42sCuR2XBzcxMvVK42sCuR2VBzcxMvVK42kCuR2XBzcxMvVK42sCuR2XBzcxMPVK42sCuR2XBzcxMvVK42kCuR2XBzcxMvVK42kCuR2VBzcxMvVK42sCuR2VBzcxMvVK42sCuR2VBzcxMvVK42kCuR2VBzcxMPVK42kCuR2VBzcxMPVK42kCuR2VBzcxMvVK42kCuR2VBzcxMvVK42kCuR2XBzcxMvVK42sCuR2VBzcxMPVK42sCuR2VBzcxMPVK42sCuR2XBzcxMPVK42kCuR2VBzcxMPVK42sCuR2VBzcxMvVK42sCuR2VBzcxMPVK42sCuR2XBzcxMPVK42sCuR2VBzcxMPVK42kCuR2VBzcxMPVK42sCuR2XBzcxMPVK42kCuR2XBzcxMvVK42kCuR2XBzcxMvVK42kCuR2XBzcxMPVK42kCuR2XBzcxMPVK42kCuR2VBzcxMPVK42kCuR2VBzcxMPVK42kCuR2XBzcxMPVK42sCuR2XBAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
 }]
 
-[sub_resource type="ArrayMesh" id="ArrayMesh_seu75"]
-_surfaces = [{
-"aabb": AABB(-0.05, -5.4025, -5, 0.1, 10.805, 10),
-"attribute_data": PackedByteArray("AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAPwAAgD8AAIA/"),
-"format": 34359738391,
-"material": ExtResource("16_1u8w0"),
-"primitive": 3,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 36,
-"vertex_data": PackedByteArray("zcxMvUjhrMAAAKBAzcxMvUjhrMAAAKDAzcxMvUjhrEAAAKDAzcxMPUjhrMAAAKDAzcxMvUjhrMAAAKDAzcxMvUjhrMAAAKBAzcxMvUjhrEAAAKDAzcxMvUjhrMAAAKDAzcxMPUjhrMAAAKDAzcxMvUjhrEAAAKDAzcxMvUjhrEAAAKBAzcxMvUjhrMAAAKBAzcxMvUjhrMAAAKBAzcxMvUjhrEAAAKBAzcxMPUjhrEAAAKBAzcxMPUjhrEAAAKBAzcxMvUjhrEAAAKBAzcxMvUjhrEAAAKDAzcxMvUjhrMAAAKBAzcxMPUjhrMAAAKBAzcxMPUjhrMAAAKDAzcxMPUjhrEAAAKBAzcxMPUjhrMAAAKBAzcxMvUjhrMAAAKBAzcxMPUjhrMAAAKDAzcxMPUjhrMAAAKBAzcxMPUjhrEAAAKBAzcxMPUjhrMAAAKDAzcxMPUjhrEAAAKDAzcxMvUjhrEAAAKDAzcxMvUjhrEAAAKDAzcxMPUjhrEAAAKDAzcxMPUjhrEAAAKBAzcxMPUjhrEAAAKBAzcxMPUjhrEAAAKDAzcxMPUjhrMAAAKDAAAD/f/9//n8AAP9//3/+fwAA/3//f/5//38AAP//AAD/fwAA//8AAP9/AAD//wAA/////wAA/z//////AAD/P/////8AAP8/AAD/f/9//n8AAP9//3/+fwAA/3//f/5//3//fwAA/z//f/9/AAD/P/9//38AAP8//3//////AAD/f/////8AAP9//////wAA/38AAP//AAD/fwAA//8AAP9/AAD//wAA/3//fwAA/z//f/9/AAD/P/9//38AAP8/////f/9//n////9//3/+f////3//f/5//////wAA/z//////AAD/P/////8AAP8//3//////AAD/f/////8AAP9//////wAA////f/9//n////9//3/+f////3//f/5/")
-}]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dg77c"]
 albedo_texture = ExtResource("12_w48qg")
 uv1_triplanar = true
@@ -259,6 +248,7 @@ PlayerFootsteps = ExtResource("3_xuqvo")
 
 [node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "DeadScreen", "Indicator", "closet", "_threatBar") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
+HeartbeatSFX = ExtResource("5_xuqvo")
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
 GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
@@ -406,6 +396,15 @@ spot_attenuation = 1.35
 spot_angle = 74.65
 spot_angle_attenuation = 2.5491068
 
+[node name="ClosetFrontLight" type="SpotLight3D" parent="environment"]
+transform = Transform3D(0.15891638, 0, -0.98729205, 0, 1, 0, 0.98729205, 0, 0.15891638, -2.1419156, 0.90033376, -0.9643101)
+light_color = Color(0.17254902, 0, 0, 1)
+light_energy = 0.165
+light_specular = 0.0
+spot_range = 1.645
+spot_attenuation = 5.3
+spot_angle = 73.4
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
 environment = SubResource("Environment_4c57u")
 
@@ -417,7 +416,7 @@ Vignette = NodePath("../../Player/Vignette/ColorRect")
 [node name="SlotMachine" type="Marker3D" parent="environment/Slot_Machine"]
 transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
 
-[node name="ScreenLight" type="SpotLight3D" parent="environment/Slot_Machine"]
+[node name="LightOnScreen" type="SpotLight3D" parent="environment/Slot_Machine"]
 transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 7.5689607, 7.1719317, 0.022144023)
 light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
 light_energy = 0.725
@@ -510,12 +509,8 @@ mesh = SubResource("ArrayMesh_lswn8")
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 5.772708, 0.82185745, -0.003227234)
 mesh = SubResource("ArrayMesh_xuqvo")
 
-[node name="ahllwayend" type="MeshInstance3D" parent="environment/RenderedRoom"]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.1639557, 1.0014358, -13.496695)
-mesh = SubResource("ArrayMesh_seu75")
-
 [node name="floor" type="MeshInstance3D" parent="environment/RenderedRoom"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.010059863, -1.568164, -0.010757983)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0033585131, -1.5681635, -0.0037956834)
 mesh = SubResource("ArrayMesh_jq2sk")
 
 [node name="ceiling" type="MeshInstance3D" parent="environment/RenderedRoom"]
@@ -538,52 +533,62 @@ material_override = ExtResource("16_1u8w0")
 size = Vector3(6.475, 9.335, 0.21)
 
 [node name="bar" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1499649, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0103973, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar2" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0499649, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9103973, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar3" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.249965, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1103973, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar4" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.449965, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3103974, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar5" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3499649, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2103972, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="side2" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3976297, 1.1420926, 0.10090184)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3580117, 1.1420926, 0.10090184)
 operation = 2
-size = Vector3(0.723, 1.39, 0.175)
+size = Vector3(0.883, 1.39, 0.175)
 
 [node name="side" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3976297, 1.1420926, -0.13540983)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3580117, 1.1420926, -0.13540983)
 operation = 2
-size = Vector3(0.723, 1.39, 0.175)
+size = Vector3(0.883, 1.39, 0.175)
 
 [node name="bar6" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5499649, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4103973, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar7" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6499648, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5103972, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
 [node name="bar8" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7499648, 1.1420926, -0.04684019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6103972, 1.1420926, -0.04684019)
+operation = 2
+size = Vector3(0.078, 1.39, 0.335)
+
+[node name="bar9" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7103972, 1.1420926, -0.04684019)
+operation = 2
+size = Vector3(0.078, 1.39, 0.335)
+
+[node name="bar10" type="CSGBox3D" parent="environment/RenderedRoom/CSGBox3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8103973, 1.1420926, -0.04684019)
 operation = 2
 size = Vector3(0.078, 1.39, 0.335)
 
@@ -649,22 +654,22 @@ shape = SubResource("BoxShape3D_ok6jj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6426282, -1.0681641, -9.926611)
 
 [node name="topleftMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.708216, -1.0681641, -9.814151)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3561835, -1.0681641, -9.814151)
 
 [node name="bottomrightMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2378564, -1.0681641, 8.055716)
 
 [node name="bottomleftMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6403346, -1.0681641, 7.9950714)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.288302, -1.0681641, 7.9950714)
 
 [node name="DoorwayMarker" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2209826, -1.0681641, -1.7982302)
 
 [node name="InsideMarker" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4120624, -1.0681641, -1.4870651)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.97218144, -1.0681641, 0.9604368)
 
 [node name="InsideMarker2" type="Marker3D" parent="enemies/Positions"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21829844, -1.0681641, 0.8804836)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4830852, -1.0681641, -1.0631533)
 
 [node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "TopRight", "TopLeft", "BottomLeft", "BottomRight", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "activeMonks")]
 script = ExtResource("11_dg77c")
@@ -676,14 +681,14 @@ BottomRight = NodePath("../Positions/bottomrightMarker")
 Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
-activeMonks = [NodePath("TallMonk")]
+activeMonks = [NodePath("FastMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.812075, -0.17420721, -2.1426477)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9771209, -0.17420721, 9.7209835)
 Aggresiveness = 20
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.03673)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.664431)
 Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
