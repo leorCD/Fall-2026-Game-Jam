@@ -346,9 +346,25 @@ public partial class StaticPlayerController : CharacterBody3D
 		_focused = target;
 		(_focused as IFocusable)?.OnFocus();
 
-		if (target is ClosetInteraction)
+		switch (target)
 		{
-			Indicator.Text = IsHiding ? "Leave" : "Hide";
+			case ClosetInteraction: 
+				string indicatorText = IsHiding ? "Leave" : "Hide";
+				ChangeIndicatorText(indicatorText);
+				break;
+				
+			case Betbutton button:
+				if (button.Action == BetAction.Spin)
+					ChangeIndicatorText("Gamble");
+				else if (button.Action == BetAction.Decrease)
+					ChangeIndicatorText("Lower Bet");
+				else if (button.Action == BetAction.GreatDecrease)
+					ChangeIndicatorText("Drop Bet");
+				else if (button.Action == BetAction.Increase)
+					ChangeIndicatorText("Raise Bet");
+				else if (button.Action == BetAction.GreatIncrease)
+					ChangeIndicatorText("Jump Bet");
+				break;
 		}
 	}
 

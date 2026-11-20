@@ -520,7 +520,7 @@ skeleton = NodePath("")
 transform = Transform3D(-4.3577348e-08, 0.094594926, 0.9955159, -3.0227731e-10, 0.9955159, -0.094594926, -1, -4.4231174e-09, -4.3353346e-08, 0.34590644, 1.995484, -0.008097426)
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../..")
-_action = 4
+Action = 4
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Lever/Area3D3"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
@@ -584,7 +584,7 @@ font_size = 70
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../..")
-_action = 1
+Action = 1
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/Decrease/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
@@ -601,7 +601,7 @@ font_size = 70
 transform = Transform3D(0.9999997, -3.0531133e-15, 1.1657342e-15, 2.7755576e-17, 0.99999946, 2.9802322e-08, -2.220446e-16, 5.9604645e-08, 0.9999996, 0, 0, 0)
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../..")
-_action = 3
+Action = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/GreatIncrease/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)
@@ -618,7 +618,7 @@ font_size = 70
 transform = Transform3D(0.9999996, -3.0253577e-15, 1.110223e-15, 2.7755576e-17, 0.9999994, 2.9802322e-08, -2.220446e-16, 1.1920929e-07, 0.99999946, 0, 0, 0)
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../..")
-_action = 2
+Action = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DisplayBackboard2/Increase/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 0, 0, 0)

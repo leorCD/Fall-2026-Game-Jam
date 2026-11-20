@@ -13,7 +13,7 @@ public enum BetAction
 public partial class Betbutton : Area3D, IInteractable, IFocusable
 {
 	[Export] private SlotMachineLogic _slotMachine;
-	[Export] private BetAction _action;
+	[Export] public BetAction Action;
 
 	[ExportCategory("Highlight")]
 	[Export] private Color _highlightOutlineColor = Colors.White;
@@ -81,7 +81,7 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 		BigInteger balance = player.Chips.Balance;
 		BigInteger great = BigInteger.Max(5, balance / 20); // scales with a massive balance
 
-		switch (_action)
+		switch (Action)
 		{
 			case BetAction.GreatDecrease: Adjust(-great, balance); break;
 			case BetAction.Decrease:      Adjust(-1, balance);     break;

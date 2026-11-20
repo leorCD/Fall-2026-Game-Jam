@@ -13,6 +13,7 @@ public partial class SlotMachineLogic : Node3D
 	public bool isActive = false;
 	public event Action SpinFinished;
 	public event Action SpinStarted;
+	private Godot.Vector3 originPos;
 
 	[Export] public AutoFitLabel3D BetDisplay;
 	private BigInteger _currentBet = BigInteger.Zero;
@@ -58,6 +59,8 @@ public partial class SlotMachineLogic : Node3D
 	private bool _maxedFired = false;
 	private bool _isForcedSpin = false;
 
+	private readonly Dictionary<SpotLight3D, float> _lightRanges = new();
+	private Tween _lightTween;
 
 	[ExportCategory("DEBUG")]
 	[Export] public bool ShowChances = false;
@@ -71,8 +74,6 @@ public partial class SlotMachineLogic : Node3D
 
 
 
-	private readonly Dictionary<SpotLight3D, float> _lightRanges = new();
-	private Tween _lightTween;
 	public void TurnOn()
 	{
 		_lightTween?.Kill();
@@ -84,6 +85,8 @@ public partial class SlotMachineLogic : Node3D
 				.SetTrans(Tween.TransitionType.Sine)
 				.SetEase(Tween.EaseType.Out);
 		}
+
+		GlobalPosition = originPos;
 	}
 
     public override void _Ready()
@@ -106,6 +109,9 @@ public partial class SlotMachineLogic : Node3D
 				light.SpotRange = 0f;
 			}
 		}
+
+		this.originPos = GlobalPosition;
+		GlobalPosition = new Godot.Vector3(0, -10, 0);
     }
 
     public override void _Process(double delta)

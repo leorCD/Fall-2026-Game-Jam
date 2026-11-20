@@ -6,6 +6,7 @@ using System;
 public partial class FastMonk : Monk
 {
     private Random _random = new Random();
+    [Export] private int ChanceToEnterRoom = 20;
 
     [ExportGroup("References")]
     [Export] private TorchObject _torch;
@@ -67,9 +68,9 @@ public partial class FastMonk : Monk
         StartWalking();
     }
 
-    private bool DecideToComeIn(int chance = 100) // 20% chance to enter the room
+    private bool DecideToComeIn() // 20% chance to enter the room
     {
-        return GD.RandRange(1, 100) <= chance;  
+        return GD.RandRange(1, 100) <= ChanceToEnterRoom;  
     }
 
 
@@ -87,7 +88,7 @@ public partial class FastMonk : Monk
 
     protected override Marker3D RandomNextWaypoint()
     {
-        var next = Markers.Doorway;//base.RandomNextWaypoint();
+        var next = base.RandomNextWaypoint();
         StartWalking(isSideHallway: (next == Markers.TopLeft || next == Markers.BottomLeft));
         
         if (next == Markers.Doorway)
