@@ -702,7 +702,7 @@ Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
 Marker_Window = NodePath("../Positions/windowMarker")
-activeMonks = [NodePath("FastMonk")]
+activeMonks = [NodePath("FastMonk"), NodePath("OldMonk"), NodePath("FastMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.633999, 1.2828997, 9.712559)
@@ -716,6 +716,5 @@ Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)
-ChanceToEnterRoom = 100.0
 _torch = NodePath("../../../environment/Torch")
 Aggresiveness = 20

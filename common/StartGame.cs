@@ -37,7 +37,7 @@ public partial class StartGame : StaticBody3D, IInteractable
         Player.Menu.Visible = false;
 
         MonkManager.EnableMonks();
-        Player.Chips.AddChips(100);
+        Player.Chips.AddChips(1000);
         AudioManager.Instance.PlaySfxClip(StartGameSFX, 0f, 1.35f, volumeDb: -10f, parent: this);
 
         _ = Disable(); // used underscore as a discard to supress the warning

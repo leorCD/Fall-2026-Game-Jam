@@ -24,18 +24,17 @@ public partial class SlotMachineRewarder : Node
     // multiplier of the bet per face for a triple. Keys match your face numbers.
     [Export] public Godot.Collections.Dictionary<int, double> TripleMultipliers = new()
     {
-        { 1, 1.5 }, // ie. a full row of Face1 gives you 3x the input
-		{ 2, 2 },
-		{ 3, 3 },
-		{ 4, 3.5 },
-        { 5, 5.5 },
-		{ 6, 6 },
-		{ 7, 8 },
-		{ 8, 10 },
+        { 1, 3 }, // ie. a full row of Face1 gives you 3x the input
+		{ 2, 4 },
+		{ 3, 6 },
+		{ 4, 9 },
+        { 5, 15 },
+		{ 6, 25 },
+		{ 7, 40 },
+		{ 8, 80 },
     };
 	
     [Export] public double PairMultiplierFraction = 0.25; // fraction of the triple multiplier
-    [Export] public double MinimumPairMultiplier = 1.25; // guaranteed floor so rolling a pair of Face1 always slightly profits
     [Export] public double AdjacentPairMultiplier = 1.25; // 2 in a row only gives you 1.25x of what you initially bet
 
 	[ExportCategory("DEBUG")]
@@ -83,7 +82,7 @@ public partial class SlotMachineRewarder : Node
 		if (matchedFace != -1)
 		{
 			double tripleMult = TripleMultipliers.TryGetValue(matchedFace, out double m) ? m : 1.0;
-			double pairMult = Math.Max(tripleMult * PairMultiplierFraction, MinimumPairMultiplier); // scaled down from the jackpot table, but kept at or above the minimum floor
+			double pairMult = Math.Max(tripleMult * PairMultiplierFraction, 1.1); // scaled down from the jackpot table, but kept at or above the minimum floor
 			BigInteger payout = MultiplyBigInt(bet, pairMult);
 
 			return new SpinOutcome(
