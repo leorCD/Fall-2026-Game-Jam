@@ -3,7 +3,7 @@ using Godot;
 public partial class ReelAudioComponent : AudioStreamPlayer3D
 {
     [Export] public AudioStream[] TickSounds;
-    [Export] public float PitchVariance = 0.05f;
+    [Export] public float PitchVariance = 0.075f;
 	
 
     public override void _Ready()
@@ -11,7 +11,7 @@ public partial class ReelAudioComponent : AudioStreamPlayer3D
         MaxPolyphony = 6;   // lets ticks overlap instead of cutting each other off
     }
 
-    public void PlayTick(float speed01 = 1f)
+    public void PlayTick(float speed = 1f)
     {
         if (TickSounds == null || TickSounds.Length == 0) return;
 
@@ -21,7 +21,7 @@ public partial class ReelAudioComponent : AudioStreamPlayer3D
         Stream = TickSounds[index];
 
         // slower reel = lower, heavier tick, plus a little random variation
-        float basePitch = Mathf.Lerp(0.8f, 1.05f, speed01);
+        float basePitch = Mathf.Lerp(0.8f, 1.05f, speed);
         PitchScale = basePitch + (float)GD.RandRange(-PitchVariance, PitchVariance);
 
         Play();

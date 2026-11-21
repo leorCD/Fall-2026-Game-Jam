@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=4 uid="uid://baow7d1r5q6f2"]
+[gd_scene load_steps=43 format=4 uid="uid://baow7d1r5q6f2"]
 
 [ext_resource type="Script" uid="uid://bw3dqkvm4l82w" path="res://Slot machine/SlotMachineLogic.cs" id="2_8lydx"]
 [ext_resource type="PackedScene" uid="uid://ctcwqv3cbt4ae" path="res://Slot machine/Reel/Reel.tscn" id="2_u3mqo"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://dgavurra5q2m1" path="res://Slot machine/SlotMachineRewarder.cs" id="2_yaq0p"]
 [ext_resource type="AudioStream" uid="uid://i4epru38xo32" path="res://Audio/Slots lever-Poly.wav" id="5_yxx8c"]
 [ext_resource type="Script" uid="uid://uru8j2x2equm" path="res://Slot machine/AutoFitLabel3D.cs" id="6_yxx8c"]
+[ext_resource type="AudioStream" uid="uid://bya6m6kd6sntb" path="res://Audio/585684__wqmadmax__clicks.wav" id="7_e2oen"]
 [ext_resource type="Script" uid="uid://brffiwntv3rug" path="res://Slot machine/Betbutton.cs" id="7_kanra"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vfqw8"]
@@ -539,6 +540,7 @@ transform = Transform3D(-4.3577348e-08, 0.094594926, 0.9955159, -3.0227731e-10, 
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../..")
 Action = 4
+ButtonPress = ExtResource("7_e2oen")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Lever/Area3D3"]
 transform = Transform3D(0.99999994, -7.459311e-17, 5.551115e-17, 3.3827108e-17, 1, 7.450581e-09, -5.551115e-17, 2.2351742e-08, 1, -0.38735676, 0.37273264, -0.03541732)
@@ -588,6 +590,7 @@ font_size = 70
 [node name="Area3D" type="Area3D" parent="Body/DisplayBackboard2/GreatDecrease" node_paths=PackedStringArray("_slotMachine")]
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../../..")
+ButtonPress = ExtResource("7_e2oen")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/DisplayBackboard2/GreatDecrease/Area3D"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 1.4075442e-18, 0.050712116, -3.5130587e-10)
@@ -605,6 +608,7 @@ transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../../..")
 Action = 1
+ButtonPress = ExtResource("7_e2oen")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/DisplayBackboard2/Decrease/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, -2.8595444e-18, -0.040525943, -1.2077673e-09)
@@ -622,6 +626,7 @@ transform = Transform3D(0.9999997, -3.0531133e-15, 1.1657342e-15, 2.7755576e-17,
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../../..")
 Action = 3
+ButtonPress = ExtResource("7_e2oen")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/DisplayBackboard2/GreatIncrease/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, 1.4075442e-18, 0.050712116, -3.5130587e-10)
@@ -639,6 +644,7 @@ transform = Transform3D(0.9999996, -3.0253577e-15, 1.110223e-15, 2.7755576e-17, 
 script = ExtResource("7_kanra")
 _slotMachine = NodePath("../../../..")
 Action = 2
+ButtonPress = ExtResource("7_e2oen")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Body/DisplayBackboard2/Increase/Area3D2"]
 transform = Transform3D(0.99999994, 2.7755576e-17, 0, 2.7755576e-17, 0.9999999, 0, 0, 2.9802322e-08, 0.9999999, -2.8595444e-18, -0.040525943, -1.2077673e-09)

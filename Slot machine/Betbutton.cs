@@ -16,7 +16,10 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 	[Export] private SlotMachineLogic _slotMachine;
 	[Export] public BetAction Action;
 
-	[ExportCategory("Highlight")]
+	[ExportGroup("SFX")]
+	[Export] public AudioStream ButtonPress;
+
+	[ExportGroup("Highlight")]
 	[Export] private Color _highlightOutlineColor = Colors.White;
 	[Export] private int _highlightOutlineSize = 8;
 	[Export] private float _fadeTime = 0.1f;
@@ -85,11 +88,25 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 
 		switch (Action)
 		{
-			case BetAction.GreatDecrease: Adjust(-great, balance); break;
-			case BetAction.Decrease:      Adjust(-1, balance);     break;
-			case BetAction.Increase:      Adjust(1, balance);      break;
-			case BetAction.GreatIncrease: Adjust(great, balance);  break;
-			case BetAction.Spin:          _slotMachine.TrySpin(player); break;
+			case BetAction.GreatDecrease:
+				Adjust(-great, balance);
+				AudioManager.Instance.PlaySfx3D(ButtonPress, this, "SFX_SlotMachine", -0.2f, -4f);
+				break;
+			case BetAction.Decrease:      
+				Adjust(-1, balance);
+				AudioManager.Instance.PlaySfx3D(ButtonPress, this, "SFX_SlotMachine", -0.1f, -4f);
+				break;
+			case BetAction.Increase:      
+				Adjust(1, balance);
+				AudioManager.Instance.PlaySfx3D(ButtonPress, this, "SFX_SlotMachine", 0.1f, -4f);
+				break;
+			case BetAction.GreatIncrease: 
+				Adjust(great, balance);
+				AudioManager.Instance.PlaySfx3D(ButtonPress, this, "SFX_SlotMachine", 0.2f, -4f);
+				break;
+			case BetAction.Spin:
+				_slotMachine.TrySpin(player);
+				break;
 		}
 	}
 

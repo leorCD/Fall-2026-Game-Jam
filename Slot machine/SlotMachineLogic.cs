@@ -63,6 +63,11 @@ public partial class SlotMachineLogic : Node3D
 	private readonly Dictionary<SpotLight3D, float> _lightRanges = new();
 	private Tween _lightTween;
 
+	[ExportCategory("Luck")]
+	[Export] public int LuckPerStreak = 15;   // extra match bonus per consecutive spin
+	[Export] public int MaxLuckBonus = 250;   // cap so it can't become a guaranteed win
+	private int _streak = 0;
+
 	[ExportCategory("DEBUG")]
 	[Export] public bool ShowChances = false;
 
@@ -105,6 +110,11 @@ public partial class SlotMachineLogic : Node3D
 		
 		CurrentBet = 0;
 
+		Player.HidingChanged += hiding =>
+		{
+			if (hiding) _streak = 0;
+		};
+
 		foreach (Node child in GetChildren())
 		{
 			if (child is SpotLight3D light)
@@ -140,7 +150,7 @@ public partial class SlotMachineLogic : Node3D
 
 	private void VignetteLogic()
 	{
-		float t =Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
+		float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
 		// float t = _isForcedSpin 
         //     ? 1f 
         //     : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
@@ -191,6 +201,8 @@ public partial class SlotMachineLogic : Node3D
         _idleTime = 0f;
         _maxedFired = false;
 		isActive = false;
+
+		_streak++;
 		SpinFinished?.Invoke();
 	}
 
@@ -227,13 +239,14 @@ public partial class SlotMachineLogic : Node3D
 		}
 
 		int[] results = new int[numberOfReels];
+		int bonus = _matchWeightBonus + Mathf.Min(_streak * LuckPerStreak, MaxLuckBonus);
 		for (int i = 0; i < numberOfReels; i++)
 		{
 			int face = RollFace(liveWeights, total);
 			results[i] = face;
 
-			liveWeights[face] += _matchWeightBonus; // boost for the next reel
-			total += _matchWeightBonus;
+			liveWeights[face] += bonus;
+			total += bonus;
 		}
 
 		return results;
