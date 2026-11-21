@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using Godot;
 
@@ -38,6 +39,7 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 		}
 
 		_slotMachine.Player.MoveFinished += OnMoveFinished;
+		Disable();
 	}
 
 	public void OnFocus() => Highlight(true);
@@ -103,5 +105,15 @@ public partial class Betbutton : Area3D, IInteractable, IFocusable
 			bet += delta;
 
 		_slotMachine.CurrentBet = BigInteger.Min(balance, BigInteger.Max(0, bet));
+	}
+
+	public void Enable()
+	{
+		SetCollisionLayerValue(1, true);
+	}
+
+	public void Disable()
+	{
+		SetCollisionLayerValue(1, false);
 	}
 }

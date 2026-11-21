@@ -5,15 +5,16 @@ using Godot.Collections;
 
 public partial class SlotMachineLogic : Node3D
 {
-	[Export] public StaticPlayerController Player {get; private set;}
-	[Export] public SlotMachineAnimator AnimationComponent {get; private set;}
-	[Export] public SlotMachineRewarder RewardComponent {get; private set;}
+	[Export] public StaticPlayerController Player;
+	[Export] public Marker3D GamblingPosition;
+	[Export] public SlotMachineAnimator AnimationComponent;
+	[Export] public SlotMachineRewarder RewardComponent;
+	[Export] public Betbutton[] betButtons;
 
 	private Random _random = new Random();
 	public bool isActive = false;
 	public event Action SpinFinished;
 	public event Action SpinStarted;
-	private Godot.Vector3 originPos;
 
 	[Export] public AutoFitLabel3D BetDisplay;
 	private BigInteger _currentBet = BigInteger.Zero;
@@ -86,7 +87,10 @@ public partial class SlotMachineLogic : Node3D
 				.SetEase(Tween.EaseType.Out);
 		}
 
-		GlobalPosition = originPos;
+		foreach (var button in betButtons)
+		{
+			button.Enable();
+		}
 	}
 
     public override void _Ready()
@@ -109,9 +113,6 @@ public partial class SlotMachineLogic : Node3D
 				light.SpotRange = 0f;
 			}
 		}
-
-		this.originPos = GlobalPosition;
-		GlobalPosition = new Godot.Vector3(0, -10, 0);
     }
 
     public override void _Process(double delta)

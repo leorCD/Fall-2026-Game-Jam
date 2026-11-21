@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=59 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
 [ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/Shine.gdshader" id="10_074og"]
 [ext_resource type="PackedScene" uid="uid://osfc3wi0gsle" path="res://Closet/closet.tscn" id="10_a6jrf"]
-[ext_resource type="Script" uid="uid://b3yqyi6vjfycq" path="res://common/Coin.cs" id="11_cegan"]
+[ext_resource type="Script" uid="uid://b3yqyi6vjfycq" path="res://common/StartGame.cs" id="11_cegan"]
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dxk2djl8ecxls" path="res://Textures/newfloor.jpg" id="12_w48qg"]
 [ext_resource type="Script" uid="uid://d07x67hgln8iy" path="res://common/TorchLight.cs" id="13_2cqfq"]
@@ -24,10 +24,17 @@
 [ext_resource type="Texture2D" uid="uid://clfhwlshou6c0" path="res://Textures/crate2_diffuse.png" id="14_yaehf"]
 [ext_resource type="Texture2D" uid="uid://b5t7lnk8vdclt" path="res://Textures/crate2_normal.png" id="15_074og"]
 [ext_resource type="Material" uid="uid://7yf3tt3j1mrc" path="res://Textures/tres/wall.tres" id="16_1u8w0"]
-[ext_resource type="Texture2D" uid="uid://bok5o4n1jqn3" path="res://Textures/title.png" id="18_getpj"]
 [ext_resource type="PackedScene" uid="uid://k3q2ykfyr6yq" path="res://Monk/Types/Old Monk/old_monk.tscn" id="21_getpj"]
 [ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="22_ryguw"]
 [ext_resource type="AudioStream" uid="uid://ba4do6l8ciamf" path="res://Audio/873424__loganzsound__microphone-interference-slowed.wav" id="24_qsp4k"]
+
+[sub_resource type="SystemFont" id="SystemFont_xuqvo"]
+font_names = PackedStringArray("BIZ UDPMincho")
+subpixel_positioning = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_qsp4k"]
+font = SubResource("SystemFont_xuqvo")
+font_size = 101
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -232,7 +239,7 @@ _surfaces = [{
 }]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ok6jj"]
-size = Vector3(0.1, 0.05, 0.1)
+size = Vector3(0.23, 0.1, 0.2)
 
 [node name="Main" type="Node3D"]
 
@@ -246,21 +253,39 @@ player = NodePath("../Player")
 Droning = ExtResource("2_xuqvo")
 PlayerFootsteps = ExtResource("3_xuqvo")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "GamblingPosition", "DeadScreen", "Indicator", "closet", "_threatBar") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "DeadScreen", "Indicator", "closet", "Menu", "_threatBar") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 HeartbeatSFX = ExtResource("5_xuqvo")
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
-GamblingPosition = NodePath("../environment/Slot_Machine/SlotMachine")
 DeadScreen = NodePath("DeadScreen")
 Indicator = NodePath("HUD/Indicator")
 closet = NodePath("../environment/Closet")
+Menu = NodePath("Menu")
 _threatBar = NodePath("Action meter/ProgressBar")
 max_yaw_deg = 90.0
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
 BalanceDisplay = NodePath("../HUD/BalanceDisplay")
+
+[node name="Menu" type="CanvasLayer" parent="Player"]
+layer = 86
+
+[node name="Title" type="Label" parent="Player/Menu"]
+anchors_preset = -1
+anchor_left = 0.23697917
+anchor_top = 0.2361111
+anchor_right = 0.7630208
+anchor_bottom = 0.3935185
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 0
+text = "Monkakegurui"
+label_settings = SubResource("LabelSettings_qsp4k")
+horizontal_alignment = 1
+vertical_alignment = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Vignette" type="CanvasLayer" parent="Player"]
 
@@ -409,22 +434,9 @@ spot_angle = 73.4
 environment = SubResource("Environment_4c57u")
 
 [node name="Slot_Machine" parent="environment" node_paths=PackedStringArray("Player", "Vignette") instance=ExtResource("9_kek77")]
-transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, -0.756184, -1.041632, -3.7478466)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -0.756184, -1.041632, -3.7478466)
 Player = NodePath("../../Player")
 Vignette = NodePath("../../Player/Vignette/ColorRect")
-
-[node name="SlotMachine" type="Marker3D" parent="environment/Slot_Machine"]
-transform = Transform3D(-1.7484555e-07, 0, 4, 0, 4, 0, -4, 0, -1.7484555e-07, 8.13727, 4.166528, -3.556914e-07)
-
-[node name="LightOnScreen" type="SpotLight3D" parent="environment/Slot_Machine"]
-transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 7.5689607, 7.1719317, 0.022144023)
-light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
-light_energy = 0.725
-light_specular = 0.0
-shadow_enabled = true
-spot_range = 5.8
-spot_attenuation = 2.38
-spot_angle = 84.0
 
 [node name="Closet" parent="environment" instance=ExtResource("10_a6jrf")]
 transform = Transform3D(0.99174744, 0, 0.12820713, 0, 1, 0, -0.12820713, 0, 0.99174744, -2.7563562, 0, -0.9140659)
@@ -613,21 +625,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.761275, -0.61060333, -2.87
 material_override = ExtResource("16_1u8w0")
 size = Vector3(0.075, 12.415, 16.72)
 
-[node name="title" type="Sprite3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0015555024, 1.759716, -4.367672)
-modulate = Color(0.47007585, 0.47007585, 0.47007585, 0.4117647)
-pixel_size = 0.0025
-texture = ExtResource("18_getpj")
-
-[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "SlotMachine", "MonkManager", "Canvas", "Title")]
+[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "MonkManager", "Shader", "ChipsDisplay")]
 transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, -0.6988373, -1.0651642, -3.2747014)
 script = ExtResource("11_cegan")
 Player = NodePath("../../Player")
-SlotMachine = NodePath("../Slot_Machine")
 MonkManager = NodePath("../../enemies/ActiveMonks")
-Canvas = [NodePath("../../Player/Shader")]
-Title = NodePath("../title")
+Shader = NodePath("../../Player/Shader")
 StartGameSFX = ExtResource("24_qsp4k")
+ChipsDisplay = NodePath("../../Player/HUD/BalanceDisplay")
 
 [node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="environment/Coin"]
 transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0, 0)

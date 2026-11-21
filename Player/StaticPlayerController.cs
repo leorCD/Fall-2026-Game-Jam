@@ -17,14 +17,15 @@ public partial class StaticPlayerController : CharacterBody3D
 	private Tween _audioTween;
 	[Export] public AudioStream HeartbeatSFX;
 
+	private Marker3D GamblingPosition;
+	private Marker3D HidingPosition;
 	[ExportGroup("References")]
 	[Export] public ChipManager Chips { get; private set; }
 	[Export] public SlotMachineLogic SlotMachine { get; private set; }
-	[Export] public Marker3D GamblingPosition { get; private set; }
-	private Marker3D HidingPosition;
 	[Export] public CanvasLayer DeadScreen;
 	[Export] public Label Indicator;
 	[Export] public Closet closet;
+	[Export] public CanvasLayer Menu;
 
 	[ExportGroup("Threat Meter")]
 	[Export] private ProgressBar _threatBar;
@@ -90,17 +91,21 @@ public partial class StaticPlayerController : CharacterBody3D
 			GD.PrintErr("No camera");
 
 		// get position
+		GamblingPosition = SlotMachine.GamblingPosition;
 		HidingPosition = closet.HiddenPosition;
 
-		// set position
-		if (GamblingPosition != null)
+		// start game inside hiding
+		if (HidingPosition != null)
 		{
-			Position = GamblingPosition.GlobalPosition;
+			GlobalTransform = HidingPosition.GlobalTransform;
+			IsHiding = true;
 		}
 
+		// ready up dead screen
 		if (DeadScreen != null && IsDead == false) DeadScreen.Visible = false;
 
-		Indicator.Text = "";
+		// clear indicator text
+		ChangeIndicatorText();
 
 		SlotMachine.IdlePressureMaxed += OnIdlePressureMaxed;
 		SlotMachine.SpinFinished += OnSpinFinished;
@@ -265,6 +270,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		_moveTween = CreateTween();
 
 		_panLocked = true;
+
+		if (Menu != null && Menu.Visible == true) Menu.Visible = false;
+
 		Transform3D start = GlobalTransform;
 		Transform3D finish = GamblingPosition.GlobalTransform;
 
@@ -296,6 +304,12 @@ public partial class StaticPlayerController : CharacterBody3D
 		StopHeartbeatloop();
 	}
 
+
+
+
+
+
+
 	private void PlayHeartbeatLoop()
 	{
 		AudioManager.Instance.PlayLoop("closet_heartbeat", HeartbeatSFX, -25f, bus: "Master", parent: this);
@@ -304,6 +318,11 @@ public partial class StaticPlayerController : CharacterBody3D
 	{
 		AudioManager.Instance.StopLoop("closet_heartbeat");
 	}
+
+
+
+
+
 
 
 
@@ -340,7 +359,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		if (GodotObject.IsInstanceValid(_focused))
 		{
 			(_focused as IFocusable)?.OnUnfocus();
-			Indicator.Text = "";
+			ChangeIndicatorText();
 		}
 
 		_focused = target;
@@ -348,9 +367,13 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		switch (target)
 		{
-			case ClosetInteraction: 
+			case ClosetInteraction:
 				string indicatorText = IsHiding ? "Leave" : "Hide";
 				ChangeIndicatorText(indicatorText);
+				break;
+
+			case StartGame:
+				ChangeIndicatorText("God Forgive Me", new Color(1, 0, 0, 1));
 				break;
 				
 			case Betbutton button:
@@ -452,8 +475,24 @@ public partial class StaticPlayerController : CharacterBody3D
 			_audioTween.Finished += () => _originalBusVolumes.Clear();
 	}
 
-	public void ChangeIndicatorText(string newText)
+
+
+
+
+
+
+
+	public void ChangeIndicatorText(string newText = "", Color? color = null)
 	{
+		Indicator.Visible = newText == "" ? false : true;
+
+		if (color.HasValue && Indicator.LabelSettings != null)
+			Indicator.LabelSettings.FontColor = color.Value;
+		else if(Indicator.LabelSettings != null)
+			Indicator.LabelSettings.FontColor = new Color(1, 1, 1, 1);
+			
+
+		
 		Indicator.Text = newText;
 	}
 
