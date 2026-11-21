@@ -2,14 +2,23 @@ using Godot;
 using System;
 
 // Stands at the doorway for a few seconds. Only kills you if you gamble in front of him.
+// Sometimes checks the window after reaching the left side, and bangs on the wall if you gamble.
 // Set ArrivalThreat to 0 in the inspector so he doesn't add to the shared bar on arrival.
 public partial class OldMonk : Monk
 {
     [ExportGroup("Old Monk")]
     [Export] private float LingerSeconds = 5f;
 
+    [ExportGroup("Window")]
+    [Export(PropertyHint.Range, "1, 100")] private float WindowChance = 50; // chance to check the window after arriving on the left
+    [Export] private float WindowLingerSeconds = 3f;
+    [Export] private float WindowBangThreat = 0.3f;
+    public event Action WallBanged;
+    private bool _banged;
+
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
+    [Export] public AudioStream WindowBangSFX;
 
 
     public override void _Ready()
@@ -26,10 +35,33 @@ public partial class OldMonk : Monk
     // no BuildRate and no give-up check: he only reacts to gambling
     protected override void DoorProcess(double delta)
     {
-        if (Player.SlotMachine != null && Player.SlotMachine.isActive)
+        bool gambling = Player.SlotMachine != null && Player.SlotMachine.isActive;
+
+        if (CurrentMarker == Markers.Window)
+        {
+            if (gambling && !_banged) // once per spin, not every frame
+            {
+                _banged = true;
+                Bang();
+            }
+            else if (!gambling)
+            {
+                _banged = false;
+            }
+            return;
+        }
+
+        if (gambling)
         {
             Player.AddThreat(1f);
         }
+    }
+
+    private void Bang()
+    {
+        AudioManager.Instance.PlaySfx3D(WindowBangSFX, this, "SFX_Hallway", volumeDb: 8f);
+        Player.AddThreat(WindowBangThreat);
+        WallBanged?.Invoke();
     }
 
 
@@ -51,19 +83,40 @@ public partial class OldMonk : Monk
     {
         ChangeSprite(Idle);
         StopFootstepSFX();
+        _banged = false;
 
         if (to == Markers.Doorway)
         {
             await ToSignal(GetTree().CreateTimer(LingerSeconds), SceneTreeTimer.SignalName.Timeout);
 
-            if (IsEngaged) // skip if the monk was frozen while waiting
+            // skip if the monk was frozen or redirected while waiting
+            if (IsEngaged && CurrentMarker == Markers.Doorway)
                 SendBack();
+            return;
+        }
+
+        if (to == Markers.Window)
+        {
+            await ToSignal(GetTree().CreateTimer(WindowLingerSeconds), SceneTreeTimer.SignalName.Timeout);
+
+            if (IsEngaged && CurrentMarker == Markers.Window)
+                SendBack();
+            return;
+        }
+
+        // arrived on the left side: roll for the window
+        if ((to == Markers.TopLeft || to == Markers.BottomLeft) && GD.RandRange(1, 100) < WindowChance)
+        {
+            ChangeSprite(Moving);
+            PlayDampFootstepSFX();
+            GoTo(Markers.Window);
         }
     }
 
     protected override Marker3D RandomNextWaypoint()
     {
         var next = base.RandomNextWaypoint();
+        if (next == null) return null;
 
         ChangeSprite(Moving);
         if (next == Markers.TopLeft || next == Markers.BottomLeft)

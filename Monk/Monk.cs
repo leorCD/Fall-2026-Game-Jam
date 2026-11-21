@@ -171,7 +171,7 @@ public abstract partial class Monk : CharacterBody3D
             _engaged = true;
             Player.AddThreat(ArrivalThreat);
         }
-        else if (CurrentMarker == Markers.Inside || CurrentMarker == Markers.DeepInside)
+        else if (CurrentMarker == Markers.Inside || CurrentMarker == Markers.DeepInside || CurrentMarker == Markers.Window)
         {
             _engaged = true;
         }
@@ -237,9 +237,9 @@ public abstract partial class Monk : CharacterBody3D
     protected virtual Marker3D RandomNextWaypoint()
     {
         // only hops to an adjacent marker, so monks follow the hallway ring.
-        // Inside/DeepInside are intentionally excluded: only reachable through scripted GoTo calls
+        // Inside/DeepInside/Window are intentionally excluded: only reachable through scripted GoTo calls
         var options = Markers.Neighbors(CurrentMarker)
-            .Where(m => m != null && m != Markers.Inside && m != Markers.DeepInside)
+            .Where(m => m != null && m != Markers.Inside && m != Markers.DeepInside && m != Markers.Window)
             .ToArray();
 
         if (options.Length == 0) return null;
@@ -286,5 +286,7 @@ public abstract partial class Monk : CharacterBody3D
             }), 0f, 1f, LookTime)
             .SetTrans(Tween.TransitionType.Expo)
             .SetEase(Tween.EaseType.Out); // fast snap, then settles
+        
+        Player.IsJumpscared = true;
     }
 }

@@ -11,10 +11,11 @@ public partial class MonkManager : Node
 	[Export] public Marker3D TopLeft;
 	[Export] public Marker3D BottomLeft;
 	[Export] public Marker3D BottomRight;
-
 	[Export] public Marker3D Marker_Doorway;
 	[Export] public Marker3D Marker_Inside;
 	[Export] public Marker3D Marker_DeepInside;
+	[Export] public Marker3D Marker_Window;
+
 
 	[Export] public Monk[] activeMonks;
 
@@ -39,7 +40,7 @@ public partial class MonkManager : Node
 	{
 		if (activeMonks == null || Player == null) return;
 
-		var markers = new MonkMarkers(TopRight, TopLeft, BottomLeft, BottomRight, Marker_Doorway, Marker_Inside, Marker_DeepInside);
+		var markers = new MonkMarkers(TopRight, TopLeft, BottomLeft, BottomRight, Marker_Doorway, Marker_Inside, Marker_DeepInside, Marker_Window);
 
 		foreach (var monk in activeMonks)
 		{

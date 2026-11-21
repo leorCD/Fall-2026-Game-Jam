@@ -14,16 +14,19 @@ public class MonkMarkers
 	public Marker3D Doorway { get; }
 	public Marker3D Inside { get; }
 	public Marker3D DeepInside { get; }
+	public Marker3D Window { get; }
 
 	private readonly Dictionary<Marker3D, List<Marker3D>> _adj = new();
 
 	public MonkMarkers(
 		Marker3D topRight, Marker3D topLeft, Marker3D bottomLeft, Marker3D bottomRight,
-		Marker3D doorway, Marker3D inside, Marker3D deepInside)
+		Marker3D doorway, Marker3D inside, Marker3D deepInside,
+		Marker3D window)
 	{
 		TopRight = topRight; TopLeft = topLeft;
 		BottomLeft = bottomLeft; BottomRight = bottomRight;
 		Doorway = doorway; Inside = inside; DeepInside = deepInside;
+		Window = window;
 
 		// hallway ring around the room
 		Link(TopRight, TopLeft);
@@ -38,6 +41,10 @@ public class MonkMarkers
 		// into the room
 		Link(Doorway, Inside);
 		Link(Inside, DeepInside);
+
+		// window only reachable from left
+		Link(TopLeft, Window);
+		Link(BottomLeft, Window);
 	}
 
 	// undirected edge: add each node to the other's neighbor list

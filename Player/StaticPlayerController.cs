@@ -34,6 +34,13 @@ public partial class StaticPlayerController : CharacterBody3D
 	public event Action ThreatMaxed;
 	private bool _maxed;
 
+	[ExportGroup("Heartbeat")]
+	[Export] public float HeartbeatMinPitch = 0.8f;
+	[Export] public float HeartbeatMaxPitch = 1.8f;
+	[Export] public float HeartbeatMinDb = -30f;
+	[Export] public float HeartbeatMaxDb = -12f;
+	private AudioStreamPlayer _heartbeat;
+
 	[ExportGroup("Camera")]
 	[Export] public float max_yaw_deg = 45.0f; // maximum horizontal camera rotation
 	[Export] public float max_pitch_deg = 30.0f; // maximum vertical camera rotation.
@@ -57,6 +64,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	private bool _panLocked; // true during the hide-in: camera pans back to center and ignores the mouse
 
 	public bool IsForcedToGamble = false;
+	public bool IsJumpscared = false;
 	public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
 
 	private GodotObject _focused;
@@ -122,7 +130,7 @@ public partial class StaticPlayerController : CharacterBody3D
 			SetThreat(Threat - DecayRate * (float)delta);
 
 		// camera logic (kept in _Process so the interaction raycast always aims from an up-to-date camera)
-		if (_camera == null) return;
+		if (_camera == null || IsJumpscared == true) return;
 
 		Vector2I screenSize = DisplayServer.WindowGetSize();
 		Vector2 screenCenter = new Vector2(screenSize.X * 0.5f, screenSize.Y * 0.5f);
@@ -500,6 +508,21 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+	private void UpdateHeartbeat()
+	{
+		if (_heartbeat == null) return;
+
+		if (Threat > 0.01f && !IsDead)
+		{
+			if (!_heartbeat.Playing) _heartbeat.Play();
+			_heartbeat.PitchScale = Mathf.Lerp(HeartbeatMinPitch, HeartbeatMaxPitch, Threat);
+			_heartbeat.VolumeDb = Mathf.Lerp(HeartbeatMinDb, HeartbeatMaxDb, Threat);
+		}
+		else if (_heartbeat.Playing)
+		{
+			_heartbeat.Stop();
+		}
+	}
 
 	public void AddThreat(float amount)
 	{
@@ -511,6 +534,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		Threat = Mathf.Clamp(value, 0f, 1f);
 		if (_threatBar != null)
 			_threatBar.Value = Threat * _threatBar.MaxValue;
+		UpdateHeartbeat();
 
 		if (Threat >= 1f && !_maxed)
 		{
@@ -532,6 +556,8 @@ public partial class StaticPlayerController : CharacterBody3D
 	{
 		if (IsDead) return;
 		IsDead = true;
+
+		_heartbeat?.Stop();
 		YouLoseScreen();
 	}
 	private void YouLoseScreen()

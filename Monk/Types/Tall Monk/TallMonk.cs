@@ -39,7 +39,7 @@ public partial class TallMonk : Monk
 
         if (to == Markers.Doorway)
         {
-            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 5.5f, 1f, 0.1f, "SFX_Hallway", this);
+            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 8f, 1f, 0.1f, "SFX_Hallway", this);
         }
     }
 
