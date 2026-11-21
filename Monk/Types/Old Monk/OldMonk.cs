@@ -10,11 +10,11 @@ public partial class OldMonk : Monk
     [Export] private float LingerSeconds = 5f;
 
     [ExportGroup("Window")]
-    [Export(PropertyHint.Range, "1, 100")] private float WindowChance = 50; // chance to check the window after arriving on the left
+    [Export(PropertyHint.Range, "0, 100")] private float WindowChance = 30; // chance to check the window after arriving on the left
     [Export] private float WindowLingerSeconds = 3f;
     [Export] private float WindowBangThreat = 0.3f;
     public event Action WallBanged;
-    private bool _banged;
+    public bool BangedOnWindow;
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
@@ -39,14 +39,14 @@ public partial class OldMonk : Monk
 
         if (CurrentMarker == Markers.Window)
         {
-            if (gambling && !_banged) // once per spin, not every frame
+            if (gambling && !BangedOnWindow) // once per spin, not every frame
             {
-                _banged = true;
+                BangedOnWindow = true;
                 Bang();
             }
             else if (!gambling)
             {
-                _banged = false;
+                BangedOnWindow = false;
             }
             return;
         }
@@ -83,7 +83,7 @@ public partial class OldMonk : Monk
     {
         ChangeSprite(Idle);
         StopFootstepSFX();
-        _banged = false;
+        BangedOnWindow = false;
 
         if (to == Markers.Doorway)
         {

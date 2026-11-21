@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 
 public partial class StaticPlayerController : CharacterBody3D
@@ -16,13 +17,14 @@ public partial class StaticPlayerController : CharacterBody3D
 	private readonly System.Collections.Generic.Dictionary<int, float> _originalBusVolumes = new();
 	private Tween _audioTween;
 	[Export] public AudioStream HeartbeatSFX;
+	[Export] public AudioStream NeckSnap;
+	[Export] public AudioStream DeathReason;
 
 	private Marker3D GamblingPosition;
 	private Marker3D HidingPosition;
 	[ExportGroup("References")]
 	[Export] public ChipManager Chips { get; private set; }
 	[Export] public SlotMachineLogic SlotMachine { get; private set; }
-	[Export] public CanvasLayer DeadScreen;
 	[Export] public Label Indicator;
 	[Export] public Closet closet;
 	[Export] public CanvasLayer Menu;
@@ -36,9 +38,9 @@ public partial class StaticPlayerController : CharacterBody3D
 
 	[ExportGroup("Heartbeat")]
 	[Export] public float HeartbeatMinPitch = 0.8f;
-	[Export] public float HeartbeatMaxPitch = 1.8f;
-	[Export] public float HeartbeatMinDb = -30f;
-	[Export] public float HeartbeatMaxDb = -12f;
+	[Export] public float HeartbeatMaxPitch = 2f;
+	[Export] public float HeartbeatMinDb = -12f;
+	[Export] public float HeartbeatMaxDb = -2f;
 	private AudioStreamPlayer _heartbeat;
 
 	[ExportGroup("Camera")]
@@ -49,11 +51,17 @@ public partial class StaticPlayerController : CharacterBody3D
 	[ExportSubgroup("Interaction")]
 	[Export] public float Range = 5f;
 	[Export(PropertyHint.Layers3DPhysics)] public uint Mask = 1;
-
 	[ExportSubgroup("Hide Transition")]
 	[Export] public float HideLookTime = 0.2f;  // turn toward the hiding spot
 	[Export] public float HideWalkTime = 0.5f;  // move into it
 	[Export] public float HideTurnTime = 0.2f;  // turn to the hiding marker's rotation
+
+	[ExportGroup("DeathScreen")]
+	[Export] public CanvasLayer DeadScreen;
+	[Export] public Control DeathScreenExtra;
+	[Export] public Button RestartGameButton;
+	[Export] public Label DeathText;
+
 	
 	private Camera3D _camera;
 	public Camera3D Camera => _camera;
@@ -98,6 +106,18 @@ public partial class StaticPlayerController : CharacterBody3D
 		else
 			GD.PrintErr("No camera");
 
+		// create heartbeat
+		if (HeartbeatSFX != null)
+		{
+			_heartbeat = new AudioStreamPlayer
+			{
+				Stream = HeartbeatSFX,
+				Bus = "Master",
+				VolumeDb = HeartbeatMinDb
+			};
+			AddChild(_heartbeat);
+		}
+
 		// get position
 		GamblingPosition = SlotMachine.GamblingPosition;
 		HidingPosition = closet.HiddenPosition;
@@ -119,6 +139,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		SlotMachine.SpinFinished += OnSpinFinished;
 
 		closet.interactor.Interacted += OnClosetInteract;
+
 
 	}
 
@@ -266,10 +287,6 @@ public partial class StaticPlayerController : CharacterBody3D
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
 		_panLocked = false;
 		MoveFinished?.Invoke();
-
-		await ToSignal(GetTree().CreateTimer(6f), Timer.SignalName.Timeout);
-		if (IsHiding == true)
-			PlayHeartbeatLoop();
 	}
 
 	public async void ExitHiding()
@@ -308,25 +325,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		await ToSignal(_moveTween, Tween.SignalName.Finished);
 		_panLocked = false;
 		MoveFinished?.Invoke();
-
-		StopHeartbeatloop();
 	}
-
-
-
-
-
-
-
-	private void PlayHeartbeatLoop()
-	{
-		AudioManager.Instance.PlayLoop("closet_heartbeat", HeartbeatSFX, -25f, bus: "Master", parent: this);
-	}
-	private void StopHeartbeatloop()
-	{
-		AudioManager.Instance.StopLoop("closet_heartbeat");
-	}
-
 
 
 
@@ -421,14 +420,15 @@ public partial class StaticPlayerController : CharacterBody3D
 		MoveTo(GamblingPosition.GlobalTransform);
 	}
 
-	private void OnSpinFinished()
+	private async void OnSpinFinished()
 	{
 		IsForcedToGamble = false;
 		SetForcedAudio(false); // before the death check so it always restores
 
 		if (Chips != null && Chips.Balance <= 0)
 		{
-			Kill();
+			await ToSignal(GetTree().CreateTimer(1.5f), Timer.SignalName.Timeout);
+			Kill("you couldn't take it anymore");
 			return;
 		}
 
@@ -490,7 +490,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
-	public void ChangeIndicatorText(string newText = "", Color? color = null)
+	public void ChangeIndicatorText(string newText = "", Color? color = null, int fontSize = 24)
 	{
 		Indicator.Visible = newText == "" ? false : true;
 
@@ -499,8 +499,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		else if(Indicator.LabelSettings != null)
 			Indicator.LabelSettings.FontColor = new Color(1, 1, 1, 1);
 			
-
-		
+		Indicator.LabelSettings.FontSize = fontSize;
 		Indicator.Text = newText;
 	}
 
@@ -550,24 +549,43 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+	public void MuteAllExcept(string keepBus, bool mute)
+	{
+		int keepIdx = AudioServer.GetBusIndex(keepBus);
+
+		for (int bus = 1; bus < AudioServer.BusCount; bus++) // 0 is Master
+		{
+			if (bus == keepIdx) continue;
+			AudioServer.SetBusMute(bus, mute);
+		}
+	}
 
 
-	public void Kill()
+
+	public void Kill(string DeathText = null)
 	{
 		if (IsDead) return;
 		IsDead = true;
 
 		_heartbeat?.Stop();
-		YouLoseScreen();
+		_ = YouLoseScreen(DeathText);
 	}
-	private void YouLoseScreen()
+	private async Task YouLoseScreen(string text)
 	{
 		if (DeadScreen == null) return;
-		Button RestartGameButton = DeadScreen.GetNode<Button>("Button");
-		if (RestartGameButton == null) return;
 
+		DeathText.Text = text;
+		DeathScreenExtra.Visible = false;
 		DeadScreen.Visible = true;
+
+		MuteAllExcept("Head", true);
+
+		AudioManager.Instance.PlaySfx3D(NeckSnap, this, "Head", volumeDb: -10f);
 		Died?.Invoke();
+
+		await ToSignal(GetTree().CreateTimer(2f), Timer.SignalName.Timeout);
+		DeathScreenExtra.Visible = true;
+		AudioManager.Instance.PlaySfx3D(DeathReason, this, "Head", volumeDb: -18f);
 
 		RestartGameButton.Pressed += () =>
 		{

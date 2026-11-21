@@ -27,9 +27,9 @@ public abstract partial class Monk : CharacterBody3D
     [Export] protected Texture2D Moving;
     protected Sprite3D Sprite;
 
-    protected MonkMarkers Markers { get; private set; }
+    public MonkMarkers Markers { get; private set; }
     protected Vector3 MoveDirection { get; private set; }
-    protected Marker3D CurrentMarker { get; private set; }
+    public Marker3D CurrentMarker { get; private set; }
 
     protected Marker3D TargetMarker;
     private readonly Queue<Marker3D> _route = new(); // extra stops after TargetMarker
@@ -42,6 +42,7 @@ public abstract partial class Monk : CharacterBody3D
     [ExportGroup("Jumpscare")]
     [Export] protected float LookHeightFraction { get; set; } = 0.85f; // 0 = feet, 1 = top of the sprite
     [Export] protected float LookTime { get; set; } = 0.25f;           // how fast the camera snaps to the monk
+    [Export] protected float LungeDistanceFromHead { get; set; } = 0.6f; // how close the camera ends up to the head
 
 
 
@@ -271,22 +272,39 @@ public abstract partial class Monk : CharacterBody3D
     {
         if (Player == null || Player.Camera == null) return;
 
-        // feet are at the node origin, so the head is HeightMeters above it
         Vector3 lookTarget = GlobalPosition + Vector3.Up * (HeightMeters * LookHeightFraction);
 
-        Vector3 camPos = Player.Camera.GlobalPosition;
-        Quaternion from = Player.Camera.GlobalTransform.Basis.GetRotationQuaternion();
-        Quaternion to = Player.Camera.GlobalTransform.LookingAt(lookTarget, Vector3.Up).Basis.GetRotationQuaternion();
+        Camera3D cam = Player.Camera;
+        Vector3 camPos = cam.GlobalPosition;
+        Quaternion from = cam.GlobalTransform.Basis.GetRotationQuaternion();
+        Basis toBasis = cam.GlobalTransform.LookingAt(lookTarget, Vector3.Up).Basis;
+        Quaternion to = toBasis.GetRotationQuaternion();
 
-        CreateTween()
-            .TweenMethod(Callable.From<float>(t =>
-            {
-                var basis = new Basis(from.Slerp(to, t));
-                Player.Camera.GlobalTransform = new Transform3D(basis, camPos);
-            }), 0f, 1f, LookTime)
-            .SetTrans(Tween.TransitionType.Expo)
-            .SetEase(Tween.EaseType.Out); // fast snap, then settles
-        
+        // after the turn
+        Vector3 forward = -toBasis.Z;
+        float distance = camPos.DistanceTo(lookTarget);
+        float travel = Mathf.Max(0f, distance - LungeDistanceFromHead);
+        Vector3 endPos = camPos + forward * travel;
+
         Player.IsJumpscared = true;
+
+        var tween = CreateTween();
+
+        // 1. snap to face the head
+        tween.TweenMethod(Callable.From<float>(t =>
+        {
+            var basis = new Basis(from.Slerp(to, t));
+            cam.GlobalTransform = new Transform3D(basis, camPos);
+        }), 0f, 1f, LookTime)
+            .SetTrans(Tween.TransitionType.Expo)
+            .SetEase(Tween.EaseType.Out);
+
+        // 2. then lunge forward along the camera's z-axis
+        tween.TweenMethod(Callable.From<float>(t =>
+        {
+            cam.GlobalTransform = new Transform3D(new Basis(to), camPos.Lerp(endPos, t));
+        }), 0f, 1f, 0.35f)
+            .SetTrans(Tween.TransitionType.Cubic)
+            .SetEase(Tween.EaseType.In); // starts slow, accelerates into their face
     }
 }

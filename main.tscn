@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=61 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
@@ -8,6 +8,8 @@
 [ext_resource type="AudioStream" uid="uid://bpigq61f478aa" path="res://Audio/PlayerFootstep.wav" id="3_xuqvo"]
 [ext_resource type="Script" uid="uid://dshn4tblqqib8" path="res://common/vignette/IdleVignette.cs" id="4_kek77"]
 [ext_resource type="AudioStream" uid="uid://btvue6q5jcsal" path="res://Audio/418866__name__heartbeat-loop.wav" id="5_xuqvo"]
+[ext_resource type="AudioStream" uid="uid://bj5lchcpbp264" path="res://Audio/134025__danielrutterfilms__necksnap_build.wav" id="6_seu75"]
+[ext_resource type="AudioStream" uid="uid://di37lptj885b" path="res://Audio/880119__kabaalmaker__tibetan-singing-bowl-as-heard-through-skull-mounted-on-microphone (1).mp3" id="7_htxhm"]
 [ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
 [ext_resource type="FontFile" uid="uid://drucrmnc45gf8" path="res://common/fonts/BIZUDPMincho-Regular.ttf" id="7_xuqvo"]
 [ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://common/TorchObject.cs" id="9_0odxb"]
@@ -251,17 +253,22 @@ player = NodePath("../Player")
 Droning = ExtResource("2_xuqvo")
 PlayerFootsteps = ExtResource("3_xuqvo")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "DeadScreen", "Indicator", "closet", "Menu", "_threatBar") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "Indicator", "closet", "Menu", "_threatBar", "DeadScreen", "DeathScreenExtra", "RestartGameButton", "DeathText") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 HeartbeatSFX = ExtResource("5_xuqvo")
+NeckSnap = ExtResource("6_seu75")
+DeathReason = ExtResource("7_htxhm")
 Chips = NodePath("ChipManager")
 SlotMachine = NodePath("../environment/Slot_Machine")
-DeadScreen = NodePath("DeadScreen")
 Indicator = NodePath("HUD/Indicator")
 closet = NodePath("../environment/Closet")
 Menu = NodePath("Menu")
 _threatBar = NodePath("Action meter/ProgressBar")
 max_yaw_deg = 90.0
+DeadScreen = NodePath("DeadScreen")
+DeathScreenExtra = NodePath("DeadScreen/extra")
+RestartGameButton = NodePath("DeadScreen/extra/Button")
+DeathText = NodePath("DeadScreen/extra/LoseMessage")
 
 [node name="ChipManager" type="Node" parent="Player" node_paths=PackedStringArray("BalanceDisplay")]
 script = ExtResource("3_1bvp3")
@@ -332,7 +339,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="DeadScreen" type="CanvasLayer" parent="Player"]
 layer = 6
-visible = false
 
 [node name="bg" type="ColorRect" parent="Player/DeadScreen"]
 anchors_preset = 15
@@ -345,25 +351,33 @@ color = Color(0.047058824, 0, 0, 1)
 metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
-[node name="Button" type="Button" parent="Player/DeadScreen"]
-anchors_preset = -1
-anchor_left = 0.42881945
-anchor_top = 0.56790125
-anchor_right = 0.5711806
-anchor_bottom = 0.6296296
+[node name="extra" type="Control" parent="Player/DeadScreen"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="Player/DeadScreen/extra"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.453125
+anchor_top = 0.7191358
+anchor_right = 0.546875
+anchor_bottom = 0.7669753
+grow_horizontal = 2
+grow_vertical = 2
 text = "try again"
 metadata/_edit_use_anchors_ = true
 
-[node name="LoseMessage" type="Label" parent="Player/DeadScreen"]
+[node name="LoseMessage" type="Label" parent="Player/DeadScreen/extra"]
+layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.23784722
-anchor_top = 0.4722222
-anchor_right = 0.7621528
-anchor_bottom = 0.5277778
-offset_top = -1.0
-offset_bottom = -1.0
+anchor_left = 0.3480903
+anchor_top = 0.47916666
+anchor_right = 0.6519097
+anchor_bottom = 0.5208333
 grow_horizontal = 2
 grow_vertical = 2
 text = "you couldn't take it anymore"
@@ -421,11 +435,11 @@ spot_angle_attenuation = 2.5491068
 
 [node name="ClosetFrontLight" type="SpotLight3D" parent="environment"]
 transform = Transform3D(0.15891638, 0, -0.98729205, 0, 1, 0, 0.98729205, 0, 0.15891638, -2.1419156, 0.90033376, -0.9643101)
-light_color = Color(0.17254902, 0, 0, 1)
+light_color = Color(0.13636157, 9.400537e-08, 1.8049032e-08, 1)
 light_energy = 0.165
 light_specular = 0.0
 spot_range = 1.645
-spot_attenuation = 5.3
+spot_attenuation = 3.55
 spot_angle = 73.4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="environment"]
@@ -688,14 +702,13 @@ Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
 Marker_Window = NodePath("../Positions/windowMarker")
-activeMonks = [NodePath("OldMonk")]
+activeMonks = [NodePath("FastMonk")]
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9771209, -0.17420721, 9.7209835)
-WindowChance = 100.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.633999, 1.2828997, 9.712559)
+WindowBangThreat = 1.5
 WindowBangSFX = ExtResource("27_qsp4k")
 Aggresiveness = 20
-MovementSpeed = 8.0
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.664431)
@@ -703,5 +716,6 @@ Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)
+ChanceToEnterRoom = 100.0
 _torch = NodePath("../../../environment/Torch")
 Aggresiveness = 20

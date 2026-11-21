@@ -6,7 +6,7 @@ using System;
 public partial class FastMonk : Monk
 {
     private Random _random = new Random();
-    [Export] private int ChanceToEnterRoom = 20;
+    [Export(PropertyHint.Range, "0, 100")] private float ChanceToEnterRoom = 20; // chance to check the window after arriving on the left
 
     [ExportGroup("References")]
     [Export] private TorchObject _torch;
@@ -35,11 +35,11 @@ public partial class FastMonk : Monk
 
     private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 5f, 1f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 9f, 1f, 0.1f, "SFX_Hallway", this);
     }
     private void PlayDampFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 5f, 1f, 0.1f, "SFX_HallwayDamp", this);
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 9f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {
@@ -68,7 +68,7 @@ public partial class FastMonk : Monk
         StartWalking();
     }
 
-    private bool DecideToComeIn() // 20% chance to enter the room
+    private bool DecideToComeIn() // chance to enter the room
     {
         return GD.RandRange(1, 100) <= ChanceToEnterRoom;  
     }
@@ -82,7 +82,7 @@ public partial class FastMonk : Monk
         if (CurrentMarker == Markers.DeepInside)
         {
             await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
-            Player.ChangeIndicatorText("Come out.");
+            Player.ChangeIndicatorText("Come out.", fontSize: 40);
         }
     }
 

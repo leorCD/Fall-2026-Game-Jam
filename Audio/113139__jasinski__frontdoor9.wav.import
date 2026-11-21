@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/113139__jasinski__frontdoor9.wav-84e5d2da0376
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

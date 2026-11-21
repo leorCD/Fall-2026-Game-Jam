@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/682880__drewsimko__mock_car_door.wav-4f41dcea
 [params]
 
 force/8_bit=false
-force/mono=false
+force/mono=true
 force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false

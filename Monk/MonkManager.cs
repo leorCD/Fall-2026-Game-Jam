@@ -2,6 +2,7 @@ using Godot;
 using System.Linq;
 
 
+
 public partial class MonkManager : Node
 {
 	[Export] public StaticPlayerController Player;
@@ -58,7 +59,25 @@ public partial class MonkManager : Node
 		FreezeAll();
 
 		killer?.Jumpscare();
-		GetTree().CreateTimer(KillDelaySeconds).Timeout += Player.Kill;
+		GetTree().CreateTimer(KillDelaySeconds).Timeout += () =>
+		{
+			string deathtext = "you couldn't take it anymore";
+
+			switch (killer)
+			{
+				case FastMonk fast:
+					deathtext = Pick(fast.CurrentMarker == fast.Markers.DeepInside ? FastInsideLines : FastLines);
+					break;
+				case TallMonk:
+					deathtext = Pick(TallLines);
+					break;
+				case OldMonk old:
+					deathtext = Pick(old.BangedOnWindow ? OldWindowLines : OldDoorLines);
+					break;
+			};
+
+			Player.Kill(deathtext);
+		};
 	}
 
 	private void FreezeAll()
@@ -73,4 +92,56 @@ public partial class MonkManager : Node
 		Player.ThreatMaxed -= OnPlayerCaught;
 		Player.Died -= FreezeAll;
 	}
+
+
+
+
+
+
+
+
+
+
+
+	// old monk at the door
+	private static readonly string[] OldDoorLines =
+	{
+		"you knew better, but you wanted one more spin.",
+		"they watched, and you gambled anyway.",
+		"you couldn't stop yourself, even with them standing there.",
+	};
+
+	// old monk at the window
+	private static readonly string[] OldWindowLines =
+	{
+		"you heard the knocking and spun anyway.",
+		"the machine was louder than the warning.",
+		"you wanted one more spin more than you wanted to listen.",
+	};
+
+	// tall monk
+	private static readonly string[] TallLines =
+	{
+		"you couldn't hide from yourself.",
+		"you hated how this felt, and you stayed anyway.",
+		"you were too ashamed to move.",
+	};
+
+	// fast monk at the doorway
+	private static readonly string[] FastLines =
+	{
+		"you couldn't look at who you used to be.",
+		"you felt like a kid caught doing something wrong.",
+		"you were just a kid once.",
+	};
+
+	// fast monk inside the room
+	private static readonly string[] FastInsideLines =
+	{
+		"you wanted to be found, so you stepped out.",
+		"you couldn't ignore the voice in the dark.",
+		"you couldn't stay hidden forever.",
+	};
+
+	private static string Pick(string[] lines) => lines[(int)(GD.Randi() % (uint)lines.Length)];
 }
