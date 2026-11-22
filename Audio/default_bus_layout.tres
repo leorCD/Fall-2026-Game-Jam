@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=6 format=3 uid="uid://ci46wv1hbjf1r"]
+[gd_resource type="AudioBusLayout" load_steps=7 format=3 uid="uid://ci46wv1hbjf1r"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
@@ -25,6 +25,10 @@ spread = 0.28
 dry = 0.28
 wet = 0.26
 
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_ddrg4"]
+resource_name = "Amplify"
+volume_db = 9.0
+
 [sub_resource type="AudioEffectEQ10" id="AudioEffectEQ10_ai37j"]
 resource_name = "EQ10"
 band_db/31_hz = 5.8
@@ -36,7 +40,7 @@ band_db/2000_hz = -12.7
 
 [sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_ai37j"]
 resource_name = "Amplify"
-volume_db = 16.0
+volume_db = 14.0
 
 [resource]
 bus/1/name = &"Ambience"
@@ -65,6 +69,8 @@ bus/3/volume_db = 0.0
 bus/3/send = &"Master"
 bus/3/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
 bus/3/effect/0/enabled = true
+bus/3/effect/1/effect = SubResource("AudioEffectAmplify_ddrg4")
+bus/3/effect/1/enabled = true
 bus/4/name = &"SFX_HallwayDamp"
 bus/4/solo = false
 bus/4/mute = false

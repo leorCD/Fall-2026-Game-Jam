@@ -470,6 +470,7 @@ metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
 [node name="Action meter" type="CanvasLayer" parent="Player"]
+visible = false
 
 [node name="ProgressBar" type="ProgressBar" parent="Player/Action meter"]
 visible = false
@@ -722,7 +723,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.761275, -0.61060333, -2.87
 material_override = ExtResource("16_1u8w0")
 size = Vector3(0.075, 12.415, 16.72)
 
-[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "MonkManager", "Shader", "ChipsDisplay")]
+[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "MonkManager", "Shader", "ChipsDisplay", "SideHallwayTorch")]
 transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, -0.6988373, -1.0651642, -3.2747014)
 script = ExtResource("11_cegan")
 Player = NodePath("../../Player")
@@ -730,6 +731,7 @@ MonkManager = NodePath("../../enemies/ActiveMonks")
 Shader = NodePath("../../Player/Shader")
 StartGameSFX = ExtResource("24_qsp4k")
 ChipsDisplay = NodePath("../../Player/HUD/BalanceDisplay")
+SideHallwayTorch = NodePath("../Torch2")
 
 [node name="CSGBakedMeshInstance3D" type="MeshInstance3D" parent="environment/Coin"]
 transform = Transform3D(1.0000001, 0, 0, 0, 1, 0, 0, 0, 1.0000001, 0, 0, 0)

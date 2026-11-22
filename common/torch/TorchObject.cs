@@ -22,7 +22,7 @@ public partial class TorchObject : MeshInstance3D
             .SetEase(Tween.EaseType.Out);
 
         fire.Visible = false;
-        sound.Playing = false;
+        if (sound != null) sound.Playing = false;
     }
 
     public async void TurnOn()
@@ -34,7 +34,7 @@ public partial class TorchObject : MeshInstance3D
             .SetEase(Tween.EaseType.Out);
             
         fire.Visible = true;
-        sound.Playing = true;
+        if (sound != null) sound.Playing = true;
 
 
 

@@ -10,7 +10,7 @@ public partial class OldMonk : Monk
     [Export] private float LingerSeconds = 5f;
 
     [ExportGroup("Window")]
-    [Export(PropertyHint.Range, "0, 100")] private float WindowChance = 30; // chance to check the window after arriving on the left
+    [Export(PropertyHint.Range, "0, 100")] private float WindowChance = 40; // chance to check the window after arriving on the left
     [Export] private float WindowLingerSeconds = 3f;
     [Export] private float WindowBangThreat = 0.3f;
     public event Action WallBanged;
@@ -67,7 +67,7 @@ public partial class OldMonk : Monk
 
     private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, 1f, 1f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, 5f, 1f, 0.1f, "SFX_Hallway", this);
     }
     private void PlayDampFootstepSFX()
     {

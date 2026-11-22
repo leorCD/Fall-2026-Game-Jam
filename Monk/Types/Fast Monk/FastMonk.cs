@@ -6,7 +6,7 @@ using System;
 public partial class FastMonk : Monk
 {
     private Random _random = new Random();
-    [Export(PropertyHint.Range, "0, 100")] private float ChanceToEnterRoom = 20; // chance to check the window after arriving on the left
+    [Export(PropertyHint.Range, "0, 100")] private float ChanceToEnterRoom = 25; // chance to check the window after arriving on the left
 
     [ExportGroup("References")]
     [Export] private TorchObject _torch;
@@ -35,11 +35,11 @@ public partial class FastMonk : Monk
 
     private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 9f, 1f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 11f, 1f, 0.1f, "SFX_Hallway", this);
     }
     private void PlayDampFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 14f, 1f, 0.1f, "SFX_HallwayDamp", this);
+        AudioManager.Instance.PlayLoop("fastmonk_footstep", footstepSFX, 11f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {

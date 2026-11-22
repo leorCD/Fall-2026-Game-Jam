@@ -9,6 +9,7 @@ public partial class StartGame : StaticBody3D, IInteractable
     [Export] private CanvasLayer Shader;
     [Export] public AudioStream StartGameSFX;
     [Export] public Label ChipsDisplay;
+    [Export] public TorchObject SideHallwayTorch;
 
     private bool _used;
 
@@ -22,6 +23,7 @@ public partial class StartGame : StaticBody3D, IInteractable
         ChipsDisplay.Visible = false;
         Shader.Visible = false;
         Player.Menu.Visible = true;
+        SideHallwayTorch.TurnOff();
 
         Enable();
     }
@@ -43,6 +45,8 @@ public partial class StartGame : StaticBody3D, IInteractable
         MonkManager.EnableMonks();
         Player.Chips.AddChips(1000);
         AudioManager.Instance.PlaySfxClip(StartGameSFX, 0f, 1.35f, volumeDb: -10f, parent: this);
+
+        SideHallwayTorch.TurnOn();
 
         _ = Disable();
     }

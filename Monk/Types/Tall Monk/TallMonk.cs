@@ -20,7 +20,7 @@ public partial class TallMonk : Monk
 
     private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -1f, 1f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, 3f, 1f, 0.1f, "SFX_Hallway", this);
     }
     private void PlayDampFootstepSFX()
     {

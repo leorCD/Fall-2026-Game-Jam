@@ -26,16 +26,16 @@ public partial class SlotMachineRewarder : Node
     {
         { 1, 3 }, // ie. a full row of Face1 gives you 3x the input
 		{ 2, 4 },
-		{ 3, 6 },
-		{ 4, 9 },
-        { 5, 15 },
-		{ 6, 25 },
-		{ 7, 40 },
-		{ 8, 80 },
+		{ 3, 5 },
+		{ 4, 6 },
+        { 5, 8 },
+		{ 6, 10 },
+		{ 7, 15 },
+		{ 8, 20 },
     };
 	
     [Export] public double PairMultiplierFraction = 0.25; // fraction of the triple multiplier
-    [Export] public double AdjacentPairMultiplier = 1.25; // 2 in a row only gives you 1.25x of what you initially bet
+    [Export] public double AdjacentPairMultiplier = 1.5; // 2 in a row only gives you 1.25x of what you initially bet
 
 	[ExportCategory("DEBUG")]
 	[Export] public bool printOutcome = true;
