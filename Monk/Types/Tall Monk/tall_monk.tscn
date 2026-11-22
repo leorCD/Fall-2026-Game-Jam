@@ -22,7 +22,7 @@ script = ExtResource("1_i3vr4")
 footstepSFX = ExtResource("2_feedq")
 whisperingSFX = ExtResource("3_tsm3h")
 HeightMeters = 4.0
-MovementSpeed = 2.0
+MovementSpeed = 1.8
 Idle = ExtResource("2_1g4kx")
 Moving = ExtResource("3_feedq")
 

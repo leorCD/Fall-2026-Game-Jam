@@ -13,6 +13,7 @@ public partial class SlotMachineLogic : Node3D
 
 	private Random _random = new Random();
 	public bool isActive = false;
+	public bool JustSpun = false;
 	public event Action SpinFinished;
 	public event Action SpinStarted;
 
@@ -177,6 +178,8 @@ public partial class SlotMachineLogic : Node3D
 		BigInteger bet = CurrentBet;
 		if (!Player.Chips.SpendChips(bet)) return; // check if they have enough chips first
 
+		JustSpun = true;
+		GetTree().CreateTimer(0.5f).Timeout += () => JustSpun = false;
 		isActive = true;
 		_idleTime = 0f;
 		CurrentBet = 0;

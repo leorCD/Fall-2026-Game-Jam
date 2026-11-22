@@ -12,15 +12,15 @@ public abstract partial class Monk : CharacterBody3D
     private float TickInterval = 2f; // wander decision every 2 seconds
 
     [ExportCategory("General Settings")]
-    [Export] protected int Aggresiveness { get; set; } = 10; // scale from 0-20 like fnaf
+    [Export] public int Aggresiveness { get; set; } = 10; // scale from 0-20 like fnaf
 
     [ExportCategory("Monk Settings")]
     [Export] protected float HeightMeters { get; set; } = 3f;
-    [Export] protected float MovementSpeed { get; set; } = 0.8f;
+    [Export] public float MovementSpeed { get; set; } = 0.8f;
 
     [ExportGroup("Threat")]
     [Export] public float BuildRate { get; set; } = 0.1f;      // bar fraction per second while player is visible
-    [Export] public float ArrivalThreat { get; set; } = 0.4f;  // one-time bump on reaching the door
+    [Export] public float ArrivalThreat { get; set; } = 0.3f;  // one-time bump on reaching the door
 
     [ExportGroup("Textures")]
     [Export] protected Texture2D Idle;
@@ -43,7 +43,9 @@ public abstract partial class Monk : CharacterBody3D
     [Export] protected float LookHeightFraction { get; set; } = 0.85f; // 0 = feet, 1 = top of the sprite
     [Export] protected float LookTime { get; set; } = 0.25f;           // how fast the camera snaps to the monk
     [Export] protected float LungeDistanceFromHead { get; set; } = 0.6f; // how close the camera ends up to the head
-
+    
+    [ExportGroup("Night")]
+    [Export] public int StartHour { get; set; } = 0;
 
 
 

@@ -568,9 +568,9 @@ public partial class StaticPlayerController : CharacterBody3D
 		IsDead = true;
 
 		_heartbeat?.Stop();
-		_ = YouLoseScreen(DeathText);
+		YouLoseScreen(DeathText);
 	}
-	private async Task YouLoseScreen(string text)
+	private async void YouLoseScreen(string text)
 	{
 		if (DeadScreen == null) return;
 
@@ -591,5 +591,45 @@ public partial class StaticPlayerController : CharacterBody3D
 		{
 			GetTree().ReloadCurrentScene();
 		};
+	}
+
+	private static readonly string[] WinLines =
+	{
+		"6:00 AM.   the machine is still warm.",
+	};
+
+	public void Win()
+	{
+		if (IsDead) return;        // died first, or already won
+		IsDead = true;             // reused as "game over" so input and camera lock like the death screen
+
+		MuteAllExcept("Master", true);
+
+		IsForcedToGamble = false;
+		_heartbeat?.Stop();
+		YouWinScreen();
+	}
+
+	private async void YouWinScreen()
+	{
+		if (DeadScreen == null) return;
+
+		int chips = Chips != null ? (int)Chips.Balance : 0;
+		string chipLabel = chips == 1 ? "chip" : "chips";
+		string scoreLine = chips > 100_000
+			? $"you left with {chips:N0} {chipLabel}.   now you have something to lose."
+			: $"you left with {chips:N0} {chipLabel}.   you're not satisfied.";
+
+		string line = WinLines[(int)(GD.Randi() % (uint)WinLines.Length)];
+		DeathText.Text = $"{line}\n{scoreLine}";
+
+		DeathScreenExtra.Visible = false;
+		DeadScreen.Visible = true;
+
+		await ToSignal(GetTree().CreateTimer(2f), Timer.SignalName.Timeout);
+		DeathScreenExtra.Visible = true;
+
+		RestartGameButton.Text = "Play again";
+		RestartGameButton.Pressed += () => GetTree().ReloadCurrentScene();
 	}
 }

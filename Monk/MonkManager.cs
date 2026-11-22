@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -6,6 +7,7 @@ using System.Linq;
 public partial class MonkManager : Node
 {
 	[Export] public StaticPlayerController Player;
+	[Export] public Monk[] activeMonks;
 
 	[ExportCategory("Markers")]
 	[Export] public Marker3D TopRight;
@@ -17,11 +19,15 @@ public partial class MonkManager : Node
 	[Export] public Marker3D Marker_DeepInside;
 	[Export] public Marker3D Marker_Window;
 
-
-	[Export] public Monk[] activeMonks;
+	private MonkMarkers _markers;
+	private readonly HashSet<Monk> _started = new();
+	
 
 	[ExportCategory("Jumpscare")]
 	[Export] public double KillDelaySeconds = 0.8; // lets the scare play before the death screen
+
+	[ExportCategory("Night")]
+	[Export] public NightClock Clock;
 
 
 	public override void _Ready()
@@ -35,22 +41,58 @@ public partial class MonkManager : Node
 
 		Player.ThreatMaxed += OnPlayerCaught;
 		Player.Died += FreezeAll;
+
+		if (Clock != null)
+		{
+			Clock.HourChanged += OnHourChanged;
+			Clock.NightEnded += OnNightEnded;
+		}
 	}
 
 	public void EnableMonks()
 	{
 		if (activeMonks == null || Player == null) return;
 
-		var markers = new MonkMarkers(TopRight, TopLeft, BottomLeft, BottomRight, Marker_Doorway, Marker_Inside, Marker_DeepInside, Marker_Window);
+		_markers = new MonkMarkers(TopRight, TopLeft, BottomLeft, BottomRight,
+			Marker_Doorway, Marker_Inside, Marker_DeepInside, Marker_Window);
+
+		foreach (var m in activeMonks)
+			if (m != null) m.Visible = false;
+
+		Clock?.StartNight();
+	}
+
+
+
+
+
+
+	private void OnNightEnded()
+	{
+		GD.Print("[Night] 6:00 AM, freezing all monks");
+		FreezeAll();
+    	Player.Win();
+	}
+	private void OnHourChanged(int hour)
+	{
+		if (_markers == null || activeMonks == null) return;
 
 		foreach (var monk in activeMonks)
 		{
-			if (monk == null) continue;
+			if (monk == null || hour < monk.StartHour) continue;
 
-			monk.Init(Player, markers);
-			monk.Visible = true;
+			if (_started.Add(monk)) // true only the first time
+			{
+				monk.Init(Player, _markers);
+				monk.Visible = true;
+			}
 		}
 	}
+
+
+
+
+
 
 	private void OnPlayerCaught()
 	{
@@ -79,15 +121,22 @@ public partial class MonkManager : Node
 			Player.Kill(deathtext);
 		};
 	}
-
+	
 	private void FreezeAll()
 	{
+		Clock?.Stop();
 		if (activeMonks == null) return;
 		foreach (var m in activeMonks) m?.Freeze();
 	}
 
 	public override void _ExitTree()
 	{
+		if (Clock != null)
+		{
+			Clock.HourChanged -= OnHourChanged;
+			Clock.NightEnded -= OnNightEnded;
+		}
+
 		if (Player == null) return;
 		Player.ThreatMaxed -= OnPlayerCaught;
 		Player.Died -= FreezeAll;

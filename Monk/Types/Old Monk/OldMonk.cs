@@ -35,7 +35,7 @@ public partial class OldMonk : Monk
     // no BuildRate and no give-up check: he only reacts to gambling
     protected override void DoorProcess(double delta)
     {
-        bool gambling = Player.SlotMachine != null && Player.SlotMachine.isActive;
+        bool gambling = Player.SlotMachine != null && Player.SlotMachine.JustSpun;
 
         if (CurrentMarker == Markers.Window)
         {

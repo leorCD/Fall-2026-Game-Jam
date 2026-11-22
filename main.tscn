@@ -1,8 +1,10 @@
-[gd_scene load_steps=61 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=71 format=4 uid="uid://cppu1ju6sf1wh"]
 
+[ext_resource type="Script" uid="uid://duiihffiuyu5j" path="res://common/clock/NightClock.cs" id="1_4k2k6"]
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://c8dvub0gv8e2d" path="res://Player/PlayerAudio.cs" id="1_ycdy4"]
-[ext_resource type="AudioStream" uid="uid://cy0ascwm1rkiy" path="res://Audio/875988__newlocknew__dsgndron_dark-and-resonating-drone-1_em (1).wav" id="2_xuqvo"]
+[ext_resource type="Script" uid="uid://yhjpsccs0a0d" path="res://common/clock/HourConfig.cs" id="2_0rl1p"]
+[ext_resource type="AudioStream" uid="uid://dxmtiwc3x3x0" path="res://Audio/490958__fission9__paranoia.wav" id="2_seu75"]
 [ext_resource type="Script" uid="uid://btn5shcbm64n3" path="res://Player/ChipManager.cs" id="3_1bvp3"]
 [ext_resource type="Shader" uid="uid://72xejjiimmrh" path="res://common/vignette/vignette.gdshader" id="3_272bh"]
 [ext_resource type="AudioStream" uid="uid://bpigq61f478aa" path="res://Audio/PlayerFootstep.wav" id="3_xuqvo"]
@@ -31,6 +33,60 @@
 [ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="22_ryguw"]
 [ext_resource type="AudioStream" uid="uid://ba4do6l8ciamf" path="res://Audio/873424__loganzsound__microphone-interference-slowed.wav" id="24_qsp4k"]
 [ext_resource type="AudioStream" uid="uid://bu1up7hew76bf" path="res://Audio/427563__tbone1999__doorhit.wav" id="27_qsp4k"]
+[ext_resource type="Script" uid="uid://br8on0sjxlxxc" path="res://ClockDisplay.cs" id="29_ok6jj"]
+
+[sub_resource type="Resource" id="Resource_facbu"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.0
+OldThreatRate_Additive = 0.0
+FastThreatRate_Additive = 0.0
+OverallMoveSpeed = 0.0
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
+
+[sub_resource type="Resource" id="Resource_4k2k6"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.01
+OldThreatRate_Additive = 0.01
+FastThreatRate_Additive = 0.0
+OverallMoveSpeed = 0.05
+Aggressiveness_Additive = 2
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
+
+[sub_resource type="Resource" id="Resource_0rl1p"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.02
+OldThreatRate_Additive = 0.015
+FastThreatRate_Additive = 0.0
+OverallMoveSpeed = 0.05
+Aggressiveness_Additive = 2
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
+
+[sub_resource type="Resource" id="Resource_ok6jj"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.02
+OldThreatRate_Additive = 0.02
+FastThreatRate_Additive = 0.02
+OverallMoveSpeed = 0.1
+Aggressiveness_Additive = 2
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
+
+[sub_resource type="Resource" id="Resource_b1qrp"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.025
+OldThreatRate_Additive = 0.02
+FastThreatRate_Additive = 0.02
+OverallMoveSpeed = 0.1
+Aggressiveness_Additive = 2
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
+
+[sub_resource type="Resource" id="Resource_come4"]
+script = ExtResource("2_0rl1p")
+TallThreatRate_Additive = 0.035
+OldThreatRate_Additive = 0.025
+FastThreatRate_Additive = 0.025
+OverallMoveSpeed = 0.35
+Aggressiveness_Additive = 2
+metadata/_custom_type_script = "uid://yhjpsccs0a0d"
 
 [sub_resource type="FontVariation" id="FontVariation_qsp4k"]
 base_font = ExtResource("7_xuqvo")
@@ -89,6 +145,11 @@ shader_parameter/ghost_distance = 0.012
 shader_parameter/flicker_strength = 0.005
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cegan"]
+
+[sub_resource type="FontVariation" id="FontVariation_4k2k6"]
+base_font = ExtResource("7_xuqvo")
+variation_transform = Transform2D(0.695, 0, 0, 1, 0, 0)
+spacing_glyph = -5
 
 [sub_resource type="Environment" id="Environment_4c57u"]
 ambient_light_source = 1
@@ -243,14 +304,17 @@ size = Vector3(0.23, 0.1, 0.2)
 
 [node name="Main" type="Node3D"]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
+[node name="NightClock" type="Node" parent="." node_paths=PackedStringArray("Tall", "Old", "Fast")]
+script = ExtResource("1_4k2k6")
+Hours = Array[Object]([SubResource("Resource_facbu"), SubResource("Resource_4k2k6"), SubResource("Resource_0rl1p"), SubResource("Resource_ok6jj"), SubResource("Resource_b1qrp"), SubResource("Resource_come4")])
+Tall = NodePath("../enemies/ActiveMonks/TallMonk")
+Old = NodePath("../enemies/ActiveMonks/OldMonk")
+Fast = NodePath("../enemies/ActiveMonks/FastMonk")
 
 [node name="PlayerAudio" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("1_ycdy4")
 player = NodePath("../Player")
-Droning = ExtResource("2_xuqvo")
+Droning = ExtResource("2_seu75")
 PlayerFootsteps = ExtResource("3_xuqvo")
 
 [node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "Indicator", "closet", "Menu", "_threatBar", "DeadScreen", "DeathScreenExtra", "RestartGameButton", "DeathText") instance=ExtResource("1_ig7tw")]
@@ -415,6 +479,20 @@ show_percentage = false
 metadata/_edit_use_anchors_ = true
 
 [node name="environment" type="Node" parent="."]
+
+[node name="ClockDisplay" type="Label3D" parent="environment" node_paths=PackedStringArray("ClockLogic")]
+transform = Transform3D(-0.37661245, 0.42062125, -0.8253733, 0, 0.89097494, 0.45405266, 0.926371, 0.17100188, -0.33555216, 1.8411957, -0.8639786, 0.05949354)
+shaded = true
+text = "time"
+font = SubResource("FontVariation_4k2k6")
+outline_size = 0
+script = ExtResource("29_ok6jj")
+ClockLogic = NodePath("../../NightClock")
+
+[node name="SpotLight3D" type="SpotLight3D" parent="environment/ClockDisplay"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.016827522, 0.017597854, 0.36240685)
+light_energy = 0.095
+spot_range = 0.54
 
 [node name="DoorwayLight" type="SpotLight3D" parent="environment"]
 transform = Transform3D(0.89469767, 0.44583154, -0.027392887, -0.36404514, 0.7633554, 0.53362876, 0.25881907, -0.46746412, 0.84527516, 2.1984093, 0.94912714, -1.338342)
@@ -691,9 +769,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.97218144, -1.0681641, 0.960
 [node name="InsideMarker2" type="Marker3D" parent="enemies/Positions"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4830852, -1.0681641, -1.0631533)
 
-[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "TopRight", "TopLeft", "BottomLeft", "BottomRight", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "Marker_Window", "activeMonks")]
+[node name="ActiveMonks" type="Node" parent="enemies" node_paths=PackedStringArray("Player", "activeMonks", "TopRight", "TopLeft", "BottomLeft", "BottomRight", "Marker_Doorway", "Marker_Inside", "Marker_DeepInside", "Marker_Window", "Clock")]
 script = ExtResource("11_dg77c")
 Player = NodePath("../../Player")
+activeMonks = [NodePath("OldMonk"), NodePath("FastMonk"), NodePath("TallMonk")]
 TopRight = NodePath("../Positions/toprightMarker")
 TopLeft = NodePath("../Positions/topleftMarker")
 BottomLeft = NodePath("../Positions/bottomleftMarker")
@@ -702,19 +781,17 @@ Marker_Doorway = NodePath("../Positions/DoorwayMarker")
 Marker_Inside = NodePath("../Positions/InsideMarker")
 Marker_DeepInside = NodePath("../Positions/InsideMarker2")
 Marker_Window = NodePath("../Positions/windowMarker")
-activeMonks = [NodePath("FastMonk"), NodePath("OldMonk"), NodePath("FastMonk")]
+Clock = NodePath("../../NightClock")
 
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.633999, 1.2828997, 9.712559)
-WindowBangThreat = 1.5
 WindowBangSFX = ExtResource("27_qsp4k")
-Aggresiveness = 20
+StartHour = 2
 
 [node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.664431)
-Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)
 _torch = NodePath("../../../environment/Torch")
-Aggresiveness = 20
+StartHour = 3
