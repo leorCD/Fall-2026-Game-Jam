@@ -12,17 +12,18 @@
 [ext_resource type="AudioStream" uid="uid://btvue6q5jcsal" path="res://Audio/418866__name__heartbeat-loop.wav" id="5_xuqvo"]
 [ext_resource type="AudioStream" uid="uid://bj5lchcpbp264" path="res://Audio/134025__danielrutterfilms__necksnap_build.wav" id="6_seu75"]
 [ext_resource type="AudioStream" uid="uid://di37lptj885b" path="res://Audio/880119__kabaalmaker__tibetan-singing-bowl-as-heard-through-skull-mounted-on-microphone (1).mp3" id="7_htxhm"]
-[ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/FTFshader.gdshader" id="7_w48qg"]
+[ext_resource type="Shader" uid="uid://0mqreybt2h16" path="res://common/shaders/FTFshader.gdshader" id="7_w48qg"]
 [ext_resource type="FontFile" uid="uid://drucrmnc45gf8" path="res://common/fonts/BIZUDPMincho-Regular.ttf" id="7_xuqvo"]
-[ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://common/TorchObject.cs" id="9_0odxb"]
+[ext_resource type="Script" uid="uid://cljokkucffu1g" path="res://common/torch/TorchObject.cs" id="9_0odxb"]
 [ext_resource type="PackedScene" uid="uid://baow7d1r5q6f2" path="res://Slot machine/slot_machine.tscn" id="9_kek77"]
-[ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/Shine.gdshader" id="10_074og"]
+[ext_resource type="Shader" uid="uid://bej6jxdrcbntg" path="res://common/shaders/Shine.gdshader" id="10_074og"]
 [ext_resource type="PackedScene" uid="uid://osfc3wi0gsle" path="res://Closet/closet.tscn" id="10_a6jrf"]
+[ext_resource type="PackedScene" uid="uid://1yhqgmo3sc3k" path="res://common/pausemenu/pause_screen.tscn" id="11_0rl1p"]
 [ext_resource type="Script" uid="uid://b3yqyi6vjfycq" path="res://common/StartGame.cs" id="11_cegan"]
 [ext_resource type="Script" uid="uid://bk12euq1apyoc" path="res://Monk/MonkManager.cs" id="11_dg77c"]
 [ext_resource type="Texture2D" uid="uid://dxk2djl8ecxls" path="res://Textures/newfloor.jpg" id="12_w48qg"]
-[ext_resource type="Script" uid="uid://d07x67hgln8iy" path="res://common/TorchLight.cs" id="13_2cqfq"]
-[ext_resource type="Shader" uid="uid://cn1yrvuu74seh" path="res://common/Fire.gdshader" id="13_ryguw"]
+[ext_resource type="Script" uid="uid://d07x67hgln8iy" path="res://common/torch/TorchLight.cs" id="13_2cqfq"]
+[ext_resource type="Shader" uid="uid://cn1yrvuu74seh" path="res://common/shaders/Fire.gdshader" id="13_ryguw"]
 [ext_resource type="AudioStream" uid="uid://djdy6kien3cc5" path="res://Audio/Droning_torch.wav" id="13_vivmo"]
 [ext_resource type="Texture2D" uid="uid://cninxtfm3vlhx" path="res://Textures/fire.png" id="14_d13ii"]
 [ext_resource type="PackedScene" uid="uid://dk4gmdnqnq61v" path="res://Monk/Types/Tall Monk/tall_monk.tscn" id="14_w48qg"]
@@ -33,7 +34,7 @@
 [ext_resource type="PackedScene" uid="uid://yl5oh0u7fiqf" path="res://Monk/Types/Fast Monk/fast_monk.tscn" id="22_ryguw"]
 [ext_resource type="AudioStream" uid="uid://ba4do6l8ciamf" path="res://Audio/873424__loganzsound__microphone-interference-slowed.wav" id="24_qsp4k"]
 [ext_resource type="AudioStream" uid="uid://bu1up7hew76bf" path="res://Audio/427563__tbone1999__doorhit.wav" id="27_qsp4k"]
-[ext_resource type="Script" uid="uid://br8on0sjxlxxc" path="res://ClockDisplay.cs" id="29_ok6jj"]
+[ext_resource type="Script" uid="uid://br8on0sjxlxxc" path="res://common/clock/ClockDisplay.cs" id="29_ok6jj"]
 
 [sub_resource type="Resource" id="Resource_facbu"]
 script = ExtResource("2_0rl1p")
@@ -116,10 +117,6 @@ base_font = ExtResource("7_xuqvo")
 variation_embolden = -0.5
 variation_transform = Transform2D(0.6, 0, 0, 1, 0, 0)
 spacing_glyph = -3
-
-[sub_resource type="LabelSettings" id="LabelSettings_4c57u"]
-font = SubResource("FontVariation_kq58d")
-font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_xuqvo"]
 font = SubResource("FontVariation_kq58d")
@@ -338,8 +335,12 @@ DeathText = NodePath("DeadScreen/extra/LoseMessage")
 script = ExtResource("3_1bvp3")
 BalanceDisplay = NodePath("../HUD/BalanceDisplay")
 
+[node name="PauseScreen" parent="Player" instance=ExtResource("11_0rl1p")]
+visible = false
+
 [node name="Menu" type="CanvasLayer" parent="Player"]
 layer = 86
+visible = false
 
 [node name="Title" type="Label" parent="Player/Menu"]
 anchors_preset = -1
@@ -355,6 +356,7 @@ label_settings = SubResource("LabelSettings_qsp4k")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Vignette" type="CanvasLayer" parent="Player"]
 
@@ -376,13 +378,12 @@ layer = 5
 [node name="BalanceDisplay" type="Label" parent="Player/HUD"]
 anchors_preset = -1
 anchor_left = 0.390625
-anchor_top = 0.9212963
+anchor_top = 0.9351852
 anchor_right = 0.609375
-anchor_bottom = 0.9660494
-offset_bottom = -4.0
+anchor_bottom = 0.97376543
 size_flags_vertical = 0
 text = "Chips : 0"
-label_settings = SubResource("LabelSettings_4c57u")
+label_settings = SubResource("LabelSettings_xuqvo")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
@@ -403,6 +404,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="DeadScreen" type="CanvasLayer" parent="Player"]
 layer = 6
+visible = false
 
 [node name="bg" type="ColorRect" parent="Player/DeadScreen"]
 anchors_preset = 15
@@ -422,6 +424,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_lock_ = true
 
 [node name="Button" type="Button" parent="Player/DeadScreen/extra"]
 layout_mode = 1
@@ -462,10 +465,12 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 metadata/_edit_use_anchors_ = true
+metadata/_edit_lock_ = true
 
 [node name="Action meter" type="CanvasLayer" parent="Player"]
 
 [node name="ProgressBar" type="ProgressBar" parent="Player/Action meter"]
+visible = false
 anchors_preset = -1
 anchor_left = 0.4253472
 anchor_top = 0.041666668

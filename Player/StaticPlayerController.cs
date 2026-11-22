@@ -90,6 +90,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	// Runs once when the Player enters the scene.
 	public override void _Ready()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Confined;
 		SetForcedAudio(false);
 		
 		// chip manager
@@ -131,6 +132,8 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		// ready up dead screen
 		if (DeadScreen != null && IsDead == false) DeadScreen.Visible = false;
+		if (Menu != null) Menu.Visible = true;
+		if (_threatBar != null) _threatBar.Visible = true;
 
 		// clear indicator text
 		ChangeIndicatorText();

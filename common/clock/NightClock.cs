@@ -3,7 +3,7 @@ using System;
 
 public partial class NightClock : Node
 {
-    [Export] public float RealSecondsPerHour = 96f;
+    [Export] public float RealSecondsPerHour = 50f;
     [Export] public int HoursInNight = 6;
     [Export] public Godot.Collections.Array<HourConfig> Hours;
 
