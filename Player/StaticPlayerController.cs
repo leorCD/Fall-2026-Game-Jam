@@ -604,11 +604,7 @@ public partial class StaticPlayerController : CharacterBody3D
 		DeathScreenExtra.Visible = true;
 		AudioManager.Instance.PlaySfx3D(DeathReason, this, "Head", volumeDb: -18f);
 
-		RestartGameButton.Pressed += () =>
-		{
-			AudioManager.Instance.ResetBuses();
-			GetTree().ReloadCurrentScene();
-		};
+		RestartGameButton.Pressed += () => Restart.RestartScene(GetTree()); 
 	}
 
 
@@ -650,10 +646,6 @@ public partial class StaticPlayerController : CharacterBody3D
 		DeathScreenExtra.Visible = true;
 
 		RestartGameButton.Text = "Play again";
-		RestartGameButton.Pressed += () =>
-		{
-			AudioManager.Instance.ResetBuses();
-			GetTree().ReloadCurrentScene();
-		};
+		RestartGameButton.Pressed += () => Restart.RestartScene(GetTree()); 
 	}
 }

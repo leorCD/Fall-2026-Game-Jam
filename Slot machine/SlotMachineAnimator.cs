@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
@@ -174,13 +175,28 @@ public partial class SlotMachineAnimator : Node
 		await ToSignal(GetTree().CreateTimer(1.5f), SceneTreeTimer.SignalName.Timeout);
 
 		// stop each reel sequentially with a delay between each
-		int j = 0;
-		foreach (SlotReel reel in activeReels)
+		var stopTasks = new List<Task>();
+		for (int j = 0; j < activeReels.Count; j++)
 		{
-			reel.StopSpinOnFace(results[j]);
-			j++;
+			stopTasks.Add(activeReels[j].StopSpinOnFace(results[j]));
+			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
+		}
 
-			await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout); // 0.5 seconds before stopping the next reel
+		// wait for the last reel to finish settling
+		await Task.WhenAll(stopTasks);
+
+		FlashMatches(activeReels, results);
+	}
+
+	private void FlashMatches(List<SlotReel> reels, int[] results)
+	{
+		for (int i = 0; i < reels.Count; i++)
+		{
+			bool matchesLeft = i > 0 && results[i] == results[i - 1];
+			bool matchesRight = i < reels.Count - 1 && results[i] == results[i + 1];
+
+			if (matchesLeft || matchesRight)
+				reels[i].FlashResult();
 		}
 	}
 }

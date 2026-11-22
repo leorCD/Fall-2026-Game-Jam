@@ -23,6 +23,4 @@ public partial class PauseScreen : CanvasLayer
         Visible = paused;
         Input.MouseMode = paused ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Confined;
     }
-
-
 }

@@ -232,6 +232,11 @@ public abstract partial class Monk : CharacterBody3D
             Sprite.FlipH = false;
             return;
         }
+        else if (TargetMarker == Markers.BottomLeft)
+        {
+            Sprite.FlipH = true;
+            return;
+        }
 
         bool flip = MoveDirection.Z < 0;
         Sprite.FlipH = flip;

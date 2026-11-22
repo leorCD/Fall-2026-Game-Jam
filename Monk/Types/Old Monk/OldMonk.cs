@@ -71,7 +71,7 @@ public partial class OldMonk : Monk
     }
     private void PlayDampFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, 1f, 1f, 0.1f, "SFX_HallwayDamp", this);
+        AudioManager.Instance.PlayLoop("oldmonk_footstep", footstepSFX, 5f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {

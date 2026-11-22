@@ -1,4 +1,4 @@
-[gd_resource type="AudioBusLayout" load_steps=5 format=3 uid="uid://ci46wv1hbjf1r"]
+[gd_resource type="AudioBusLayout" load_steps=6 format=3 uid="uid://ci46wv1hbjf1r"]
 
 [sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
 resource_name = "Reverb"
@@ -33,6 +33,10 @@ band_db/250_hz = -7.0
 band_db/500_hz = -7.8
 band_db/1000_hz = -15.3
 band_db/2000_hz = -12.7
+
+[sub_resource type="AudioEffectAmplify" id="AudioEffectAmplify_ai37j"]
+resource_name = "Amplify"
+volume_db = 16.0
 
 [resource]
 bus/1/name = &"Ambience"
@@ -71,6 +75,8 @@ bus/4/effect/0/effect = SubResource("AudioEffectReverb_ai37j")
 bus/4/effect/0/enabled = true
 bus/4/effect/1/effect = SubResource("AudioEffectEQ10_ai37j")
 bus/4/effect/1/enabled = true
+bus/4/effect/2/effect = SubResource("AudioEffectAmplify_ai37j")
+bus/4/effect/2/enabled = true
 bus/5/name = &"SFX_SlotMachine"
 bus/5/solo = false
 bus/5/mute = false

@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public partial class SlotReel : Node3D
 {
@@ -14,6 +15,8 @@ public partial class SlotReel : Node3D
     private float _angle;
     private Basis _baseBasis;
     private Tween _stopTween;
+    private Tween _flashTween;
+    private Sprite3D _resultFace;
 
     [Export] public Array<Sprite3D> Faces; // 8 sprites, in order (slot 0 = face 1)
     private int[] _homeFrames;
@@ -32,9 +35,43 @@ public partial class SlotReel : Node3D
         for (int i = 0; i < Faces.Count; i++)
             _homeFrames[i] = Faces[i].Frame;
     }
+    
+    public override void _Process(double delta)
+    {
+        if (!IsSpinning) return;
+        SetAngle(_angle + SpinSpeed * (float)delta);
+    }
+
+    // use this to rotate instead of RotateX() bc i was running into issues with Godot auto-handling euler decomposition
+    private void SetAngle(float a)
+    {
+        float step = Mathf.Tau / Faces.Count;
+
+        // wrap-safe: PosMod means your Tau re-normalizing never fakes a tick
+        int faceIndex = Mathf.PosMod(Mathf.FloorToInt(a / step), Faces.Count);
+        if (faceIndex != _lastFaceIndex)
+        {
+            _lastFaceIndex = faceIndex;
+
+            float dt = Mathf.Max((float)GetProcessDeltaTime(), 0.0001f);
+            float speed01 = Mathf.Clamp(Mathf.Abs(a - _lastAngle) / dt / SpinSpeed, 0f, 1f);
+            Ticker?.PlayTick(speed01);
+        }
+        _lastAngle = a;
+
+        _angle = a;
+        Basis = new Basis(Vector3.Forward, _angle) * _baseBasis;
+    }
+
+
+
+
 
     public void Spin(int resultFace)
     {
+        _flashTween?.Kill();
+        foreach (var f in Faces) f.Shaded = true;
+
         ShuffleAround(resultFace);
         IsSpinning = true;
     }
@@ -65,7 +102,9 @@ public partial class SlotReel : Node3D
 
 
 
-    public async void StopSpinOnFace(int targetSymbolIndex)
+
+
+    public async Task StopSpinOnFace(int targetSymbolIndex)
     {
         IsSpinning = false;
         _stopTween?.Kill();
@@ -73,9 +112,8 @@ public partial class SlotReel : Node3D
         float step = Mathf.Tau / Faces.Count;
         float targetAngle = targetSymbolIndex * step - step;
 
-        // normalize so the math below is stable
         float current = Mathf.PosMod(_angle, Mathf.Tau);
-        float minTarget = current + Mathf.Tau; // always roll forward at least one rev
+        float minTarget = current + Mathf.Tau;
         float revolutions = Mathf.Ceil((minTarget - targetAngle) / Mathf.Tau);
         float finalAngle = targetAngle + revolutions * Mathf.Tau;
 
@@ -90,34 +128,28 @@ public partial class SlotReel : Node3D
         await ToSignal(_stopTween, Tween.SignalName.Finished);
 
         SetAngle(Mathf.PosMod(_angle, Mathf.Tau)); // keep the value small
+        _resultFace = Faces[targetSymbolIndex - 1];
     }
 
-    public override void _Process(double delta)
-    {
-        if (!IsSpinning) return;
-        SetAngle(_angle + SpinSpeed * (float)delta);
-    }
+    public void FlashResult() => FlashFace(_resultFace);
 
-    // use this to rotate instead of RotateX() bc i was running into issues with Godot auto-handling euler decomposition
-    private void SetAngle(float a)
-    {
-        float step = Mathf.Tau / Faces.Count;
 
-        // wrap-safe: PosMod means your Tau re-normalizing never fakes a tick
-        int faceIndex = Mathf.PosMod(Mathf.FloorToInt(a / step), Faces.Count);
-        if (faceIndex != _lastFaceIndex)
+
+
+
+    private void FlashFace(Sprite3D face, int flashes = 3, float interval = 0.12f)
+    {
+        if (face == null) return;
+
+        _flashTween?.Kill();
+        _flashTween = CreateTween();
+
+        for (int i = 0; i < flashes; i++)
         {
-            _lastFaceIndex = faceIndex;
-
-            float dt = Mathf.Max((float)GetProcessDeltaTime(), 0.0001f);
-            float speed01 = Mathf.Clamp(Mathf.Abs(a - _lastAngle) / dt / SpinSpeed, 0f, 1f);
-            Ticker?.PlayTick(speed01);
+            _flashTween.TweenCallback(Callable.From(() => face.Shaded = false));
+            _flashTween.TweenInterval(interval);
+            _flashTween.TweenCallback(Callable.From(() => face.Shaded = true));
+            _flashTween.TweenInterval(interval);
         }
-        _lastAngle = a;
-
-        _angle = a;
-        Basis = new Basis(Vector3.Forward, _angle) * _baseBasis;
     }
-
-
 }

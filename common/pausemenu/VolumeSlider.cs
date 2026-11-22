@@ -45,6 +45,7 @@ public partial class VolumeSlider : HSlider
         AudioServer.SetBusMute(_bus, v <= 0);
         AudioServer.SetBusVolumeDb(_bus, db);
 
-        if (ValueLabel != null) ValueLabel.Text = ((int)v).ToString();
+        if (ValueLabel != null)
+            ValueLabel.Text = ((int)v).ToString() + "% Volume";
     }
 }

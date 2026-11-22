@@ -463,7 +463,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 2.17
 [node name="LightOnScreen" type="SpotLight3D" parent="."]
 transform = Transform3D(-4.371139e-08, -0.3768872, 0.92625916, 0, 0.92625916, 0.3768872, -1, 1.6474262e-08, -4.0488075e-08, 2.3394399, 2.0559878, 0.022144252)
 light_color = Color(0.9424317, 0.7177406, 0.590315, 1)
-light_energy = 0.725
+light_energy = 0.655
 light_specular = 0.0
 shadow_enabled = true
 spot_range = 5.8

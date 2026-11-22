@@ -93,11 +93,11 @@ metadata/_custom_type_script = "uid://yhjpsccs0a0d"
 base_font = ExtResource("7_xuqvo")
 variation_embolden = -0.5
 variation_transform = Transform2D(0.5, 0, 0, 1, 0, 0)
-spacing_glyph = -30
+spacing_glyph = -45
 
 [sub_resource type="LabelSettings" id="LabelSettings_qsp4k"]
 font = SubResource("FontVariation_qsp4k")
-font_size = 101
+font_size = 164
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
 shader = ExtResource("3_272bh")
@@ -123,6 +123,7 @@ font = SubResource("FontVariation_kq58d")
 font_size = 24
 
 [sub_resource type="LabelSettings" id="LabelSettings_efxa6"]
+line_spacing = 25.0
 font = SubResource("FontVariation_kq58d")
 font_size = 26
 
@@ -344,10 +345,10 @@ visible = false
 
 [node name="Title" type="Label" parent="Player/Menu"]
 anchors_preset = -1
-anchor_left = 0.23697917
-anchor_top = 0.2808642
-anchor_right = 0.7630208
-anchor_bottom = 0.4382716
+anchor_left = 0.19965278
+anchor_top = 0.22067901
+anchor_right = 0.7873264
+anchor_bottom = 0.47993827
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 0
@@ -356,7 +357,6 @@ label_settings = SubResource("LabelSettings_qsp4k")
 horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
-metadata/_edit_lock_ = true
 
 [node name="Vignette" type="CanvasLayer" parent="Player"]
 
@@ -376,6 +376,7 @@ metadata/_edit_lock_ = true
 layer = 5
 
 [node name="BalanceDisplay" type="Label" parent="Player/HUD"]
+visible = false
 anchors_preset = -1
 anchor_left = 0.390625
 anchor_top = 0.9351852
@@ -389,6 +390,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Indicator" type="Label" parent="Player/HUD"]
+visible = false
 anchors_preset = -1
 anchor_left = 0.3689236
 anchor_top = 0.41666666
