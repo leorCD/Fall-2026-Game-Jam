@@ -32,6 +32,15 @@ public partial class AudioManager : Node
 		Instance = this;
     }
 
+    public void ResetBuses()
+    {
+        for (int i = 0; i < AudioServer.BusCount; i++)
+        {
+            AudioServer.SetBusMute(i, false);
+            AudioServer.SetBusVolumeDb(i, 0f); // use your normal level if it isn't 0
+        }
+    }
+
 
 
 

@@ -227,7 +227,7 @@ public abstract partial class Monk : CharacterBody3D
         if (Sprite == null) return;
         if (Mathf.Abs(MoveDirection.Z) < 0.01f) return; // no Z movement: keep the last facing
 
-        if (TargetMarker == Markers.BottomLeft)
+        if (TargetMarker == Markers.TopLeft)
         {
             Sprite.FlipH = false;
             return;

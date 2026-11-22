@@ -562,6 +562,20 @@ public partial class StaticPlayerController : CharacterBody3D
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	public void Kill(string DeathText = null)
 	{
 		if (IsDead) return;
@@ -580,7 +594,7 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		MuteAllExcept("Head", true);
 
-		AudioManager.Instance.PlaySfx3D(NeckSnap, this, "Head", volumeDb: -10f);
+		AudioManager.Instance.PlaySfx3D(NeckSnap, this, "Head", volumeDb: -11f);
 		Died?.Invoke();
 
 		await ToSignal(GetTree().CreateTimer(2f), Timer.SignalName.Timeout);
@@ -589,15 +603,18 @@ public partial class StaticPlayerController : CharacterBody3D
 
 		RestartGameButton.Pressed += () =>
 		{
+			AudioManager.Instance.ResetBuses();
 			GetTree().ReloadCurrentScene();
 		};
 	}
+
+
+
 
 	private static readonly string[] WinLines =
 	{
 		"6:00 AM.   the machine is still warm.",
 	};
-
 	public void Win()
 	{
 		if (IsDead) return;        // died first, or already won
@@ -630,6 +647,10 @@ public partial class StaticPlayerController : CharacterBody3D
 		DeathScreenExtra.Visible = true;
 
 		RestartGameButton.Text = "Play again";
-		RestartGameButton.Pressed += () => GetTree().ReloadCurrentScene();
+		RestartGameButton.Pressed += () =>
+		{
+			AudioManager.Instance.ResetBuses();
+			GetTree().ReloadCurrentScene();
+		};
 	}
 }
