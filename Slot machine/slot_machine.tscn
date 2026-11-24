@@ -422,12 +422,12 @@ shadow_mesh = SubResource("ArrayMesh_tmaip")
 [sub_resource type="BoxShape3D" id="BoxShape3D_kanra"]
 size = Vector3(1.62, 2.98, 0.755)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_umstu"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_e2oen"]
 shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_yaq0p"]
-material = SubResource("StandardMaterial3D_umstu")
+material = SubResource("StandardMaterial3D_e2oen")
 size = Vector2(0.995, 4.015)
 
 [sub_resource type="SystemFont" id="SystemFont_yxx8c"]
@@ -438,7 +438,7 @@ subpixel_positioning = 0
 size = Vector3(0.53, 0.445, 0.125)
 
 [node name="Slot_Machine" type="Node3D" node_paths=PackedStringArray("GamblingPosition", "AnimationComponent", "RewardComponent", "betButtons", "BetDisplay", "SlotMachineHeadDisplay")]
-transform = Transform3D(-1.0927847e-08, 0, -0.25, 0, 0.25, 0, 0.25, 0, -1.0927847e-08, 0, 0, 0)
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
 script = ExtResource("2_8lydx")
 GamblingPosition = NodePath("SlotMachine")
 AnimationComponent = NodePath("AnimationComponent")

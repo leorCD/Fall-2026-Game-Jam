@@ -1,0 +1,135 @@
+[gd_scene load_steps=10 format=4 uid="uid://c51ra0sy1vwsm"]
+
+[ext_resource type="Texture2D" uid="uid://beeodrkbghdcc" path="res://Slot machine/Model/textures/Slot_Machine_Cylinder_8.png" id="1_2ns7y"]
+[ext_resource type="Script" uid="uid://brfq3baan5n6k" path="res://Slot machine/Reel/SlotReel.cs" id="2_m3qtg"]
+[ext_resource type="Script" uid="uid://cmdlagneydsjc" path="res://Slot machine/Reel/ReelAudioComponent.cs" id="2_qctul"]
+[ext_resource type="AudioStream" uid="uid://c1dhlxgxkybxy" path="res://Audio/HighPitchTick.wav" id="3_m3qtg"]
+[ext_resource type="AudioStream" uid="uid://govc0k3sjb26" path="res://Audio/LowPitchTick.wav" id="4_gan1a"]
+[ext_resource type="Texture2D" uid="uid://mwrphfj2untc" path="res://Slot machine/Reel/newreelsheet.png" id="5_uakty"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ljbdt"]
+resource_name = "Material.008"
+cull_mode = 2
+albedo_texture = ExtResource("1_2ns7y")
+roughness = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fhbxq"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"format": 34896613377,
+"index_count": 84,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAACAAEAAwAEAAEABQAAAAIABQADAAAABQACAAYAAgAHAAYABAAHAAIACAAFAAYACAAGAAcAAwAJAAQACgAFAAgACgAIAAcABQALAAMACwAFAAoAAwALAAkACQAMAAQACQALAAwADQAEAAwABwAEAA0ACwANAAwACgAHAA4ABwANAA4ACwAKAA8ACwAPAA0ADwAKAA4ADwAOAA0A"),
+"name": "Material.008",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 16,
+"vertex_data": PackedByteArray("/38AAAAAAACB2v//fSUAAP9///8AAAAAgdoAAH0lAAD//////38AAH0lAAB9JQAAfSX//30lAAAAAP///38AAAAAAAD/fwAA//8AAP9/AAB9JQAAgdoAAIHaAACB2gAAgdr//4HaAAD/f/////8AAH0l//+B2gAA/38AAP//AAA=")
+}]
+blend_shape_mode = 0
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_m10nu"]
+resource_name = "Slot_Machine_Cylinder_009"
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2, 2),
+"attribute_data": PackedByteArray("////f//fAAD//wAA/9//f//f/3//vwAA/98AAP+//3//v/9//58AAP+/AAD/n/9//5//f/9/AAD/nwAA/3//f/9//3//XwAA/38AAP9f/3//X/9//z8AAP9fAAD/P/9/cH3/v/8/joJxa42UjwL/v44UjZT/P2/9cWtw644UcOv/P/9//x8AAP8/AAD/H/9//x//fwAAAAD/HwAAAAD/f42UjZRw642U/7+OgnDrcOtv/f+/jZRw646C/7//v2/9"),
+"format": 34896613399,
+"index_count": 84,
+"index_data": PackedByteArray("AAABAAIAAAADAAEABAAFAAYABAAHAAUACAAJAAoACAALAAkADAANAA4ADAAPAA0AEAARABIAEAATABEAFAAVABYAFAAXABUAGAAZABoAGAAbABkAGQAbABwAGwAYAB0AHQAYAB4AGwAdAB8AIAAhACIAIAAjACEAJAAlACYAJAAnACUAKAApACoAKAArACkAKQArACwAKwAoAC0ALQAoAC4AKwAtAC8A"),
+"material": SubResource("StandardMaterial3D_ljbdt"),
+"name": "Material.008",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 48,
+"vertex_data": PackedByteArray("/38AAAAA/u+B2v//fSX+7/9///8AAP7vgdoAAH0l/u+B2gAAfSX/z///////f//Pgdr//30l/8///wAA/3//z///AAD/f/+vgdr//4Ha/6///////3//r4HaAACB2v+vgdoAAIHa/4//f///////j4Ha//+B2v+P/38AAP///4//fwAA////j30l//+B2v+P/3///////499JQAAgdr/j30lAACB2v+vAAD///9//699Jf//gdr/rwAAAAD/f/+v//////9//7//f///AAD/v4Ha//99Jf+/AAD///9//799Jf//fSX/v/9///////+/gdr//4Ha/799Jf//gdr/vwAAAAD/f//PfSX//30l/88AAP///3//z30lAAB9Jf/PfSUAAH0l/u//f///AAD+730l//99Jf7v/38AAAAA/u99JQAAfSX/P4HaAAB9Jf8//38AAAAA/z+B2gAAgdr/P///AAD/f/8/fSUAAIHa/z8AAAAA/3//P/9/AAD///8//38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/////f////3////9/////f////3////9/////f///////f////3////9/////f////3////9/////f////3//f////3////9/////f////3////9/////f////3///wAA/38AAP9/AAD/fwAA/38AAP9/AAD/fwAA/38AAP9/")
+}]
+blend_shape_mode = 0
+shadow_mesh = SubResource("ArrayMesh_fhbxq")
+
+[node name="reel" type="MeshInstance3D" node_paths=PackedStringArray("Ticker", "Faces")]
+transform = Transform3D(-6.5756076e-08, -0.23412602, 0, 1.3898138, -9.454958e-09, -0.5756798, 0.5756798, -3.916372e-09, 1.3898139, 0, 0, 0)
+mesh = SubResource("ArrayMesh_m10nu")
+skeleton = NodePath("")
+script = ExtResource("2_m3qtg")
+Ticker = NodePath("ReelAudioComponent")
+Faces = [NodePath("face"), NodePath("face2"), NodePath("face3"), NodePath("face4"), NodePath("face5"), NodePath("face6"), NodePath("face7"), NodePath("face8")]
+
+[node name="ReelAudioComponent" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 4.440892e-16, 0, 4.440892e-16, 1, 0, 0, 0, 1, 0, 0, 0)
+volume_db = -8.0
+max_db = 6.0
+max_distance = 8.0
+panning_strength = 3.0
+bus = &"SFX_SlotMachine"
+script = ExtResource("2_qctul")
+TickSounds = Array[AudioStream]([ExtResource("3_m3qtg"), ExtResource("4_gan1a")])
+
+[node name="face" type="Sprite3D" parent="."]
+transform = Transform3D(-1.2228487e-07, 0.093270086, 0.25706556, -0.67, -1.645499e-08, -5.598991e-08, -9.823492e-09, -0.038751673, 0.6187223, 0.31022432, 6.197279e-07, 0.8730138)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+
+[node name="face2" type="Sprite3D" parent="."]
+transform = Transform3D(4.4245166e-08, 0.03855036, 0.6192755, -0.67, 9.190626e-08, -2.0389638e-07, -6.413423e-07, -0.09335347, 0.2557301, 0.8421684, 2.8077753e-07, 0.39456093)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 1
+
+[node name="face3" type="Sprite3D" parent="."]
+transform = Transform3D(-1.9940208e-07, -0.038751625, 0.61872244, -0.67, 7.986612e-08, 4.1942014e-09, -4.908663e-07, -0.0932701, -0.25706524, 0.8706026, 4.464208e-08, -0.3153386)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 2
+
+[node name="face4" type="Sprite3D" parent="."]
+transform = Transform3D(-2.34811e-07, -0.09335348, 0.25573, -0.67, 4.3745704e-08, 8.7540926e-08, -1.9167663e-07, -0.038550343, -0.61927557, 0.38964468, -4.422525e-07, -0.8403453)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 3
+
+[node name="face5" type="Sprite3D" parent="."]
+transform = Transform3D(-4.46982e-08, -0.09327009, -0.25706533, -0.67, 7.625288e-09, -5.249291e-09, 2.4255435e-08, 0.03875164, -0.61872244, -0.32025468, -8.9053543e-07, -0.8687792)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 4
+
+[node name="face6" type="Sprite3D" parent="."]
+transform = Transform3D(1.2320467e-07, -0.038550343, -0.6192755, -0.67, -1.0073595e-07, 1.4265709e-07, -6.721068e-07, 0.09335347, -0.25573, -0.8389689, -5.4538475e-07, -0.39298442)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 5
+
+[node name="face7" type="Sprite3D" parent="."]
+transform = Transform3D(-1.6532319e-07, 0.03875164, -0.61872244, -0.67, -8.869582e-08, -6.543337e-08, -5.684529e-07, 0.09327009, 0.25706533, -0.87119055, -3.1119998e-07, 0.31514046)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 6
+
+[node name="face8" type="Sprite3D" parent="."]
+transform = Transform3D(-2.6557555e-07, 0.09335348, -0.25572997, -0.67, -5.2575405e-08, -1.487803e-07, -2.706363e-07, 0.038550343, 0.61927557, -0.3965211, 1.6915143e-07, 0.8378476)
+shaded = true
+double_sided = false
+texture = ExtResource("5_uakty")
+hframes = 3
+vframes = 3
+frame = 7
