@@ -129,18 +129,16 @@ font_size = 26
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vivmo"]
 shader = ExtResource("7_w48qg")
-shader_parameter/aberration_strength = 3.0
-shader_parameter/blur_strength = 1.54000007315
-shader_parameter/noise_strength = 0.0370000017575
-shader_parameter/vignette_strength = 0.78
-shader_parameter/scanline_strength = 0.016
-shader_parameter/distortion_strength = 0.1
-shader_parameter/ghost_strength = 0.058000002755
-shader_parameter/ghost_flicker_speed = 14.0
-shader_parameter/ghost_jitter = 0.75
-shader_parameter/ghost_min_strength = 0.15
-shader_parameter/ghost_distance = 0.012
-shader_parameter/flicker_strength = 0.005
+shader_parameter/pixel_resolution = 1024.0
+shader_parameter/color_steps = 16
+shader_parameter/noise_strength = 0.0
+shader_parameter/enable_dither = true
+shader_parameter/dither_strength = 0.10000000475
+shader_parameter/enable_glow = true
+shader_parameter/glow_strength = 0.4
+shader_parameter/glow_spread = 0.005
+shader_parameter/enable_vintage = true
+shader_parameter/vintage_strength = 0.8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cegan"]
 
@@ -406,7 +404,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="DeadScreen" type="CanvasLayer" parent="Player"]
 layer = 6
-visible = false
 
 [node name="bg" type="ColorRect" parent="Player/DeadScreen"]
 anchors_preset = 15
@@ -456,7 +453,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Shader" type="CanvasLayer" parent="Player"]
 layer = 7
-visible = false
 
 [node name="Static" type="ColorRect" parent="Player/Shader"]
 material = SubResource("ShaderMaterial_vivmo")
@@ -587,7 +583,7 @@ fire = NodePath("fire")
 [node name="torch_Light" type="OmniLight3D" parent="environment/Torch2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.038092613, 0.67811406, 0)
 light_color = Color(0.8439405, 0.37850982, 0.15559474, 1)
-light_energy = 1.64
+light_energy = 0.505
 light_size = 0.06
 light_specular = 0.0
 light_cull_mask = 4293918721
@@ -723,12 +719,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.761275, -0.61060333, -2.87
 material_override = ExtResource("16_1u8w0")
 size = Vector3(0.075, 12.415, 16.72)
 
-[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "MonkManager", "Shader", "ChipsDisplay", "SideHallwayTorch")]
+[node name="Coin" type="StaticBody3D" parent="environment" node_paths=PackedStringArray("Player", "MonkManager", "ChipsDisplay", "SideHallwayTorch")]
 transform = Transform3D(0.991326, 0, 0.13142595, 0, 1, 0, -0.13142595, 0, 0.991326, -0.6988373, -1.0651642, -3.2747014)
 script = ExtResource("11_cegan")
 Player = NodePath("../../Player")
 MonkManager = NodePath("../../enemies/ActiveMonks")
-Shader = NodePath("../../Player/Shader")
 StartGameSFX = ExtResource("24_qsp4k")
 ChipsDisplay = NodePath("../../Player/HUD/BalanceDisplay")
 SideHallwayTorch = NodePath("../Torch2")

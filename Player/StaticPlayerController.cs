@@ -152,8 +152,11 @@ public partial class StaticPlayerController : CharacterBody3D
 	{
 		if (IsHiding && !_maxed)
 			SetThreat(Threat - DecayRate * (float)delta);
+	}
 
-		// camera logic (kept in _Process so the interaction raycast always aims from an up-to-date camera)
+    public override void _PhysicsProcess(double delta)
+    {
+		// camera logic
 		if (_camera == null || IsJumpscared == true) return;
 
 		Vector2I screenSize = DisplayServer.WindowGetSize();
@@ -186,7 +189,8 @@ public partial class StaticPlayerController : CharacterBody3D
 		_camera.Rotation = cameraRotation;
 
 		UpdateFocus();
-	}
+    }
+
 
 	// Runs whenever the player sends an input event.
 	public override void _UnhandledInput(InputEvent @event)

@@ -21,7 +21,7 @@ public partial class StartGame : StaticBody3D, IInteractable
         this.Visible = true;
         Player.SlotMachine.Visible = false;
         ChipsDisplay.Visible = false;
-        Shader.Visible = false;
+        if (Shader != null) Shader.Visible = false;
         Player.Menu.Visible = true;
         SideHallwayTorch.TurnOff();
 
@@ -39,7 +39,7 @@ public partial class StartGame : StaticBody3D, IInteractable
         Player.SlotMachine.TurnOn();
 
         ChipsDisplay.Visible = true;
-        Shader.Visible = true;
+        if (Shader != null) Shader.Visible = true;
         Player.Menu.Visible = false;
 
         MonkManager.EnableMonks();
