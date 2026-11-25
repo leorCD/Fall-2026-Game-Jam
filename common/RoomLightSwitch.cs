@@ -6,7 +6,7 @@ using System;
 public partial class RoomLightSwitch : Area3D, IInteractable
 {
 	[Export] public Godot.Collections.Array<Light3D> Lights { get; set; } = new();
-	[Export] public bool StartOn { get; set; } = true;
+	[Export] public bool StartOn = true;
 	[Export] private Light3D Offlight;
 
 	public bool IsOn { get; private set; }

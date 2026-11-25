@@ -151,10 +151,15 @@ public partial class SlotMachineLogic : Node3D
 
 	private void VignetteLogic()
 	{
-		float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
-		// float t = _isForcedSpin 
-        //     ? 1f 
-        //     : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
+		// i coudlnt decide
+
+		// use to make the vignette disappear on forced spin start
+		// float t = Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
+
+		// use to make vignette stay until forced spinb finishes
+		float t = _isForcedSpin 
+            ? 1f 
+            : Mathf.Clamp((_idleTime - TimeUntilVignetteStarts) / (TimeMaxLimit), 0f, 1f);
 		Vignette?.SetTarget(t);
 
 		if (t >= 1f && !_maxedFired) // max vignette intensity reached

@@ -190,7 +190,6 @@ size = Vector3(0.23, 0.1, 0.2)
 size = Vector3(0.47, 0.695, 0.555)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ok6jj"]
-transparency = 1
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xuqvo"]
 _surfaces = [{
@@ -323,7 +322,7 @@ player = NodePath("../Player")
 Droning = ExtResource("2_seu75")
 PlayerFootsteps = ExtResource("3_xuqvo")
 
-[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "Indicator", "closet", "Menu", "_threatBar", "DeadScreen", "DeathScreenExtra", "RestartGameButton", "DeathText") instance=ExtResource("1_ig7tw")]
+[node name="Player" parent="." node_paths=PackedStringArray("Chips", "SlotMachine", "Indicator", "closet", "Menu", "RoomLight", "_threatBar", "DeadScreen", "DeathScreenExtra", "RestartGameButton", "DeathText") instance=ExtResource("1_ig7tw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005345106, 0.009326696, -0.4529289)
 HeartbeatSFX = ExtResource("5_xuqvo")
 NeckSnap = ExtResource("6_seu75")
@@ -333,6 +332,7 @@ SlotMachine = NodePath("../environment/Slot_Machine2")
 Indicator = NodePath("HUD/Indicator")
 closet = NodePath("../environment/Closet")
 Menu = NodePath("Menu")
+RoomLight = NodePath("../environment/Lights/Area3D")
 _threatBar = NodePath("Action meter/ProgressBar")
 max_yaw_deg = 90.0
 DeadScreen = NodePath("DeadScreen")
@@ -476,7 +476,6 @@ metadata/_edit_use_anchors_ = true
 metadata/_edit_lock_ = true
 
 [node name="Action meter" type="CanvasLayer" parent="Player"]
-visible = false
 
 [node name="ProgressBar" type="ProgressBar" parent="Player/Action meter"]
 visible = false
@@ -565,7 +564,7 @@ transform = Transform3D(1.0000004, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0,
 shape = SubResource("BoxShape3D_ok6jj")
 
 [node name="Lights" type="Node3D" parent="environment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0242844, 0.93759, -4.617808)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6853812, 0.93759, -4.617808)
 
 [node name="Area3D" type="Area3D" parent="environment/Lights" node_paths=PackedStringArray("Lights", "Offlight")]
 script = ExtResource("31_facbu")
@@ -581,7 +580,7 @@ size = Vector3(0.165, 0.37, 0.105)
 material = SubResource("StandardMaterial3D_ok6jj")
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="environment/Lights"]
-transform = Transform3D(1, 0, 0, 0, 0.9599619, -0.2801306, 0, 0.2801306, 0.9599619, 0, 0, 0.13089609)
+transform = Transform3D(1, 0, 0, 0, 0.9599619, -0.2801306, 0, 0.2801306, 0.9599619, 0, 0, 0.14177656)
 size = Vector3(0.04, 0.14, 0.065)
 material = SubResource("StandardMaterial3D_ok6jj")
 
@@ -850,14 +849,15 @@ Clock = NodePath("../../NightClock")
 [node name="OldMonk" parent="enemies/ActiveMonks" instance=ExtResource("21_getpj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.633999, 1.2828997, 9.712559)
 WindowBangSFX = ExtResource("27_qsp4k")
-StartHour = 2
+Aggresiveness = 20
 
-[node name="TallMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_roomLight") instance=ExtResource("14_w48qg")]
+[node name="TallMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_roomLight", "_closet") instance=ExtResource("14_w48qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.664431)
 _roomLight = NodePath("../../../environment/Lights/Area3D")
+_closet = NodePath("../../../environment/Closet")
 Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)
 _torch = NodePath("../../../environment/RenderedRoom/Torch")
-StartHour = 3
+Aggresiveness = 20

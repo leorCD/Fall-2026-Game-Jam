@@ -8,17 +8,16 @@ using System;
 public partial class TallMonk : Monk
 {
     [ExportGroup("Doorway")]
-    [Export] private float DoorwayLingerSeconds = 4f;
-    [Export(PropertyHint.Range, "0, 100")] private float ChanceToCheckCloset = 100; // rolled once after lingering
+    [Export] private float DoorwayLingerSeconds = 2f;
+    [Export(PropertyHint.Range, "0, 100")] private float ChanceToCheckCloset = 55; // rolled once after lingering
 
     [ExportGroup("Closet Check")]
     [Export] private float CheckSeconds = 5f;              // how long he stays at the closet
     [Export] private float LightOnThreatPerSecond = 0.5f;  // threat per second while the room light is on at the closet
-    [Export] private float MovedThreat = 0.3f;             // threat per click or forced spin while he's at the closet
 
     [ExportGroup("References")]
     [Export] private RoomLightSwitch _roomLight;
-    [Export] private ClosetInteraction _closet;
+    [Export] private Closet _closet;
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
@@ -64,11 +63,11 @@ public partial class TallMonk : Monk
 
     private void PlayMainFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, 3f, 1f, 0.1f, "SFX_Hallway", this);
+        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -5f, 1f, 0.1f, "SFX_Hallway", this);
     }
     private void PlayDampFootstepSFX()
     {
-        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, 3f, 1f, 0.1f, "SFX_HallwayDamp", this);
+        AudioManager.Instance.PlayLoop("tallmonk_footstep", footstepSFX, -5f, 1f, 0.1f, "SFX_HallwayDamp", this);
     }
     private void StopFootstepSFX()
     {
@@ -87,7 +86,7 @@ public partial class TallMonk : Monk
 
         if (to == Markers.Doorway)
         {
-            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 16f, 1f, 0.1f, "SFX_Hallway", this);
+            AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 12f, 1f, 0.1f, "SFX_Hallway", this);
 
             await ToSignal(GetTree().CreateTimer(DoorwayLingerSeconds), SceneTreeTimer.SignalName.Timeout);
 
@@ -111,7 +110,7 @@ public partial class TallMonk : Monk
         {
             _checkTimer = 0;
             _wasForced = Player.IsForcedToGamble;
-            _closet?.SetOpen(true);
+            _closet?.interactor.SetOpen(true);
         }
     }
 
@@ -124,28 +123,38 @@ public partial class TallMonk : Monk
             DoorwayProcess(delta);
     }
 
+    protected override void TransitionProcess(double delta)
+    {
+        base.TransitionProcess(delta);
+
+        // on the walk in, a lit room still builds threat (only the inbound leg targets DeepInside)
+        if (TargetMarker == Markers.DeepInside && PlayerSeen)
+            Player.AddThreat(BuildRate * (float)delta, this, ThreatCause.Seen);
+    }
+
+
     private void DoorwayProcess(double delta)
     {
         // hiding or a dark room keeps you safe from the doorway. the closet is where that stops working
         if (PlayerSeen)
-            Player.AddThreat(BuildRate * (float)delta);
+            Player.AddThreat(BuildRate * (float)delta, this, ThreatCause.Seen);
     }
 
     private void ClosetProcess(double delta)
     {
         if (Player.IsHiding) // he opened the closet and you're in it
         {
-            Player.AddThreat(1f);
+            Player.AddThreat(1f, this, ThreatCause.FoundHiding);
             return;
         }
 
         if (LightIsOn)
-            Player.AddThreat(LightOnThreatPerSecond * (float)delta);
+            Player.AddThreat(LightOnThreatPerSecond * (float)delta, this, ThreatCause.LightOn);
 
         // a forced spin is a spin too
         bool forced = Player.IsForcedToGamble;
         if (forced && !_wasForced)
-            Player.AddThreat(MovedThreat);
+            Player.AddThreat(1f, this, ThreatCause.ForceGambled);
         _wasForced = forced;
 
         _checkTimer += delta;
@@ -153,13 +162,20 @@ public partial class TallMonk : Monk
             SendBack();
     }
 
+
+
+
+
+
+
     // any click while he's at the closet counts as moving, except turning the light off
     private void OnPlayerActed(IInteractable what)
     {
         if (!IsEngaged || CurrentMarker != Markers.DeepInside) return;
         if (what is RoomLightSwitch) return;
 
-        Player.AddThreat(MovedThreat);
+        bool spin = what is Betbutton b && b.Action == BetAction.Spin;
+        Player.AddThreat(1f, this, spin ? ThreatCause.Gambled : ThreatCause.Moved);
     }
 
 
@@ -184,7 +200,7 @@ public partial class TallMonk : Monk
     {
         StopWhisper(); // the whisper cutting out is the all-clear
         if (CurrentMarker == Markers.DeepInside)
-            _closet?.SetOpen(false); // doors shut as he leaves
+            _closet?.interactor.SetOpen(false); // doors shut as he leaves
         base.SendBack();
 
         ChangeSprite(Moving);

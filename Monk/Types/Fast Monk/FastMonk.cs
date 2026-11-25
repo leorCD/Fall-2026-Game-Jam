@@ -16,6 +16,7 @@ public partial class FastMonk : Monk
     [ExportGroup("Inside Watch")]
     [Export] private float WatchSeconds = 5f;
     private double _watchTimer;
+    private bool _hidWhileWatched; // did the player ever hide once she started coming in
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
@@ -56,6 +57,7 @@ public partial class FastMonk : Monk
         if (!IsEngaged || CurrentMarker != Markers.Doorway) return;
 
         _watchTimer = 0;
+        _hidWhileWatched = false;
         StartRoute(Markers.DeepInside);
         StartWalking();
     }
@@ -75,7 +77,7 @@ public partial class FastMonk : Monk
             await ToSignal(GetTree().CreateTimer(1f), SceneTreeTimer.SignalName.Timeout);
 
             if (IsEngaged && CurrentMarker == Markers.DeepInside)
-                Player.ChangeIndicatorText("Come out.", fontSize: 40);
+                Player.ChangeIndicatorText("Leave.", color: new Color(0.7f, 0, 0), fontSize: 40);
         }
     }
 
@@ -102,6 +104,16 @@ public partial class FastMonk : Monk
         (from == Markers.BottomRight && to == Markers.TopRight);
 
 
+    protected override void TransitionProcess(double delta)
+    {
+        base.TransitionProcess(delta);
+
+        // remember if the player hid on her way in, so a failure reads as "stepped out" and not "never hid"
+        if (TargetMarker == Markers.DeepInside && Player.IsHiding)
+            _hidWhileWatched = true;
+    }
+
+
     protected override void DoorProcess(double delta)
     {
         if (CurrentMarker != Markers.DeepInside)
@@ -110,11 +122,13 @@ public partial class FastMonk : Monk
             return;
         }
 
-        if (!Player.IsHiding) // came out while she's watching
+        if (!Player.IsHiding) // never hid, or came out while she's watching
         {
-            Player.AddThreat(1f);
+            Player.AddThreat(1f, this, _hidWhileWatched ? ThreatCause.LeftHiding : ThreatCause.Seen);
             return;
         }
+
+        _hidWhileWatched = true;
 
         _watchTimer += delta;
         if (_watchTimer >= WatchSeconds)
@@ -127,7 +141,7 @@ public partial class FastMonk : Monk
             _torch?.TurnOn();
         }
     }
-    
+
     public override void SendBack()
     {
         base.SendBack();

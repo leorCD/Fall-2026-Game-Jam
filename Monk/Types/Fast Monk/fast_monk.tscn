@@ -24,6 +24,7 @@ MovementSpeed = 4.0
 Idle = ExtResource("4_008c1")
 Moving = ExtResource("4_008c1")
 LookHeightFraction = 0.62
+StartHour = 3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_cfrkh")

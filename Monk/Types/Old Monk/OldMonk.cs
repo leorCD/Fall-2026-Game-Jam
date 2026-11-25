@@ -7,15 +7,16 @@ using System;
 public partial class OldMonk : Monk
 {
     [ExportGroup("Window")]
-    [Export(PropertyHint.Range, "0, 100")] private float WindowChance = 40; // chance to check the window after arriving on the left
+    [Export(PropertyHint.Range, "0, 100")] private float WindowChance = 65; // chance to check the window after arriving on the left
     [Export] private float WindowLingerSeconds = 3f;
-    [Export] private float WindowBangThreat = 0.3f;
+    [Export] private float WindowBangThreat = 0.75f;
     public event Action WallBanged;
     public bool BangedOnWindow; // debounce: one bang per spin
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
     [Export] public AudioStream WindowBangSFX;
+    protected override bool EngagesAtDoorway => false;
 
 
     public override void _Ready()
@@ -26,8 +27,6 @@ public partial class OldMonk : Monk
         {
             GD.PrintErr("Empty sfx, no sound will play");
         }
-        
-        EngagesAtDoorway = false;
     }
 
 
@@ -51,7 +50,11 @@ public partial class OldMonk : Monk
     private void Bang()
     {
         AudioManager.Instance.PlaySfx3D(WindowBangSFX, this, "SFX_Hallway", volumeDb: 8f);
-        Player.AddThreat(WindowBangThreat);
+
+        // a spin the urge forced reads differently from one the player chose
+        ThreatCause cause = Player.IsForcedToGamble ? ThreatCause.ForceGambled : ThreatCause.Gambled;
+        Player.AddThreat(WindowBangThreat, this, cause);
+
         WallBanged?.Invoke();
     }
 

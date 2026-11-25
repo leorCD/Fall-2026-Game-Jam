@@ -13,7 +13,6 @@ public abstract partial class Monk : CharacterBody3D
 
     [ExportCategory("General Settings")]
     [Export] public int Aggresiveness { get; set; } = 10; // scale from 0-20 like fnaf
-    [Export] public bool EngagesAtDoorway = true;
     
     [ExportCategory("Monk Settings")]
     [Export] protected float HeightMeters { get; set; } = 3f;
@@ -21,7 +20,7 @@ public abstract partial class Monk : CharacterBody3D
 
     [ExportGroup("Threat")]
     [Export] public float BuildRate { get; set; } = 0.1f;      // bar fraction per second while player is visible
-    [Export] public float ArrivalThreat { get; set; } = 0.3f;  // one-time bump on reaching the door
+    [Export] public float ArrivalThreat { get; set; } = 0.4f;  // one-time bump on reaching the door
 
     [ExportGroup("Textures")]
     [Export] protected Texture2D Idle;
@@ -175,7 +174,7 @@ public abstract partial class Monk : CharacterBody3D
             if (EngagesAtDoorway)
             {
                 _engaged = true;
-                Player.AddThreat(ArrivalThreat);
+                Player.AddThreat(ArrivalThreat, this);
             }
         }
         else if (CurrentMarker == Markers.Inside || CurrentMarker == Markers.DeepInside || CurrentMarker == Markers.Window)
@@ -217,6 +216,7 @@ public abstract partial class Monk : CharacterBody3D
         _ready = false;
     }
 
+    protected virtual bool EngagesAtDoorway => true;
     protected virtual bool ShouldMove() => GD.RandRange(1, 20) <= Aggresiveness;
     protected virtual float GetSpeed() => MovementSpeed;
     protected virtual bool CanMove() => true; // freeze conditions
@@ -272,7 +272,7 @@ public abstract partial class Monk : CharacterBody3D
     protected virtual void DoorProcess(double delta)
     {
         if (!Player.IsHiding)
-            Player.AddThreat(BuildRate * (float)delta);
+            Player.AddThreat(BuildRate * (float)delta, this);
         else if (Player.Threat <= 0f)
             SendBack(); // player drained the bar, monk gives up
     }

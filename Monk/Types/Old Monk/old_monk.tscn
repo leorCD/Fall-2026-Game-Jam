@@ -24,6 +24,7 @@ ArrivalThreat = 0.0
 Idle = ExtResource("2_plnks")
 Moving = ExtResource("2_plnks")
 LookHeightFraction = 0.6
+StartHour = 2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_cfrkh")

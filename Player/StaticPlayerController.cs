@@ -12,6 +12,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	public event Action ClosetInteracted;
 	public event Action<IInteractable> Acted;
 	public event Action MoveFinished; // fires when the player stops moving (arrived inside, or back at the machine)
+	public Monk LastThreatSource { get; private set; }
 
 	[ExportGroup("Sound")]
 	[Export] public float ForcedVolumeDropDb = -20f; // how much quieter the other buses get
@@ -29,6 +30,10 @@ public partial class StaticPlayerController : CharacterBody3D
 	[Export] public Label Indicator;
 	[Export] public Closet closet;
 	[Export] public CanvasLayer Menu;
+	[ExportSubgroup("Light")]
+	[Export] public RoomLightSwitch RoomLight;
+	[Export] public float DarkThreatScale = 0.5f; // incoming threat multiplier while the light is off
+	private Tween _barTween;
 
 	[ExportGroup("Threat Meter")]
 	[Export] private ProgressBar _threatBar;
@@ -36,8 +41,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	public float Threat { get; private set; }
 	public event Action ThreatMaxed;
 	private bool _maxed;
-
-	[ExportGroup("Heartbeat")]
+	[ExportSubgroup("Heartbeat")]
 	[Export] public float HeartbeatMinPitch = 0.8f;
 	[Export] public float HeartbeatMaxPitch = 2f;
 	[Export] public float HeartbeatMinDb = -12f;
@@ -77,7 +81,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	public float MousePullSpeed = 60f; // how strongly the camera is dragged back to center (radians/sec)
 
 	private GodotObject _focused;
-
+	public ThreatCause LastThreatCause { get; private set; }
 
 
 
@@ -143,15 +147,25 @@ public partial class StaticPlayerController : CharacterBody3D
 		SlotMachine.SpinFinished += OnSpinFinished;
 
 		closet.interactor.Interacted += OnClosetInteract;
-
-
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	// Runs every frame. delta is the amount of time since the previous frame.
 	public override void _Process(double delta)
 	{
-		if (IsHiding && !_maxed)
+		if ((IsHiding || !RoomLight.IsOn) && !_maxed)
 			SetThreat(Threat - DecayRate * (float)delta);
 	}
 
@@ -538,9 +552,11 @@ public partial class StaticPlayerController : CharacterBody3D
 		}
 	}
 
-	public void AddThreat(float amount)
+	public void AddThreat(float amount, Monk source = null, ThreatCause cause = ThreatCause.Generic)
 	{
 		if (_maxed) return;
+		if (source != null) LastThreatSource = source;
+		LastThreatCause = cause;
 		SetThreat(Threat + amount);
 	}
 	private void SetThreat(float value)
@@ -556,7 +572,6 @@ public partial class StaticPlayerController : CharacterBody3D
 			ThreatMaxed?.Invoke(); // fires once
 		}
 	}
-
 
 
 
