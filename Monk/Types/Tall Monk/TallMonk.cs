@@ -1,11 +1,31 @@
 using Godot;
 using System;
 
+// Stands at the doorway whispering, then walks in to check the closet.
+// Hiding in the closet is the wrong answer: if you're in there when he gets to it, you're caught.
+// The right answer is to be out of the closet, with the room light off, and not act until he leaves.
+// The whisper cutting out means he's leaving.
 public partial class TallMonk : Monk
 {
+    [ExportGroup("Doorway")]
+    [Export] private float DoorwayLingerSeconds = 4f;
+    [Export(PropertyHint.Range, "0, 100")] private float ChanceToCheckCloset = 100; // rolled once after lingering
+
+    [ExportGroup("Closet Check")]
+    [Export] private float CheckSeconds = 5f;              // how long he stays at the closet
+    [Export] private float LightOnThreatPerSecond = 0.5f;  // threat per second while the room light is on at the closet
+    [Export] private float MovedThreat = 0.3f;             // threat per click or forced spin while he's at the closet
+
+    [ExportGroup("References")]
+    [Export] private RoomLightSwitch _roomLight;
+    [Export] private ClosetInteraction _closet;
+
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
     [Export] private AudioStream whisperingSFX;
+
+    private double _checkTimer;
+    private bool _wasForced;
 
 
     public override void _Ready()
@@ -16,7 +36,31 @@ public partial class TallMonk : Monk
         {
             GD.PrintErr("Empty sfx, some sounds will not play");
         }
+        if (_roomLight == null)
+        {
+            GD.PrintErr("TallMonk has no room light: the closet check will not punish a lit room");
+        }
     }
+
+    public override void Init(StaticPlayerController player, MonkMarkers markers)
+    {
+        base.Init(player, markers);
+
+        Player.Acted -= OnPlayerActed; // safe if Init runs twice
+        Player.Acted += OnPlayerActed;
+    }
+
+    public override void _ExitTree()
+    {
+        if (Player != null) Player.Acted -= OnPlayerActed;
+    }
+
+
+    private bool LightIsOn => _roomLight != null && _roomLight.IsOn;
+
+    // seen from the doorway: out of the closet with the light on
+    private bool PlayerSeen => !Player.IsHiding && (_roomLight == null || _roomLight.IsOn);
+
 
     private void PlayMainFootstepSFX()
     {
@@ -30,9 +74,13 @@ public partial class TallMonk : Monk
     {
         AudioManager.Instance.StopLoop("tallmonk_footstep");
     }
+    private void StopWhisper()
+    {
+        AudioManager.Instance.StopLoop("tallmonk_whisper");
+    }
 
 
-    protected override void OnArrived(Marker3D from, Marker3D to)
+    protected override async void OnArrived(Marker3D from, Marker3D to)
     {
         ChangeSprite(Idle);
         StopFootstepSFX();
@@ -40,8 +88,80 @@ public partial class TallMonk : Monk
         if (to == Markers.Doorway)
         {
             AudioManager.Instance.PlayLoop("tallmonk_whisper", whisperingSFX, 16f, 1f, 0.1f, "SFX_Hallway", this);
+
+            await ToSignal(GetTree().CreateTimer(DoorwayLingerSeconds), SceneTreeTimer.SignalName.Timeout);
+
+            // skip if he was frozen or redirected while waiting
+            if (!IsEngaged || CurrentMarker != Markers.Doorway) return;
+
+            if (GD.RandRange(1, 100) <= ChanceToCheckCloset)
+            {
+                ChangeSprite(Moving);
+                PlayMainFootstepSFX();
+                StartRoute(Markers.DeepInside); // straight line in, same as Fast Monk
+            }
+            else
+            {
+                SendBack();
+            }
+            return;
+        }
+
+        if (to == Markers.DeepInside)
+        {
+            _checkTimer = 0;
+            _wasForced = Player.IsForcedToGamble;
+            _closet?.SetOpen(true);
         }
     }
+
+
+    protected override void DoorProcess(double delta)
+    {
+        if (CurrentMarker == Markers.DeepInside)
+            ClosetProcess(delta);
+        else
+            DoorwayProcess(delta);
+    }
+
+    private void DoorwayProcess(double delta)
+    {
+        // hiding or a dark room keeps you safe from the doorway. the closet is where that stops working
+        if (PlayerSeen)
+            Player.AddThreat(BuildRate * (float)delta);
+    }
+
+    private void ClosetProcess(double delta)
+    {
+        if (Player.IsHiding) // he opened the closet and you're in it
+        {
+            Player.AddThreat(1f);
+            return;
+        }
+
+        if (LightIsOn)
+            Player.AddThreat(LightOnThreatPerSecond * (float)delta);
+
+        // a forced spin is a spin too
+        bool forced = Player.IsForcedToGamble;
+        if (forced && !_wasForced)
+            Player.AddThreat(MovedThreat);
+        _wasForced = forced;
+
+        _checkTimer += delta;
+        if (_checkTimer >= CheckSeconds)
+            SendBack();
+    }
+
+    // any click while he's at the closet counts as moving, except turning the light off
+    private void OnPlayerActed(IInteractable what)
+    {
+        if (!IsEngaged || CurrentMarker != Markers.DeepInside) return;
+        if (what is RoomLightSwitch) return;
+
+        Player.AddThreat(MovedThreat);
+    }
+
 
     protected override Marker3D RandomNextWaypoint()
     {
@@ -49,7 +169,7 @@ public partial class TallMonk : Monk
         if (next == null) return null;
 
         if (next != Markers.Doorway)
-            AudioManager.Instance.StopLoop("tallmonk_whisper");
+            StopWhisper();
 
         ChangeSprite(Moving);
         if (next == Markers.TopLeft || next == Markers.BottomLeft)
@@ -60,11 +180,22 @@ public partial class TallMonk : Monk
         return next;
     }
 
+    public override void SendBack()
+    {
+        StopWhisper(); // the whisper cutting out is the all-clear
+        if (CurrentMarker == Markers.DeepInside)
+            _closet?.SetOpen(false); // doors shut as he leaves
+        base.SendBack();
+
+        ChangeSprite(Moving);
+        PlayMainFootstepSFX();
+    }
+
 
     public override void Freeze()
     {
         base.Freeze();
-        AudioManager.Instance.StopLoop("tallmonk_whisper");
+        StopWhisper();
         StopFootstepSFX();
     }
 }

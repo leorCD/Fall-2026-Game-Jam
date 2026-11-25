@@ -10,6 +10,7 @@ public partial class StaticPlayerController : CharacterBody3D
 	public bool IsHiding { get; private set; } = false;
 	public event Action<bool> HidingChanged;
 	public event Action ClosetInteracted;
+	public event Action<IInteractable> Acted;
 	public event Action MoveFinished; // fires when the player stops moving (arrived inside, or back at the machine)
 
 	[ExportGroup("Sound")]
@@ -203,6 +204,7 @@ public partial class StaticPlayerController : CharacterBody3D
 				if (hit is IInteractable interactable)
 				{
 					interactable.Interact(this);
+    				Acted?.Invoke(interactable);
 				}
 			}
 		}
@@ -379,11 +381,12 @@ public partial class StaticPlayerController : CharacterBody3D
 		_focused = target;
 		(_focused as IFocusable)?.OnFocus();
 
+		string text = "";
 		switch (target)
 		{
 			case ClosetInteraction:
-				string indicatorText = IsHiding ? "Leave" : "Hide";
-				ChangeIndicatorText(indicatorText);
+				text = IsHiding ? "Leave" : "Hide";
+				ChangeIndicatorText(text);
 				break;
 
 			case StartGame:
@@ -401,6 +404,11 @@ public partial class StaticPlayerController : CharacterBody3D
 					ChangeIndicatorText("Raise Bet");
 				else if (button.Action == BetAction.GreatIncrease)
 					ChangeIndicatorText("Jump Bet");
+				break;
+			
+			case RoomLightSwitch lightSwitch:
+				text = lightSwitch.IsOn ? "Light Off" : "Light On";
+				ChangeIndicatorText(text);
 				break;
 		}
 	}

@@ -45,12 +45,10 @@ public partial class ClosetInteraction : Area3D, IInteractable
 	private void OnHidingChanged(bool hiding)
 	{
 		SetOpen(true);   // entering or leaving: open up
-		AudioManager.Instance.PlaySfxClip(DoorOpen, 0f, 1.5f, pitch: 0.9f, volumeDb: -4f, bus: "Ambience", parent: this);
 	}
 	private void OnMoveFinished()
 	{
 		SetOpen(false);  // player has settled: shut the doors
-		AudioManager.Instance.PlaySfxClip(DoorClose, 4.5f, 6f, pitch: 1.1f, volumeDb: -5f, bus: "Ambience", parent: this);
 	}
 
 	public async void SetOpen(bool open)
@@ -62,6 +60,11 @@ public partial class ClosetInteraction : Area3D, IInteractable
 		float leftTarget = _leftClosedY + (open ? -OpenAngleDeg : 0f);
 		float rightTarget = _rightClosedY + (open ? OpenAngleDeg : 0f);
 
+		if (open == true)
+			AudioManager.Instance.PlaySfxClip(DoorOpen, 0f, 1.5f, pitch: 0.9f, volumeDb: -4f, bus: "Ambience", parent: this);
+		else
+			AudioManager.Instance.PlaySfxClip(DoorClose, 4.5f, 6f, pitch: 1.1f, volumeDb: -5f, bus: "Ambience", parent: this);
+
 		if (LeftHinge != null)
 			_doorTween.Parallel().TweenProperty(LeftHinge, "rotation_degrees:y", leftTarget, time)
 				.SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
@@ -72,7 +75,6 @@ public partial class ClosetInteraction : Area3D, IInteractable
 		
 		await ToSignal(_doorTween, Tween.SignalName.Finished);
 	}
-
 	public override void _ExitTree()
 	{
 		if (_player == null) return;

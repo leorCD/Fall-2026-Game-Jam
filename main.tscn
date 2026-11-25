@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=4 uid="uid://cppu1ju6sf1wh"]
+[gd_scene load_steps=75 format=4 uid="uid://cppu1ju6sf1wh"]
 
 [ext_resource type="Script" uid="uid://duiihffiuyu5j" path="res://common/clock/NightClock.cs" id="1_4k2k6"]
 [ext_resource type="PackedScene" uid="uid://b2oobaate140c" path="res://Player/Player.tscn" id="1_ig7tw"]
@@ -34,6 +34,7 @@
 [ext_resource type="AudioStream" uid="uid://ba4do6l8ciamf" path="res://Audio/873424__loganzsound__microphone-interference-slowed.wav" id="24_qsp4k"]
 [ext_resource type="AudioStream" uid="uid://bu1up7hew76bf" path="res://Audio/427563__tbone1999__doorhit.wav" id="27_qsp4k"]
 [ext_resource type="Script" uid="uid://br8on0sjxlxxc" path="res://common/clock/ClockDisplay.cs" id="29_ok6jj"]
+[ext_resource type="Script" uid="uid://yyyueshccm46" path="res://common/RoomLightSwitch.cs" id="31_facbu"]
 [ext_resource type="PackedScene" uid="uid://0kubhtqystf8" path="res://Slot machine/slot_machine_new.tscn" id="31_ok6jj"]
 
 [sub_resource type="Resource" id="Resource_facbu"]
@@ -184,6 +185,12 @@ _surfaces = [{
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ok6jj"]
 size = Vector3(0.23, 0.1, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_b1qrp"]
+size = Vector3(0.47, 0.695, 0.555)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ok6jj"]
+transparency = 1
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_xuqvo"]
 _surfaces = [{
@@ -557,6 +564,35 @@ omni_attenuation = 0.955
 transform = Transform3D(1.0000004, 0, -1.4901161e-08, 0, 1, 0, 1.4901161e-08, 0, 1.0000004, 0, 0, 0)
 shape = SubResource("BoxShape3D_ok6jj")
 
+[node name="Lights" type="Node3D" parent="environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0242844, 0.93759, -4.617808)
+
+[node name="Area3D" type="Area3D" parent="environment/Lights" node_paths=PackedStringArray("Lights", "Offlight")]
+script = ExtResource("31_facbu")
+Lights = [NodePath("../../Slot_Machine2/LightOnScreen"), NodePath("../../RenderedRoom/DoorwayLight"), NodePath("../../RenderedRoom/LightFromScreen")]
+Offlight = NodePath("../Offlight")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="environment/Lights/Area3D"]
+shape = SubResource("BoxShape3D_b1qrp")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="environment/Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.110765934)
+size = Vector3(0.165, 0.37, 0.105)
+material = SubResource("StandardMaterial3D_ok6jj")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="environment/Lights"]
+transform = Transform3D(1, 0, 0, 0, 0.9599619, -0.2801306, 0, 0.2801306, 0.9599619, 0, 0, 0.13089609)
+size = Vector3(0.04, 0.14, 0.065)
+material = SubResource("StandardMaterial3D_ok6jj")
+
+[node name="Offlight" type="SpotLight3D" parent="environment/Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.52410746)
+light_color = Color(0.8666006, 0.7975549, 0.6617787, 1)
+light_specular = 0.0
+spot_range = 0.51
+spot_attenuation = -2.85
+spot_angle = 68.24
+
 [node name="RenderedRoom" type="Node3D" parent="environment"]
 
 [node name="hallwaywall" type="MeshInstance3D" parent="environment/RenderedRoom"]
@@ -816,8 +852,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.633999, 1.2828997, 9.71255
 WindowBangSFX = ExtResource("27_qsp4k")
 StartHour = 2
 
-[node name="TallMonk" parent="enemies/ActiveMonks" instance=ExtResource("14_w48qg")]
+[node name="TallMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_roomLight") instance=ExtResource("14_w48qg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11.664431)
+_roomLight = NodePath("../../../environment/Lights/Area3D")
+Aggresiveness = 20
 
 [node name="FastMonk" parent="enemies/ActiveMonks" node_paths=PackedStringArray("_torch") instance=ExtResource("22_ryguw")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17251658, 0, 9.949652)

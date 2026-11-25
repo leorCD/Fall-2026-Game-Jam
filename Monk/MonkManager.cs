@@ -114,7 +114,7 @@ public partial class MonkManager : Node
 					deathtext = Pick(TallLines);
 					break;
 				case OldMonk old:
-					deathtext = Pick(old.BangedOnWindow ? OldWindowLines : OldDoorLines);
+					deathtext = Pick(OldWindowLines);
 					break;
 			};
 
@@ -151,14 +151,6 @@ public partial class MonkManager : Node
 
 
 
-
-	// old monk at the door
-	private static readonly string[] OldDoorLines =
-	{
-		"you knew better, but you wanted one more spin.",
-		"they watched, and you gambled anyway.",
-		"you couldn't stop yourself, even with them standing there.",
-	};
 
 	// old monk at the window
 	private static readonly string[] OldWindowLines =

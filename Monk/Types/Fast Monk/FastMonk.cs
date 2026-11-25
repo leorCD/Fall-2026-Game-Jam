@@ -1,12 +1,14 @@
 using Godot;
 using System;
 
-// Sprints down the hallway with loud footsteps. If you go from visible to hiding while she's at the
-// doorway, she walks Inside and watches you. Leave the hiding spot while she's watching and you die.
+// Sprints down the hallway with loud footsteps and puts the torch out as she heads for the doorway.
+// When she reaches the doorway she has a chance to come Inside. If she does, hide: she walks in and
+// watches, and leaving the hiding spot while she's watching kills you.
 public partial class FastMonk : Monk
 {
     private Random _random = new Random();
-    [Export(PropertyHint.Range, "0, 100")] private float ChanceToEnterRoom = 25; // chance to check the window after arriving on the left
+    [Export(PropertyHint.Range, "0, 100")] private float ChanceToEnterRoom = 40; // rolled once when she reaches the doorway
+    [Export] private float EnterDelaySeconds = 1f; // pause at the doorway before she walks in
 
     [ExportGroup("References")]
     [Export] private TorchObject _torch;
@@ -17,20 +19,6 @@ public partial class FastMonk : Monk
 
     [ExportGroup("Sound Effects")]
     [Export] private AudioStream footstepSFX;
-
-
-    public override void Init(StaticPlayerController player, MonkMarkers markers)
-    {
-        base.Init(player, markers);
-
-        Player.HidingChanged -= OnPlayerHidingChanged; // safe if Init runs twice
-        Player.HidingChanged += OnPlayerHidingChanged;
-    }
-
-    public override void _ExitTree()
-    {
-        if (Player != null) Player.HidingChanged -= OnPlayerHidingChanged;
-    }
 
 
     private void PlayMainFootstepSFX()
@@ -55,22 +43,21 @@ public partial class FastMonk : Monk
     }
 
 
-    private async void OnPlayerHidingChanged(bool hiding)
+    private bool DecideToComeIn() // chance to enter the room
     {
-        if (!hiding || !IsEngaged || CurrentMarker != Markers.Doorway) return;
+        return GD.RandRange(1, 100) <= ChanceToEnterRoom;
+    }
 
-        if (!DecideToComeIn()) return;
+    private async void EnterRoomAfterDelay()
+    {
+        await ToSignal(GetTree().CreateTimer(EnterDelaySeconds), SceneTreeTimer.SignalName.Timeout);
 
-        await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
+        // skip if she was frozen or redirected while waiting
+        if (!IsEngaged || CurrentMarker != Markers.Doorway) return;
 
         _watchTimer = 0;
         StartRoute(Markers.DeepInside);
         StartWalking();
-    }
-
-    private bool DecideToComeIn() // chance to enter the room
-    {
-        return GD.RandRange(1, 100) <= ChanceToEnterRoom;  
     }
 
 
@@ -79,25 +66,40 @@ public partial class FastMonk : Monk
         ChangeSprite(Idle);
         StopFootstepSFX();
 
-        if (CurrentMarker == Markers.DeepInside)
+        // the torch going out on the way here was the warning, now she rolls to come in
+        if (to == Markers.Doorway && DecideToComeIn())
+            EnterRoomAfterDelay();
+
+        if (to == Markers.DeepInside)
         {
-            await ToSignal(GetTree().CreateTimer(1f), Timer.SignalName.Timeout);
-            Player.ChangeIndicatorText("Come out.", fontSize: 40);
+            await ToSignal(GetTree().CreateTimer(1f), SceneTreeTimer.SignalName.Timeout);
+
+            if (IsEngaged && CurrentMarker == Markers.DeepInside)
+                Player.ChangeIndicatorText("Come out.", fontSize: 40);
         }
     }
 
     protected override Marker3D RandomNextWaypoint()
     {
         var next = base.RandomNextWaypoint();
+        if (next == null) return null;
+
         StartWalking(isSideHallway: (next == Markers.TopLeft || next == Markers.BottomLeft));
-        
-        if (next == Markers.Doorway)
-            _torch.TurnOff();
-        else
-            _torch.TurnOn();
-        
+
+        if (_torch != null)
+        {
+            if (next == Markers.Doorway || IsDoorwayPass(CurrentMarker, next))
+                _torch.TurnOff();
+            else
+                _torch.TurnOn();
+        }
+
         return next;
     }
+
+    private bool IsDoorwayPass(Marker3D from, Marker3D to) =>
+        (from == Markers.TopRight && to == Markers.BottomRight) ||
+        (from == Markers.BottomRight && to == Markers.TopRight);
 
 
     protected override void DoorProcess(double delta)
@@ -122,8 +124,14 @@ public partial class FastMonk : Monk
             StartRoute(Markers.Doorway, last); // leaves the way she came
             StartWalking();
 
-            _torch.TurnOn();
+            _torch?.TurnOn();
         }
+    }
+    
+    public override void SendBack()
+    {
+        base.SendBack();
+        _torch?.TurnOn(); // all-clear: she's leaving, same as when she walks out from inside
     }
 
 

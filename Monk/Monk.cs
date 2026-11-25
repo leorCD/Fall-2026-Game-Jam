@@ -13,7 +13,8 @@ public abstract partial class Monk : CharacterBody3D
 
     [ExportCategory("General Settings")]
     [Export] public int Aggresiveness { get; set; } = 10; // scale from 0-20 like fnaf
-
+    [Export] public bool EngagesAtDoorway = true;
+    
     [ExportCategory("Monk Settings")]
     [Export] protected float HeightMeters { get; set; } = 3f;
     [Export] public float MovementSpeed { get; set; } = 0.8f;
@@ -171,8 +172,11 @@ public abstract partial class Monk : CharacterBody3D
 
         if (CurrentMarker == Markers.Doorway)
         {
-            _engaged = true;
-            Player.AddThreat(ArrivalThreat);
+            if (EngagesAtDoorway)
+            {
+                _engaged = true;
+                Player.AddThreat(ArrivalThreat);
+            }
         }
         else if (CurrentMarker == Markers.Inside || CurrentMarker == Markers.DeepInside || CurrentMarker == Markers.Window)
         {
